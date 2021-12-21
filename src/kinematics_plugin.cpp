@@ -33,6 +33,17 @@
  *********************************************************************/
 
 #include <bio_ik/goal.h>
+#include <moveit/kinematics_base/kinematics_base.h>
+#include <moveit/rdf_loader/rdf_loader.h>
+#include <srdfdom/model.h>
+#include <urdf/model.h>
+#include <urdf_model/model.h>
+
+#include <Eigen/Core>
+#include <Eigen/Dense>
+#include <Eigen/Geometry>
+#include <kdl_parser/kdl_parser.hpp>
+#include <pluginlib/class_list_macros.hpp>
 
 #include "forward_kinematics.h"
 #include "ik_base.h"
@@ -40,20 +51,10 @@
 #include "problem.h"
 #include "utils.h"
 
-#include <Eigen/Core>
-#include <Eigen/Dense>
-#include <Eigen/Geometry>
-#include <kdl_parser/kdl_parser.hpp>
-#include <moveit/kinematics_base/kinematics_base.h>
-#include <moveit/rdf_loader/rdf_loader.h>
-#include <pluginlib/class_list_macros.hpp>
-#include <srdfdom/model.h>
-#include <urdf/model.h>
-#include <urdf_model/model.h>
-
-#include <tf2_eigen_kdl/tf2_eigen_kdl.hpp>
+// #include <tf2_eigen_kdl/tf2_eigen_kdl.hpp>
 #include <tf2_eigen/tf2_eigen.hpp>
 //#include <moveit/common_planning_interface_objects/common_objects.h>
+#include <bio_ik/goal_types.h>
 #include <moveit/kinematics_base/kinematics_base.h>
 #include <moveit/robot_model/robot_model.h>
 #include <moveit/robot_state/robot_state.h>
@@ -63,8 +64,6 @@
 #include <random>
 #include <tuple>
 #include <type_traits>
-
-#include <bio_ik/goal_types.h>
 
 using namespace bio_ik;
 
@@ -92,31 +91,32 @@ bool isBioIKKinematicsQueryOptions(const void *ptr) {
          bioIKKinematicsQueryOptionsList.end();
 }
 
-const BioIKKinematicsQueryOptions *
-toBioIKKinematicsQueryOptions(const void *ptr) {
+const BioIKKinematicsQueryOptions *toBioIKKinematicsQueryOptions(
+    const void *ptr) {
   if (isBioIKKinematicsQueryOptions(ptr))
     return (const BioIKKinematicsQueryOptions *)ptr;
   else
     return 0;
 }
 
-void poseMsgToEigen(const geometry_msgs::msg::Pose& msg, Eigen::Isometry3d& out)
-{
-  Eigen::Translation3d translation(msg.position.x, msg.position.y, msg.position.z);
-  Eigen::Quaterniond quaternion(msg.orientation.w, msg.orientation.x, msg.orientation.y, msg.orientation.z);
-  if ((quaternion.x() == 0) && (quaternion.y() == 0) && (quaternion.z() == 0) && (quaternion.w() == 0))
-  {
-    std::cerr << "Empty quaternion found in pose message. Setting to neutral orientation.\n";
+void poseMsgToEigen(const geometry_msgs::msg::Pose &msg,
+                    Eigen::Isometry3d &out) {
+  Eigen::Translation3d translation(msg.position.x, msg.position.y,
+                                   msg.position.z);
+  Eigen::Quaterniond quaternion(msg.orientation.w, msg.orientation.x,
+                                msg.orientation.y, msg.orientation.z);
+  if ((quaternion.x() == 0) && (quaternion.y() == 0) && (quaternion.z() == 0) &&
+      (quaternion.w() == 0)) {
+    std::cerr << "Empty quaternion found in pose message. Setting to neutral "
+                 "orientation.\n";
     quaternion.setIdentity();
-  }
-  else
-  {
+  } else {
     quaternion.normalize();
   }
   out = translation * quaternion;
 }
 
-} // namespace bio_ik
+}  // namespace bio_ik
 
 // BioIK Kinematics Plugin
 
@@ -143,9 +143,10 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
     return link_names;
   }
 
-  virtual bool getPositionFK(const std::vector<std::string> &link_names,
-                             const std::vector<double> &joint_angles,
-                             std::vector<geometry_msgs::msg::Pose> &poses) const {
+  virtual bool getPositionFK(
+      const std::vector<std::string> &link_names,
+      const std::vector<double> &joint_angles,
+      std::vector<geometry_msgs::msg::Pose> &poses) const {
     LOG_FNC();
     return false;
   }
@@ -191,8 +192,7 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
 
     auto tips2 = tip_frames_;
     joint_model_group->getEndEffectorTips(tips2);
-    if (!tips2.empty())
-      tip_frames_ = tips2;
+    if (!tips2.empty()) tip_frames_ = tips2;
 
     link_names = tip_frames_;
 
@@ -210,10 +210,11 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
 
     // initialize parameters for IKParallel
     node_->get_parameter_or("mode", ikparams.solver_class_name,
-                std::string("bio2_memetic"));
+                            std::string("bio2_memetic"));
     node_->get_parameter_or("counter", ikparams.enable_counter, false);
     node_->get_parameter_or("threads", ikparams.thread_count, 0);
-    node_->get_parameter_or("random_seed", ikparams.random_seed, static_cast<int>(std::random_device()()));
+    node_->get_parameter_or("random_seed", ikparams.random_seed,
+                            static_cast<int>(std::random_device()()));
 
     // initialize parameters for Problem
     node_->get_parameter_or("dpos", ikparams.dpos, DBL_MAX);
@@ -231,7 +232,6 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
     ik.reset(new IKParallel(ikparams));
 
     {
-
       BLOCKPROFILER("default ik goals");
 
       default_goals.clear();
@@ -245,12 +245,13 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
 
         double rotation_scale = 0.5;
 
-        node_->get_parameter_or("rotation_scale", rotation_scale, rotation_scale);
+        node_->get_parameter_or("rotation_scale", rotation_scale,
+                                rotation_scale);
 
         bool position_only_ik = false;
-        node_->get_parameter_or("position_only_ik", position_only_ik, position_only_ik);
-        if (position_only_ik)
-          rotation_scale = 0;
+        node_->get_parameter_or("position_only_ik", position_only_ik,
+                                position_only_ik);
+        if (position_only_ik) rotation_scale = 0;
 
         goal->setRotationScale(rotation_scale);
 
@@ -294,71 +295,67 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
     return true;
   }
 
-  bool initialize(
-    const rclcpp::Node::SharedPtr& node,
-    const moveit::core::RobotModel& robot_model,
-    const std::string& group_name,
-    const std::string& base_frame,
-    const std::vector<std::string>& tip_frames,
-    double search_discretization) override
-  {
+  bool initialize(const rclcpp::Node::SharedPtr &node,
+                  const moveit::core::RobotModel &robot_model,
+                  const std::string &group_name, const std::string &base_frame,
+                  const std::vector<std::string> &tip_frames,
+                  double search_discretization) override {
     LOG_FNC();
     node_ = node;
-    storeValues(robot_model, group_name, base_frame, tip_frames, search_discretization);
+    storeValues(robot_model, group_name, base_frame, tip_frames,
+                search_discretization);
     load(group_name);
     return true;
   }
 
-  virtual bool
-  searchPositionIK(const geometry_msgs::msg::Pose &ik_pose,
-                   const std::vector<double> &ik_seed_state, double timeout,
-                   std::vector<double> &solution,
-                   moveit_msgs::msg::MoveItErrorCodes &error_code,
-                   const kinematics::KinematicsQueryOptions &options =
-                       kinematics::KinematicsQueryOptions()) const {
+  virtual bool searchPositionIK(
+      const geometry_msgs::msg::Pose &ik_pose,
+      const std::vector<double> &ik_seed_state, double timeout,
+      std::vector<double> &solution,
+      moveit_msgs::msg::MoveItErrorCodes &error_code,
+      const kinematics::KinematicsQueryOptions &options =
+          kinematics::KinematicsQueryOptions()) const {
     LOG_FNC();
     return searchPositionIK(std::vector<geometry_msgs::msg::Pose>{ik_pose},
                             ik_seed_state, timeout, std::vector<double>(),
                             solution, IKCallbackFn(), error_code, options);
   }
 
-  virtual bool
-  searchPositionIK(const geometry_msgs::msg::Pose &ik_pose,
-                   const std::vector<double> &ik_seed_state, double timeout,
-                   const std::vector<double> &consistency_limits,
-                   std::vector<double> &solution,
-                   moveit_msgs::msg::MoveItErrorCodes &error_code,
-                   const kinematics::KinematicsQueryOptions &options =
-                       kinematics::KinematicsQueryOptions()) const {
+  virtual bool searchPositionIK(
+      const geometry_msgs::msg::Pose &ik_pose,
+      const std::vector<double> &ik_seed_state, double timeout,
+      const std::vector<double> &consistency_limits,
+      std::vector<double> &solution,
+      moveit_msgs::msg::MoveItErrorCodes &error_code,
+      const kinematics::KinematicsQueryOptions &options =
+          kinematics::KinematicsQueryOptions()) const {
     LOG_FNC();
     return searchPositionIK(std::vector<geometry_msgs::msg::Pose>{ik_pose},
                             ik_seed_state, timeout, consistency_limits,
                             solution, IKCallbackFn(), error_code, options);
   }
 
-  virtual bool
-  searchPositionIK(const geometry_msgs::msg::Pose &ik_pose,
-                   const std::vector<double> &ik_seed_state, double timeout,
-                   std::vector<double> &solution,
-                   const IKCallbackFn &solution_callback,
-                   moveit_msgs::msg::MoveItErrorCodes &error_code,
-                   const kinematics::KinematicsQueryOptions &options =
-                       kinematics::KinematicsQueryOptions()) const {
+  virtual bool searchPositionIK(
+      const geometry_msgs::msg::Pose &ik_pose,
+      const std::vector<double> &ik_seed_state, double timeout,
+      std::vector<double> &solution, const IKCallbackFn &solution_callback,
+      moveit_msgs::msg::MoveItErrorCodes &error_code,
+      const kinematics::KinematicsQueryOptions &options =
+          kinematics::KinematicsQueryOptions()) const {
     LOG_FNC();
     return searchPositionIK(std::vector<geometry_msgs::msg::Pose>{ik_pose},
                             ik_seed_state, timeout, std::vector<double>(),
                             solution, solution_callback, error_code, options);
   }
 
-  virtual bool
-  searchPositionIK(const geometry_msgs::msg::Pose &ik_pose,
-                   const std::vector<double> &ik_seed_state, double timeout,
-                   const std::vector<double> &consistency_limits,
-                   std::vector<double> &solution,
-                   const IKCallbackFn &solution_callback,
-                   moveit_msgs::msg::MoveItErrorCodes &error_code,
-                   const kinematics::KinematicsQueryOptions &options =
-                       kinematics::KinematicsQueryOptions()) const {
+  virtual bool searchPositionIK(
+      const geometry_msgs::msg::Pose &ik_pose,
+      const std::vector<double> &ik_seed_state, double timeout,
+      const std::vector<double> &consistency_limits,
+      std::vector<double> &solution, const IKCallbackFn &solution_callback,
+      moveit_msgs::msg::MoveItErrorCodes &error_code,
+      const kinematics::KinematicsQueryOptions &options =
+          kinematics::KinematicsQueryOptions()) const {
     LOG_FNC();
     return searchPositionIK(std::vector<geometry_msgs::msg::Pose>{ik_pose},
                             ik_seed_state, timeout, consistency_limits,
@@ -370,24 +367,22 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
       int test;
   };*/
 
-  virtual bool
-  searchPositionIK(const std::vector<geometry_msgs::msg::Pose> &ik_poses,
-                   const std::vector<double> &ik_seed_state, double timeout,
-                   const std::vector<double> &consistency_limits,
-                   std::vector<double> &solution,
-                   const IKCallbackFn &solution_callback,
-                   moveit_msgs::msg::MoveItErrorCodes &error_code,
-                   const kinematics::KinematicsQueryOptions &options =
-                       kinematics::KinematicsQueryOptions(),
-                   const moveit::core::RobotState *context_state = NULL) const {
+  virtual bool searchPositionIK(
+      const std::vector<geometry_msgs::msg::Pose> &ik_poses,
+      const std::vector<double> &ik_seed_state, double timeout,
+      const std::vector<double> &consistency_limits,
+      std::vector<double> &solution, const IKCallbackFn &solution_callback,
+      moveit_msgs::msg::MoveItErrorCodes &error_code,
+      const kinematics::KinematicsQueryOptions &options =
+          kinematics::KinematicsQueryOptions(),
+      const moveit::core::RobotState *context_state = NULL) const {
     double t0 = node_->now().seconds();
 
     // timeout = 0.1;
 
     // LOG("a");
 
-    if (enable_profiler)
-      Profiler::start();
+    if (enable_profiler) Profiler::start();
 
     auto *bio_ik_options = toBioIKKinematicsQueryOptions(&options);
 
@@ -412,8 +407,7 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
       int i = 0;
       for (auto &joint_name : getJointNames()) {
         auto *joint_model = robot_model_->getJointModel(joint_name);
-        if (!joint_model)
-          continue;
+        if (!joint_model) continue;
         for (size_t vi = 0; vi < joint_model->getVariableCount(); vi++)
           state.at(joint_model->getFirstVariableIndex() + vi) =
               solution.at(i++);
@@ -429,8 +423,7 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
         if (context_state) {
           r = context_state->getGlobalLinkTransform(getBaseFrame());
         } else {
-          if (i == 0)
-            temp_state->setToDefaultValues();
+          if (i == 0) temp_state->setToDefaultValues();
           r = temp_state->getGlobalLinkTransform(getBaseFrame());
         }
         tipFrames.emplace_back(r * p);
@@ -472,7 +465,6 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
     }*/
 
     {
-
       if (!bio_ik_options || !bio_ik_options->replace) {
         for (size_t i = 0; i < tip_frames_.size(); i++) {
           auto *goal = (PoseGoal *)default_goals[i].get();
@@ -484,8 +476,7 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
       all_goals.clear();
 
       if (!bio_ik_options || !bio_ik_options->replace)
-        for (auto &goal : default_goals)
-          all_goals.push_back(goal.get());
+        for (auto &goal : default_goals) all_goals.push_back(goal.get());
 
       if (bio_ik_options)
         for (auto &goal : bio_ik_options->goals)
@@ -540,10 +531,8 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
           v += std::ceil(std::max(0.0, lo - v) / (2 * M_PI)) * (2 * M_PI);
 
         // clamp at edges
-        if (v < lo)
-          v = lo;
-        if (v > hi)
-          v = hi;
+        if (v < lo) v = lo;
+        if (v > hi) v = hi;
       }
       state[ivar] = v;
     }
@@ -556,8 +545,7 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
       solution.clear();
       for (auto &joint_name : getJointNames()) {
         auto *joint_model = robot_model_->getJointModel(joint_name);
-        if (!joint_model)
-          continue;
+        if (!joint_model) continue;
         for (size_t vi = 0; vi < joint_model->getVariableCount(); vi++)
           solution.push_back(
               state.at(joint_model->getFirstVariableIndex() + vi));
@@ -597,7 +585,7 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
     return true;
   }
 };
-} // namespace bio_ik_kinematics_plugin
+}  // namespace bio_ik_kinematics_plugin
 
 // register plugin
 
@@ -607,4 +595,4 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
 // register BioIKKinematicsPlugin as a KinematicsBase implementation
 #include <class_loader/class_loader.hpp>
 CLASS_LOADER_REGISTER_CLASS(bio_ik_kinematics_plugin::BioIKKinematicsPlugin,
-  kinematics::KinematicsBase)
+                            kinematics::KinematicsBase)

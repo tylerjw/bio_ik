@@ -18,7 +18,7 @@ endif()
 add_library(project_warnings INTERFACE)
 
 # enable cache system
-include(cmake/Cache.cmake)
+# include(cmake/Cache.cmake)
 
 # Add linker configuration
 include(cmake/Linker.cmake)
@@ -43,16 +43,16 @@ include(cmake/StaticAnalyzers.cmake)
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_ros REQUIRED)
 find_package(Eigen3 REQUIRED)
-find_package(eigen3_cmake_module REQUIRED)
-find_package(moveit_core REQUIRED)
-find_package(moveit_ros_planning REQUIRED)
+# find_package(eigen3_cmake_module REQUIRED)
+# find_package(moveit_core REQUIRED)
+# find_package(moveit_ros_planning REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(tf2 REQUIRED)
-find_package(tf2_eigen REQUIRED)
-find_package(tf2_eigen_kdl REQUIRED)
-find_package(tf2_geometry_msgs REQUIRED)
-find_package(tf2_kdl REQUIRED)
+# find_package(tf2 REQUIRED)
+# find_package(tf2_eigen REQUIRED)
+# find_package(tf2_eigen_kdl REQUIRED)
+# find_package(tf2_geometry_msgs REQUIRED)
+# find_package(tf2_kdl REQUIRED)
 
 # TODO(tylerjw): re-enable these
 # find_package(OpenMP)
@@ -145,14 +145,13 @@ target_link_libraries(
   PRIVATE
     project_options
     project_warnings
-    # ${control_msgs_LIBRARIES}
-    # ${geometry_msgs_LIBRARIES}
-    ${rclcpp_LIBRARIES}
-    tf2_eigen_kdl::tf2_eigen_kdl
+    rclcpp::rclcpp
+    # ${rclcpp_LIBRARIES}
+    # tf2_eigen_kdl::tf2_eigen_kdl
     Eigen3::Eigen
-    # -static-libgcc
-    # -static-libstdc++
-    # moveit_core::moveit_robot_state
+    # TODO(tylerjw): what does this change?
+    -static-libgcc
+    -static-libstdc++
 )
 
 option(BUILD_TESTING "Enable Test Builds" ON)

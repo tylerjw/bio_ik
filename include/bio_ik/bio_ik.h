@@ -42,7 +42,4 @@
 #include "goal.h"
 #include "goal_types.h"
 
-namespace bio_ik
-{
-
-}
+namespace bio_ik {}

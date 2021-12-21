@@ -165,7 +165,7 @@ a single end-effector pose. Typical examples include
 * and many more
 
 In bio-ik, such tasks are specified as a combination of multiple
-individual *goals*.  
+individual *goals*.
 The algorithm then tries to find a robot configuration
 that fulfills all given goals simultaneously by minimizing
 a quadratic error function built from the weighted individual goals.
@@ -295,7 +295,7 @@ When you execute the code, the PR2 will reach for the valve wheel
 and turn it. Every once in a while it can't reach the valve with
 its current arm configuration and will regrasp the wheel.
 
-See [3] and [4] for more examples. 
+See [3] and [4] for more examples.
 
 
 
@@ -341,7 +341,7 @@ Notes:
 
 #### Regularization
 
-You can force a global optimizer to return a local minimum through regularization. 
+You can force a global optimizer to return a local minimum through regularization.
 
 * For the specific case of incremental robot motions (aka *jogging*),
   the simplest solution is to specify both a *PoseGoal* and the
@@ -398,7 +398,7 @@ If no solution is found from the gradient-based optimization,
 new individuals are created by a set of mutation and recombination operators,
 resulting in good search-space exploration.
 
-See [3] and [4] for more details. See [5] and [6] for an in-depth explanation of an 
+See [3] and [4] for more details. See [5] and [6] for an in-depth explanation of an
 earlier evolutionary algorithm for animating video game characters.
 
 ## Running the Self-Tests
@@ -476,7 +476,7 @@ For the FK-IK-FK performance test, please run
     on Highly Articulated and Humanoid Robots*,
     IEEE Intl. Conference on Intelligent Robots and Systems (IROS-2017),
     September 24-28, 2017, Vancouver, Canada
-   
+
 ## Links
 
 - http://doi.org/10.1109/ICRA.2018.8460799
