@@ -38,6 +38,8 @@
 #include "cppoptlib/meta.h"
 #include "cppoptlib/problem.h"
 
+#include <rclcpp/rclcpp.hpp>
+
 namespace bio_ik
 {
 
@@ -63,7 +65,7 @@ struct IKOptLibProblem : cppoptlib::Problem<double>
     bool callback(const cppoptlib::Criteria<double>& state, const TVector& x)
     {
         // check ik timeout
-        return ros::WallTime::now().toSec() < ik->problem.timeout;
+        return rclcpp::Clock().now().seconds() < ik->problem.timeout;
     }
 };
 */
@@ -104,7 +106,7 @@ struct IKOptLibProblem : cppoptlib::BoundedProblem<double>
     bool callback(const cppoptlib::Criteria<double>& state, const TVector& x)
     {
         // check ik timeout
-        return ros::WallTime::now().toSec() < ik->problem.timeout;
+        return rclcpp::Clock().now().seconds() < ik->problem.timeout;
     }
 };
 

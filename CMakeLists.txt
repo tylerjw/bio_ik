@@ -1,135 +1,206 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.15)
 project(bio_ik)
 
-if(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
-  message("${PROJECT_NAME}: You did not request a specific build type: Choosing 'Release' for maximum performance")
-  set(CMAKE_BUILD_TYPE Release)
-endif()
+include(cmake/StandardProjectSettings.cmake)
 
-find_package(catkin REQUIRED COMPONENTS
-  eigen_conversions
-  moveit_core
-  moveit_ros_planning
-  pluginlib
-  roscpp
-  tf2
-  tf2_eigen
-  tf2_kdl
-  tf2_geometry_msgs
-)
+# Link this 'library' to set the c++ standard / compile-time options requested
+add_library(project_options INTERFACE)
+target_compile_features(project_options INTERFACE cxx_std_20)
 
-find_package(OpenMP)
-# the specific flag is not yet present in cmake 2.8.12
-if(OpenMP_CXX_FOUND OR OPENMP_FOUND)
-  message(STATUS "OPENMP FOUND")
-  add_compile_options(${OpenMP_CXX_FLAGS})
-  if(NOT OpenMP_CXX_LIBRARIES)
-    # cmake 2.8.12 does not yet specify the library - assume we might need libgomp
-    set(OpenMP_LIBS gomp)
-  else()
-    set(OpenMP_LIBS ${OpenMP_CXX_LIBRARIES})
+if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+  option(ENABLE_BUILD_WITH_TIME_TRACE "Enable -ftime-trace to generate time tracing .json files on clang" OFF)
+  if(ENABLE_BUILD_WITH_TIME_TRACE)
+    target_compile_options(project_options INTERFACE -ftime-trace)
   endif()
-else()
-    message(WARNING "OPENMP NOT FOUND. You will suffer performance loss.")
-    set(OpenMP_LIBS)
 endif()
 
-option(USE_FANN "build the neural-network-based IK solver (experimental)" OFF)
-if(USE_FANN)
-    find_library(FANN_LIBRARIES NAMES fann)
-    find_path(FANN_INCLUDE_DIRS NAMES fann.h)
-    if(NOT FANN_INCLUDE_DIRS OR NOT FANN_LIBRARIES)
-        message(FATAL_ERROR "Neural network solver requested, but libfann was not found.")
-    else()
-        message("Found libfann: ${FANN_LIBRARIES} / ${FANN_INCLUDE_DIRS}")
-    endif()
-else()
-    set(FANN_LIBRARIES)
-    set(FANN_INCLUDE_DIRS)
-endif()
+# Link this 'library' to use the warnings specified in CompilerWarnings.cmake
+add_library(project_warnings INTERFACE)
 
-option(USE_CPPOPTLIB "Include gradient-based solvers from CppNumericalSolvers (bio_ik also provides its own solver)" OFF)
-if(USE_CPPOPTLIB)
-    find_path(CPPOPTLIB_INCLUDE_DIRS
-        NAMES cppoptlib/solver/bfgssolver.h
-        HINTS ../../CppNumericalSolvers/include)
-    if(NOT CPPOPTLIB_INCLUDE_DIRS)
-        message(FATAL_ERROR "cppoptlib support requested, but the headers could not be found.")
-    else()
-        message("Found cppoptlib: ${CPPOPTLIB_INCLUDE_DIRS}")
-    endif()
-    add_definitions(-DENABLE_CPP_OPTLIB)
-else()
-    set(CPPOPTLIB_INCLUDE_DIRS)
-endif()
+# enable cache system
+include(cmake/Cache.cmake)
 
-catkin_package(
-    INCLUDE_DIRS include
-    LIBRARIES ${PROJECT_NAME}
-    CATKIN_DEPENDS
-        eigen_conversions
-        moveit_core
-        moveit_ros_planning
-        pluginlib
-        roscpp
-        tf2
-        tf2_kdl
-        tf2_geometry_msgs
-)
+# Add linker configuration
+include(cmake/Linker.cmake)
+configure_linker(project_options)
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  add_compile_options(-frecord-gcc-switches)
-endif()
+# standard compiler warnings
+include(cmake/CompilerWarnings.cmake)
+set_project_warnings(project_warnings)
 
-add_compile_options(-std=c++11)
+# sanitizer options if supported by compiler
+include(cmake/Sanitizers.cmake)
+enable_sanitizers(project_options)
 
-add_compile_options($<$<CONFIG:Release>:-O3>)
-add_compile_options($<$<CONFIG:Release>:-ftree-vectorize>)
-add_compile_options($<$<CONFIG:Release>:-ffast-math>)
+# enable doxygen
+include(cmake/Doxygen.cmake)
+enable_doxygen()
 
-include_directories(
-    include
-    ${FANN_INCLUDE_DIRS}
-    ${CPPOPTLIB_INCLUDE_DIRS}
-    ${catkin_INCLUDE_DIRS}
-)
+# allow for static analysis options
+include(cmake/StaticAnalyzers.cmake)
+
+# find dependencies
+find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_ros REQUIRED)
+find_package(Eigen3 REQUIRED)
+find_package(eigen3_cmake_module REQUIRED)
+find_package(moveit_core REQUIRED)
+find_package(moveit_ros_planning REQUIRED)
+find_package(pluginlib REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_eigen REQUIRED)
+find_package(tf2_eigen_kdl REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
+find_package(tf2_kdl REQUIRED)
+
+# TODO(tylerjw): re-enable these
+# find_package(OpenMP)
+# # the specific flag is not yet present in cmake 2.8.12
+# if(OpenMP_CXX_FOUND OR OPENMP_FOUND)
+#   message(STATUS "OPENMP FOUND")
+#   add_compile_options(${OpenMP_CXX_FLAGS})
+#   if(NOT OpenMP_CXX_LIBRARIES)
+#     # cmake 2.8.12 does not yet specify the library - assume we might need libgomp
+#     set(OpenMP_LIBS gomp)
+#   else()
+#     set(OpenMP_LIBS ${OpenMP_CXX_LIBRARIES})
+#   endif()
+# else()
+#     message(WARNING "OPENMP NOT FOUND. You will suffer performance loss.")
+#     set(OpenMP_LIBS)
+# endif()
+
+# option(USE_FANN "build the neural-network-based IK solver (experimental)" OFF)
+# if(USE_FANN)
+#     find_library(FANN_LIBRARIES NAMES fann)
+#     find_path(FANN_INCLUDE_DIRS NAMES fann.h)
+#     if(NOT FANN_INCLUDE_DIRS OR NOT FANN_LIBRARIES)
+#         message(FATAL_ERROR "Neural network solver requested, but libfann was not found.")
+#     else()
+#         message("Found libfann: ${FANN_LIBRARIES} / ${FANN_INCLUDE_DIRS}")
+#     endif()
+# else()
+#     set(FANN_LIBRARIES)
+#     set(FANN_INCLUDE_DIRS)
+# endif()
+
+# option(USE_CPPOPTLIB "Include gradient-based solvers from CppNumericalSolvers (bio_ik also provides its own solver)" OFF)
+# if(USE_CPPOPTLIB)
+#     find_path(CPPOPTLIB_INCLUDE_DIRS
+#         NAMES cppoptlib/solver/bfgssolver.h
+#         HINTS ../../CppNumericalSolvers/include)
+#     if(NOT CPPOPTLIB_INCLUDE_DIRS)
+#         message(FATAL_ERROR "cppoptlib support requested, but the headers could not be found.")
+#     else()
+#         message("Found cppoptlib: ${CPPOPTLIB_INCLUDE_DIRS}")
+#     endif()
+#     add_definitions(-DENABLE_CPP_OPTLIB)
+# else()
+#     set(CPPOPTLIB_INCLUDE_DIRS)
+# endif()
+
+# TODO(tylerjw) re-enable optimizations
+# if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+#   add_compile_options(-frecord-gcc-switches)
+# endif()
+
+# add_compile_options(-std=c++11)
+
+# add_compile_options($<$<CONFIG:Release>:-O3>)
+# add_compile_options($<$<CONFIG:Release>:-ftree-vectorize>)
+# add_compile_options($<$<CONFIG:Release>:-ffast-math>)
 
 set(SOURCES
     src/goal_types.cpp
     src/kinematics_plugin.cpp
     src/problem.cpp
-
     src/ik_test.cpp
     src/ik_gradient.cpp
     src/ik_evolution_1.cpp
     src/ik_evolution_2.cpp
 )
 
-if(USE_FANN)
-    list(APPEND SOURCES src/ik_neural.cpp)
-endif()
+# TODO(tylerjw): re-enable this
+# if(USE_FANN)
+#     list(APPEND SOURCES src/ik_neural.cpp)
+# endif()
 
-if(USE_CPPOPTLIB)
-    list(APPEND SOURCES src/ik_cppoptlib.cpp)
-endif()
+# if(USE_CPPOPTLIB)
+#     list(APPEND SOURCES src/ik_cppoptlib.cpp)
+# endif()
 
-add_library(${PROJECT_NAME} ${SOURCES})
+# include_directories(
+#     include
+#     ${FANN_INCLUDE_DIRS}
+#     ${CPPOPTLIB_INCLUDE_DIRS}
+# )
 
-set_target_properties(${MOVEIT_LIB_NAME} PROPERTIES VERSION ${${PROJECT_NAME}_VERSION})
-
-add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-
-target_link_libraries(${PROJECT_NAME}
-  ${catkin_LIBRARIES}
-  ${FANN_LIBRARIES}
-  ${OpenMP_LIBS}
-
-  -static-libgcc
-  -static-libstdc++
+add_library(${PROJECT_NAME}_plugin ${SOURCES})
+target_include_directories(${PROJECT_NAME}_plugin PRIVATE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+target_link_libraries(
+  ${PROJECT_NAME}_plugin
+  PRIVATE
+    project_options
+    project_warnings
+    # ${control_msgs_LIBRARIES}
+    # ${geometry_msgs_LIBRARIES}
+    ${rclcpp_LIBRARIES}
+    tf2_eigen_kdl::tf2_eigen_kdl
+    Eigen3::Eigen
+    # -static-libgcc
+    # -static-libstdc++
+    # moveit_core::moveit_robot_state
 )
 
-install(DIRECTORY include/${PROJECT_NAME}/ DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
+option(BUILD_TESTING "Enable Test Builds" ON)
+if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  # the following lines skip linters
+  set(ament_cmake_cpplint_FOUND TRUE) # Conflicts with clang-foramt
+  set(ament_cmake_flake8_FOUND TRUE) # Conflicts with black
+  set(ament_cmake_uncrustify_FOUND TRUE) # Conflicts with clang-format
+  ament_lint_auto_find_test_dependencies()
 
-install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})
+  # add_subdirectory(test)
+endif()
 
-install(FILES bio_ik_kinematics_description.xml DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+# TODO(tylerjw): re-enable this
+# set_target_properties(${MOVEIT_LIB_NAME} PROPERTIES VERSION ${${PROJECT_NAME}_VERSION})
+
+# TODO(tylerjw): visibility-headers
+# Causes the visibility macros to use dllexport rather than dllimport,
+# which is appropriate when building the dll but not consuming it.
+# target_compile_definitions(${PROJECT_NAME} PRIVATE "${PROJECT_NAME}_BUILDING_LIBRARY")
+
+install(
+  DIRECTORY include/
+  DESTINATION include
+)
+install(
+  TARGETS ${PROJECT_NAME}_plugin
+  EXPORT export_${PROJECT_NAME}
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
+)
+
+pluginlib_export_plugin_description_file(
+  ${PROJECT_NAME}
+  bio_ik_kinematics_description.xml
+)
+
+ament_export_include_directories(
+  include
+)
+ament_export_libraries(
+  ${PROJECT_NAME}_plugin
+)
+ament_export_targets(
+  export_${PROJECT_NAME}
+)
+
+ament_package()

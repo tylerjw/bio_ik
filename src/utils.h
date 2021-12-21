@@ -37,7 +37,7 @@
 #include <csignal>
 #include <iostream>
 
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 
 #include <atomic>
 #include <mutex>
@@ -49,9 +49,9 @@
 #include <malloc.h>
 #include <stdlib.h>
 
-#include <tf_conversions/tf_kdl.h>
+#include <tf2_eigen_kdl/tf2_eigen_kdl.hpp>
 
-#include <XmlRpcException.h>
+// #include <XmlRpcException.h>
 
 //#include <link.h>
 
@@ -269,7 +269,7 @@ struct Profiler
                     std::this_thread::sleep_for(std::chrono::duration<size_t, std::micro>(rand() % 1000));
                 }
                 {
-                    double thistime = ros::WallTime::now().toSec();
+                    double thistime = rclcpp::Clock().now().seconds();
                     static double lasttime = 0.0;
                     if(thistime < lasttime + 1) continue;
                     lasttime = thistime;
@@ -472,53 +472,53 @@ template <class T> struct aligned_vector : std::vector<T, aligned_allocator<T, 3
 };
 
 // Helper class for reading structured data from ROS parameter server
-class XmlRpcReader
-{
-    typedef XmlRpc::XmlRpcValue var;
-    var& v;
+// class XmlRpcReader
+// {
+//     typedef XmlRpc::XmlRpcValue var;
+//     var& v;
 
-public:
-    XmlRpcReader(var& v)
-        : v(v)
-    {
-    }
+// public:
+//     XmlRpcReader(var& v)
+//         : v(v)
+//     {
+//     }
 
-private:
-    XmlRpcReader at(int i) { return v[i]; }
-    void conv(bool& r) { r = (bool)v; }
-    void conv(double& r) { r = (v.getType() == var::TypeInt) ? ((double)(int)v) : ((double)v); }
-    void conv(tf2::Vector3& r)
-    {
-        double x, y, z;
-        at(0).conv(x);
-        at(1).conv(y);
-        at(2).conv(z);
-        r = tf2::Vector3(x, y, z);
-    }
-    void conv(tf2::Quaternion& r)
-    {
-        double x, y, z, w;
-        at(0).conv(x);
-        at(1).conv(y);
-        at(2).conv(z);
-        at(3).conv(w);
-        r = tf2::Quaternion(x, y, z, w).normalized();
-    }
-    void conv(std::string& r) { r = (std::string)v; }
+// private:
+//     XmlRpcReader at(int i) { return v[i]; }
+//     void conv(bool& r) { r = (bool)v; }
+//     void conv(double& r) { r = (v.getType() == var::TypeInt) ? ((double)(int)v) : ((double)v); }
+//     void conv(tf2::Vector3& r)
+//     {
+//         double x, y, z;
+//         at(0).conv(x);
+//         at(1).conv(y);
+//         at(2).conv(z);
+//         r = tf2::Vector3(x, y, z);
+//     }
+//     void conv(tf2::Quaternion& r)
+//     {
+//         double x, y, z, w;
+//         at(0).conv(x);
+//         at(1).conv(y);
+//         at(2).conv(z);
+//         at(3).conv(w);
+//         r = tf2::Quaternion(x, y, z, w).normalized();
+//     }
+//     void conv(std::string& r) { r = (std::string)v; }
 
-public:
-    template <class T> void param(const char* key, T& r)
-    {
-        if(!v.hasMember(key)) return;
-        try
-        {
-            XmlRpcReader(v[key]).conv(r);
-        }
-        catch(const XmlRpc::XmlRpcException& e)
-        {
-            LOG(key);
-            throw;
-        }
-    }
-};
+// public:
+//     template <class T> void param(const char* key, T& r)
+//     {
+//         if(!v.hasMember(key)) return;
+//         try
+//         {
+//             XmlRpcReader(v[key]).conv(r);
+//         }
+//         catch(const XmlRpc::XmlRpcException& e)
+//         {
+//             LOG(key);
+//             throw;
+//         }
+//     }
+// };
 }
