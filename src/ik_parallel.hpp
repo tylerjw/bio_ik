@@ -37,17 +37,17 @@ namespace bio_ik {
 
 // executes a function in parallel on pre-allocated threads
 class ParallelExecutor {
-  std::function<void(size_t)> fun;
-  std::vector<std::thread> threads;
-  boost::barrier barrier;
   volatile bool exit;
+  std::vector<std::thread> threads;
+  std::function<void(size_t)> fun;
+  boost::barrier barrier;
   double best_fitness;
 
  public:
   template <class FUN>
   ParallelExecutor(size_t thread_count, const FUN& f)
       : exit(false), threads(thread_count), fun(f), barrier(thread_count) {
-    for (size_t i = 1; i < thread_count; i++) {
+    for (size_t i = 1; i < thread_count; ++i) {
       std::thread t([this, i]() {
         while (true) {
           barrier.wait();
@@ -81,7 +81,7 @@ struct IKParallel {
   std::vector<std::vector<double>> solver_temps;
   std::vector<int> solver_success;
   std::vector<double> solver_fitness;
-  int thread_count;
+  size_t thread_count;
   // std::vector<RobotFK_Fast> fk; // TODO: remove
   double timeout;
   bool success;
@@ -107,7 +107,7 @@ struct IKParallel {
     }
     while (solvers.size() < thread_count)
       solvers.emplace_back(IKFactory::clone(solvers.front().get()));
-    for (size_t i = 0; i < thread_count; i++) solvers[i]->thread_index = i;
+    for (size_t i = 0; i < thread_count; ++i) solvers[i]->thread_index = i;
 
     // while(fk.size() < thread_count) fk.emplace_back(params.robot_model);
 
@@ -199,7 +199,7 @@ struct IKParallel {
     best_fitness = DBL_MAX;
 
     // if exact primary goal matches have been found ...
-    for (size_t i = 0; i < thread_count; i++) {
+    for (size_t i = 0; i < thread_count; ++i) {
       if (solver_success[i]) {
         double fitness;
         if (solvers[0]->problem.secondary_goals.empty()) {
@@ -223,7 +223,7 @@ struct IKParallel {
     // if no exact primary goal matches have been found,
     // select best primary goal approximation
     if (best_fitness == DBL_MAX) {
-      for (size_t i = 0; i < thread_count; i++) {
+      for (size_t i = 0; i < thread_count; ++i) {
         if (solver_fitness[i] < best_fitness) {
           best_fitness = solver_fitness[i];
           best_index = i;

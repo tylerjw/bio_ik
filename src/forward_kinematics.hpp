@@ -561,7 +561,7 @@ class RobotFK_Jacobian : public RobotFK_Fast {
   void computeJacobian(const std::vector<size_t>& variable_indices,
                        Eigen::MatrixXd& jacobian) {
     double step_size = 0.00001;
-    double half_step_size = step_size * 0.5;
+    // double half_step_size = step_size * 0.5;
     double inv_step_size = 1.0 / step_size;
     auto tip_count = tip_frames.size();
     jacobian.resize(tip_count * 6, variable_indices.size());

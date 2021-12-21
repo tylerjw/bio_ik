@@ -333,8 +333,8 @@ __attribute__((always_inline)) inline double sign(double f) {
 
 template <class t>
 class linear_int_distribution {
-  std::uniform_int_distribution<t> base;
   t n;
+  std::uniform_int_distribution<t> base;
 
  public:
   inline linear_int_distribution(t vrange) : n(vrange), base(0, vrange) {}

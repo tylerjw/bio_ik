@@ -117,7 +117,8 @@ struct IKEvolution2 : IKBase {
     for (size_t igene = 0; igene < problem.active_variables.size(); igene++) {
       size_t ivar = problem.active_variables[igene];
       auto* joint_model = params.robot_model->getJointOfVariable(ivar);
-      if (joint_model->getFirstVariableIndex() + 3 != ivar) continue;
+      if (static_cast<size_t>(joint_model->getFirstVariableIndex() + 3) != ivar)
+        continue;
       if (joint_model->getType() != moveit::core::JointModel::FLOATING)
         continue;
       quaternion_genes.push_back(igene);
@@ -273,8 +274,8 @@ struct IKEvolution2 : IKBase {
       auto __attribute__((aligned(32)))* __restrict__ parent_gradients =
           parent.gradients.data();
 
-      auto __attribute__((aligned(32)))* __restrict__ parent2_genes =
-          parent2.genes.data();
+      auto __attribute__((aligned(32))) * __restrict__ __attribute__((unused))
+                                          parent2_genes = parent2.genes.data();
       auto __attribute__((aligned(32)))* __restrict__ parent2_gradients =
           parent2.gradients.data();
 
@@ -285,12 +286,17 @@ struct IKEvolution2 : IKBase {
       auto __attribute__((aligned(32)))* __restrict__ child_gradients =
           child.gradients.data();
 
-#pragma omp simd aligned(genes_span : 32), aligned(genes_min : 32), \
-    aligned(genes_max : 32), aligned(parent_genes : 32),            \
-    aligned(parent_gradients : 32), aligned(parent2_genes : 32),    \
-    aligned(parent2_gradients : 32), aligned(child_genes : 32),     \
-    aligned(child_gradients : 32) aligned(rr : 32)
-#pragma unroll
+      /*
+      // TODO(tylerjw): learn performance pragmas
+      // #pragma omp simd aligned(genes_span : 32), aligned(genes_min : 32), \
+      //     aligned(genes_max : 32), aligned(parent_genes : 32),            \
+      //     aligned(parent_gradients : 32), aligned(parent2_genes : 32),    \
+      //     aligned(parent2_gradients : 32), aligned(child_genes : 32),     \
+      //     aligned(child_gradients : 32) aligned(rr : 32)
+      */
+
+      // TODO(tylerjw): learn performance pragmas
+      // #pragma unroll
       for (size_t gene_index = 0; gene_index < gene_count; gene_index++) {
         // double mutation_rate = (1 << fast_random_index(16)) * (1.0 / (1 <<
         // 23));
@@ -407,7 +413,7 @@ struct IKEvolution2 : IKBase {
           // genotype-phenotype mapping
           {
             BLOCKPROFILER("phenotype");
-            size_t gene_count = children[0].genes.size();
+            // size_t gene_count = children[0].genes.size();
             genotypes.resize(child_count);
             for (size_t i = 0; i < child_count; i++)
               genotypes[i] = children[i].genes.data();
@@ -478,7 +484,7 @@ struct IKEvolution2 : IKBase {
             double fa =
                 f2p + computeSecondaryFitnessActiveVariables(genotypes[0]);
             for (size_t i = 0; i < problem.active_variables.size(); i++) {
-              double* pp = &(genotypes[0][i]);
+              // double* pp = &(genotypes[0][i]);
               genotypes[0][i] = individual.genes[i] + dp;
               model.computeApproximateMutation1(problem.active_variables[i],
                                                 +dp, phenotypes2[0],

@@ -69,7 +69,7 @@ struct IKJacobianBase : BASE {
   void optimizeJacobian(std::vector<double>& solution) {
     FNPROFILER();
 
-    int tip_count = problem.tip_link_indices.size();
+    size_t tip_count = problem.tip_link_indices.size();
     tip_diffs.resize(tip_count * 6);
     joint_diffs.resize(problem.active_variables.size());
 
@@ -81,7 +81,7 @@ struct IKJacobianBase : BASE {
 
     // compute goal diffs
     tip_frames_temp = model.getTipFrames();
-    for (int itip = 0; itip < tip_count; itip++) {
+    for (size_t itip = 0; itip < tip_count; ++itip) {
       auto twist = frameTwist(tip_frames_temp[itip], tipObjectives[itip]);
       tip_diffs(itip * 6 + 0) = twist.vel.x() * translational_scale;
       tip_diffs(itip * 6 + 1) = twist.vel.y() * translational_scale;
@@ -95,8 +95,8 @@ struct IKJacobianBase : BASE {
     {
       model.computeJacobian(problem.active_variables, jacobian);
       int icol = 0;
-      for (auto ivar : problem.active_variables) {
-        for (size_t itip = 0; itip < tip_count; itip++) {
+      for (auto __attribute__((unused)) _ : problem.active_variables) {
+        for (size_t itip = 0; itip < tip_count; ++itip) {
           jacobian(itip * 6 + 0, icol) *= translational_scale;
           jacobian(itip * 6 + 1, icol) *= translational_scale;
           jacobian(itip * 6 + 2, icol) *= translational_scale;

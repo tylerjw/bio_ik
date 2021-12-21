@@ -110,8 +110,8 @@ class GoalContext {
 
 class Goal {
  protected:
-  bool secondary_;
   double weight_;
+  bool secondary_;
 
  public:
   Goal() : weight_(1), secondary_(false) {}

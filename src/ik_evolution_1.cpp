@@ -188,7 +188,7 @@ struct IKEvolution1 : IKBase {
 
     double heuristic_error = 0;
     // for(int tip_index = 0; tip_index < tipObjectives.size(); tip_index++)
-    for (int tip_index = 0; tip_index < problem.goals.size(); tip_index++) {
+    for (size_t tip_index = 0; tip_index < problem.goals.size(); tip_index++) {
       double influence =
           heuristicErrorTree.getInfluence(variable_index, tip_index);
       if (influence == 0) continue;
@@ -312,8 +312,9 @@ struct IKEvolution1 : IKBase {
   void computeExtinctions() {
     double min = population.front().fitness;
     double max = population.back().fitness;
-    for (size_t i = 0; i < populationSize; i++) {
-      double grading = (double)i / (double)(populationSize - 1);
+    for (size_t i = 0; i < static_cast<size_t>(populationSize); ++i) {
+      double grading =
+          static_cast<double>(i) / static_cast<double>(populationSize - 1);
       population[i].extinction =
           (population[i].fitness + min * (grading - 1)) / max;
     }
@@ -508,7 +509,7 @@ struct IKEvolution1 : IKBase {
     auto& offspring = tempOffspring;
     offspring = population;
 
-    for (size_t i = 0; i < eliteCount; i++) {
+    for (size_t i = 0; i < static_cast<size_t>(eliteCount); ++i) {
       offspring[i] = population[i];
       exploit(offspring[i]);
     }
@@ -517,7 +518,7 @@ struct IKEvolution1 : IKBase {
     pool.resize(populationSize);
     iota(pool.begin(), pool.end(), &population[0]);
 
-    for (size_t i = eliteCount; i < populationSize; i++) {
+    for (size_t i = eliteCount; i < static_cast<size_t>(populationSize); ++i) {
       if (pool.size() > 0) {
         auto& parentA = *select(pool);
         auto& parentB = *select(pool);

@@ -124,9 +124,9 @@ struct Random {
 };
 
 struct IKBase : Random {
-  IKParams params;
   RobotFK model;
   RobotInfo modelInfo;
+  IKParams params;
   int thread_index;
   Problem problem;
   std::vector<Frame> null_tip_frames;
