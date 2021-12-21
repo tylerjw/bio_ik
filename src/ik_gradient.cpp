@@ -199,8 +199,7 @@ struct IKGradientDescent : IKBase {
     double joint_diff = p2 / cost_diff;
 
     // in case cost_diff is 0
-    if(!std::isfinite(joint_diff))
-        joint_diff = 0.0;
+    if (!std::isfinite(joint_diff)) joint_diff = 0.0;
 
     // apply optimization step
     // (move along gradient direction by estimated step size)

@@ -127,7 +127,7 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
   RobotInfo robot_info;
   bool enable_profiler = false;
 
-  virtual const std::vector<std::string> &getJointNames() const {
+  virtual const std::vector<std::string> &getJointNames() const override {
     LOG_FNC();
     return joint_names;
   }
@@ -140,17 +140,17 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
   virtual bool getPositionFK(
       const std::vector<std::string> &link_names,
       const std::vector<double> &joint_angles,
-      std::vector<geometry_msgs::msg::Pose> &poses) const {
+      std::vector<geometry_msgs::msg::Pose> &poses) const override {
     LOG_FNC();
     return false;
   }
 
-  virtual bool getPositionIK(const geometry_msgs::msg::Pose &ik_pose,
-                             const std::vector<double> &ik_seed_state,
-                             std::vector<double> &solution,
-                             moveit_msgs::msg::MoveItErrorCodes &error_code,
-                             const kinematics::KinematicsQueryOptions &options =
-                                 kinematics::KinematicsQueryOptions()) const {
+  virtual bool getPositionIK(
+      const geometry_msgs::msg::Pose &ik_pose,
+      const std::vector<double> &ik_seed_state, std::vector<double> &solution,
+      moveit_msgs::msg::MoveItErrorCodes &error_code,
+      const kinematics::KinematicsQueryOptions &options =
+          kinematics::KinematicsQueryOptions()) const override {
     LOG_FNC();
     return false;
   }
@@ -308,7 +308,7 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
       std::vector<double> &solution,
       moveit_msgs::msg::MoveItErrorCodes &error_code,
       const kinematics::KinematicsQueryOptions &options =
-          kinematics::KinematicsQueryOptions()) const {
+          kinematics::KinematicsQueryOptions()) const override {
     LOG_FNC();
     return searchPositionIK(std::vector<geometry_msgs::msg::Pose>{ik_pose},
                             ik_seed_state, timeout, std::vector<double>(),
@@ -322,7 +322,7 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
       std::vector<double> &solution,
       moveit_msgs::msg::MoveItErrorCodes &error_code,
       const kinematics::KinematicsQueryOptions &options =
-          kinematics::KinematicsQueryOptions()) const {
+          kinematics::KinematicsQueryOptions()) const override {
     LOG_FNC();
     return searchPositionIK(std::vector<geometry_msgs::msg::Pose>{ik_pose},
                             ik_seed_state, timeout, consistency_limits,
@@ -335,7 +335,7 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
       std::vector<double> &solution, const IKCallbackFn &solution_callback,
       moveit_msgs::msg::MoveItErrorCodes &error_code,
       const kinematics::KinematicsQueryOptions &options =
-          kinematics::KinematicsQueryOptions()) const {
+          kinematics::KinematicsQueryOptions()) const override {
     LOG_FNC();
     return searchPositionIK(std::vector<geometry_msgs::msg::Pose>{ik_pose},
                             ik_seed_state, timeout, std::vector<double>(),
@@ -349,7 +349,7 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
       std::vector<double> &solution, const IKCallbackFn &solution_callback,
       moveit_msgs::msg::MoveItErrorCodes &error_code,
       const kinematics::KinematicsQueryOptions &options =
-          kinematics::KinematicsQueryOptions()) const {
+          kinematics::KinematicsQueryOptions()) const override {
     LOG_FNC();
     return searchPositionIK(std::vector<geometry_msgs::msg::Pose>{ik_pose},
                             ik_seed_state, timeout, consistency_limits,
@@ -369,7 +369,7 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
       moveit_msgs::msg::MoveItErrorCodes &error_code,
       const kinematics::KinematicsQueryOptions &options =
           kinematics::KinematicsQueryOptions(),
-      const moveit::core::RobotState *context_state = NULL) const {
+      const moveit::core::RobotState *context_state = NULL) const override {
     double t0 = node_->now().seconds();
 
     // timeout = 0.1;
@@ -573,7 +573,7 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
   }
 
   virtual bool supportsGroup(const moveit::core::JointModelGroup *jmg,
-                             std::string *error_text_out = 0) const {
+                             std::string *error_text_out = 0) const override {
     LOG_FNC();
     // LOG_VAR(jmg->getName());
     return true;
