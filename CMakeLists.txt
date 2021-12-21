@@ -43,16 +43,8 @@ include(cmake/StaticAnalyzers.cmake)
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_ros REQUIRED)
 find_package(Eigen3 REQUIRED)
-# find_package(eigen3_cmake_module REQUIRED)
-# find_package(moveit_core REQUIRED)
-# find_package(moveit_ros_planning REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
-# find_package(tf2 REQUIRED)
-# find_package(tf2_eigen REQUIRED)
-# find_package(tf2_eigen_kdl REQUIRED)
-# find_package(tf2_geometry_msgs REQUIRED)
-# find_package(tf2_kdl REQUIRED)
 
 # TODO(tylerjw): re-enable these
 # find_package(OpenMP)
@@ -113,7 +105,6 @@ find_package(rclcpp REQUIRED)
 
 set(SOURCES
     src/goal_types.cpp
-    src/kinematics_plugin.cpp
     src/problem.cpp
     src/ik_test.cpp
     src/ik_gradient.cpp
@@ -136,8 +127,30 @@ set(SOURCES
 #     ${CPPOPTLIB_INCLUDE_DIRS}
 # )
 
-add_library(${PROJECT_NAME}_plugin ${SOURCES})
-target_include_directories(${PROJECT_NAME}_plugin PRIVATE
+add_library(${PROJECT_NAME} ${SOURCES})
+target_include_directories(${PROJECT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+target_link_libraries(
+  ${PROJECT_NAME}
+  PRIVATE
+    project_options
+    project_warnings
+  PUBLIC
+    rclcpp::rclcpp
+    # ${rclcpp_LIBRARIES}
+    # tf2_eigen_kdl::tf2_eigen_kdl
+    Eigen3::Eigen
+    # TODO(tylerjw): what does this change?
+    -static-libgcc
+    -static-libstdc++
+)
+
+add_library(${PROJECT_NAME}_plugin
+  ${SOURCES}
+  src/kinematics_plugin.cpp
+)
+target_include_directories(${PROJECT_NAME}_plugin PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 target_link_libraries(
@@ -145,6 +158,7 @@ target_link_libraries(
   PRIVATE
     project_options
     project_warnings
+    bio_ik
     rclcpp::rclcpp
     # ${rclcpp_LIBRARIES}
     # tf2_eigen_kdl::tf2_eigen_kdl
@@ -163,7 +177,7 @@ if(BUILD_TESTING)
   set(ament_cmake_uncrustify_FOUND TRUE) # Conflicts with clang-format
   ament_lint_auto_find_test_dependencies()
 
-  # add_subdirectory(test)
+  add_subdirectory(test)
 endif()
 
 # TODO(tylerjw): re-enable this
@@ -179,7 +193,7 @@ install(
   DESTINATION include
 )
 install(
-  TARGETS ${PROJECT_NAME}_plugin
+  TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_plugin
   EXPORT export_${PROJECT_NAME}
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
