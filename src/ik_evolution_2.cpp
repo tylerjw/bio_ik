@@ -26,9 +26,7 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-
-
-#include "ik_base.h"
+#include "ik_base.hpp"
 
 #ifdef ENABLE_CPP_OPTLIB
 #include "cppoptlib/solver/lbfgssolver.h"

@@ -26,8 +26,7 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-
-#include "ik_base.h"
+#include "ik_base.hpp"
 
 namespace bio_ik {
 

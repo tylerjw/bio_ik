@@ -38,8 +38,8 @@
 #include <map>
 #include <unordered_set>
 
-#include "goal.h"
-#include "robot_info.h"
+#include "goal.hpp"
+#include "robot_info.hpp"
 
 namespace bio_ik {
 

@@ -30,15 +30,15 @@
 
 #pragma once
 
-#include <bio_ik/goal.h>
-#include <bio_ik/robot_info.h>
+#include <bio_ik/goal.hpp>
+#include <bio_ik/robot_info.hpp>
 #include <geometric_shapes/shapes.h>
 #include <moveit/collision_detection/collision_common.h>
 #include <moveit/collision_detection_fcl/collision_common.h>
 
 #include <vector>
 
-#include "utils.h"
+#include "utils.hpp"
 
 namespace bio_ik {
 

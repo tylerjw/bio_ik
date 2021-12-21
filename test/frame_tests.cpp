@@ -30,8 +30,8 @@
 
 #include <gtest/gtest.h>
 
-#include <bio_ik/frame.h>
-// #include "bio_ik/utils.h"
+#include <bio_ik/frame.hpp>
+// #include "bio_ik/utils.hpp"
 
 using namespace bio_ik;
 

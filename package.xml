@@ -4,13 +4,14 @@
   <name>bio_ik</name>
   <version>2.0.0</version>
   <description>BioIK for ROS 2</description>
-  <license>BSD</license>
-
-  <author email="0ruppel@informatik.uni-hamburg.de">Philipp Sebastian Ruppel</author>
 
   <maintainer email="0ruppel@informatik.uni-hamburg.de">Philipp Sebastian Ruppel</maintainer>
   <maintainer email="me@v4hn.de">Michael Goerner</maintainer>
   <maintainer email="tylerjw@gmail.com">Tyler Weaver</maintainer>
+
+  <license>BSD</license>
+
+  <author email="0ruppel@informatik.uni-hamburg.de">Philipp Sebastian Ruppel</author>
 
   <buildtool_depend>ament_cmake_ros</buildtool_depend>
 

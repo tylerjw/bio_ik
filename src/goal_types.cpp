@@ -26,11 +26,10 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-
-#include <bio_ik/goal_types.h>
 #include <geometric_shapes/bodies.h>
 #include <geometric_shapes/shapes.h>
 
+#include <bio_ik/goal_types.hpp>
 #include <mutex>
 
 namespace bio_ik {

@@ -32,7 +32,7 @@
 #include <boost/thread/barrier.hpp>
 #include <rclcpp/rclcpp.hpp>
 
-#include "ik_base.h"
+#include "ik_base.hpp"
 
 namespace bio_ik {
 

@@ -31,7 +31,7 @@
 #include "cppoptlib/boundedproblem.h"
 #include "cppoptlib/meta.h"
 #include "cppoptlib/problem.h"
-#include "ik_base.h"
+#include "ik_base.hpp"
 
 namespace bio_ik {
 

@@ -26,7 +26,6 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#include <bio_ik/goal.h>
 #include <moveit/kinematics_base/kinematics_base.h>
 #include <moveit/rdf_loader/rdf_loader.h>
 #include <srdfdom/model.h>
@@ -36,24 +35,25 @@
 #include <Eigen/Core>
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
+#include <bio_ik/goal.hpp>
 #include <kdl_parser/kdl_parser.hpp>
 #include <pluginlib/class_list_macros.hpp>
 
-#include "forward_kinematics.h"
-#include "ik_base.h"
-#include "ik_parallel.h"
-#include "problem.h"
-#include "utils.h"
+#include "forward_kinematics.hpp"
+#include "ik_base.hpp"
+#include "ik_parallel.hpp"
+#include "problem.hpp"
+#include "utils.hpp"
 
 // #include <tf2_eigen_kdl/tf2_eigen_kdl.hpp>
 #include <tf2_eigen/tf2_eigen.hpp>
 //#include <moveit/common_planning_interface_objects/common_objects.h>
-#include <bio_ik/goal_types.h>
 #include <moveit/kinematics_base/kinematics_base.h>
 #include <moveit/robot_model/robot_model.h>
 #include <moveit/robot_state/robot_state.h>
 
 #include <atomic>
+#include <bio_ik/goal_types.hpp>
 #include <mutex>
 #include <random>
 #include <tuple>

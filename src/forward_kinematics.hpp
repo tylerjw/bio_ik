@@ -28,13 +28,13 @@
 
 #pragma once
 
-#include <bio_ik/goal.h>
-#include <bio_ik/robot_info.h>
+#include <bio_ik/goal.hpp>
+#include <bio_ik/robot_info.hpp>
 
 #include <kdl/treefksolverpos_recursive.hpp>
 #include <kdl_parser/kdl_parser.hpp>
 
-#include "utils.h"
+#include "utils.hpp"
 
 #if defined(__x86_64__) || defined(__i386__)
 

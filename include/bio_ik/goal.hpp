@@ -32,7 +32,7 @@
 #include <moveit/robot_model/joint_model_group.h>
 #include <moveit/robot_model/robot_model.h>
 
-#include "frame.h"
+#include "frame.hpp"
 
 namespace bio_ik {
 
