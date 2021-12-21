@@ -26,14 +26,31 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#include <geometric_shapes/bodies.h>
-#include <geometric_shapes/shapes.h>
+#include "problem.hpp"  // for Problem, Prob...
 
-#include <bio_ik/goal_types.hpp>
-#include <mutex>
-#include <unordered_set>
+#include <float.h>                                      // for DBL_MAX, FLT_MAX
+#include <moveit/collision_detection_fcl/fcl_compat.h>  // for FCL_VERSION_C...
+#include <moveit/robot_model/joint_model.h>             // for JointModel
+#include <moveit/robot_model/joint_model_group.h>       // for JointModelGroup
+#include <moveit/robot_model/link_model.h>              // for LinkModel
+#include <moveit/robot_model/robot_model.h>             // for RobotModelCon...
+#include <stddef.h>                                     // for size_t
+#include <sys/types.h>                                  // for ssize_t
+#include <tf2/LinearMath/Vector3.h>                     // for operator-
 
-#include "ik_base.hpp"
+#include <bio_ik/goal_types.hpp>  // for PoseGoal, Ori...
+#include <cmath>                  // for isfinite, fmin
+#include <initializer_list>       // for initializer_list
+#include <iosfwd>                 // for ostream
+#include <kdl/frames.hpp>         // for Frame, Rotation
+#include <memory>                 // for __shared_ptr_...
+#include <string>                 // for operator==
+#include <vector>                 // for vector
+
+#include "bio_ik/frame.hpp"       // for frameToKDL
+#include "bio_ik/goal.hpp"        // for GoalContext
+#include "bio_ik/robot_info.hpp"  // for RobotInfo
+#include "utils.hpp"              // for IKParams, ERROR
 
 namespace bio_ik {
 

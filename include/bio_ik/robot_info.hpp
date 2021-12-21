@@ -26,13 +26,13 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-
 #pragma once
 
-#include <bio_ik/goal.hpp>
 #include <moveit/kinematics_base/kinematics_base.h>
 #include <moveit/robot_model/robot_model.h>
 #include <moveit/robot_state/robot_state.h>
+
+#include <bio_ik/goal.hpp>
 
 namespace bio_ik {
 

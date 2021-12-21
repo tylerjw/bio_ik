@@ -19,8 +19,9 @@ jobs:
         env:
           - NAME: "rolling-testing-ccov"
             ROS_REPO: testing
-            TARGET_CMAKE_ARGS: -DENABLE_COVERAGE=ON
-            CCOV: true
+            # TODO(tylerjw): enable coverage once there is a test
+            # TARGET_CMAKE_ARGS: -DENABLE_COVERAGE=ON
+            # CCOV: true
           - NAME: "rolling-main"
             ROS_REPO: main
           - NAME: "address-leak-ub-sanitizers"

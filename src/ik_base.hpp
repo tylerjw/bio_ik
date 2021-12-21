@@ -30,7 +30,6 @@
 
 #include <bio_ik/goal.hpp>
 #include <bio_ik/robot_info.hpp>
-
 #include <random>
 
 #include "forward_kinematics.hpp"

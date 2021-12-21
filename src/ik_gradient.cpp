@@ -26,7 +26,18 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#include "ik_base.hpp"
+#include <Eigen/Core>          // For NumTraits
+#include <cmath>               // for isfinite
+#include <cstddef>             // for size_t
+#include <ext/alloc_traits.h>  // for __alloc_traits<>::value_type
+#include <kdl/frames.hpp>      // for Twist, Vector
+#include <vector>              // for vector, allocator
+
+#include "bio_ik/frame.hpp"       // for Frame, frameTwist
+#include "bio_ik/robot_info.hpp"  // for RobotInfo
+#include "ik_base.hpp"            // for IKFactory, IKBase
+#include "problem.hpp"            // for Problem, Problem::GoalInfo
+#include "utils.hpp"              // for FNPROFILER
 
 namespace bio_ik {
 

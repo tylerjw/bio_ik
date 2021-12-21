@@ -26,7 +26,17 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#include "ik_base.hpp"
+#include <stddef.h>  // for size_t
+
+#include <memory>  // for allocator_traits<>::value_type
+#include <vector>  // for vector
+
+#include "bio_ik/frame.hpp"        // for Frame, Quaternion, Vector3
+#include "bio_ik/robot_info.hpp"   // for RobotInfo
+#include "forward_kinematics.hpp"  // for RobotFK, RobotFK_MoveIt
+#include "ik_base.hpp"             // for IKBase, IKFactory
+#include "problem.hpp"             // for Problem
+#include "utils.hpp"               // for aligned_vector, LOG, IKParams
 
 namespace bio_ik {
 

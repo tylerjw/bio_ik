@@ -26,7 +26,22 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#include "ik_base.hpp"
+#include <math.h>                            // for fabs
+#include <moveit/robot_model/joint_model.h>  // for JointModel, JointModel::...
+#include <moveit/robot_model/robot_model.h>  // for RobotModel, RobotModelCo...
+#include <stddef.h>                          // for size_t
+
+#include <algorithm>  // for sort
+#include <memory>     // for allocator, __shared_ptr_...
+#include <utility>    // for swap
+#include <vector>     // for vector, vector::size_type
+
+#include "bio_ik/frame.hpp"        // for Frame, normalizeFast
+#include "bio_ik/robot_info.hpp"   // for RobotInfo
+#include "forward_kinematics.hpp"  // for RobotFK
+#include "ik_base.hpp"             // for IKBase, IKFactory
+#include "problem.hpp"             // for Problem
+#include "utils.hpp"               // for aligned_vector, BLOCKPRO...
 
 #ifdef ENABLE_CPP_OPTLIB
 #include "cppoptlib/solver/lbfgssolver.h"

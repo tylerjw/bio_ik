@@ -26,11 +26,39 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#include <geometric_shapes/bodies.h>
-#include <geometric_shapes/shapes.h>
+#include <eigen_stl_containers/eigen_stl_vector_container.h>  // for vector_...
+#include <fcl/collision_data.h>                               // for Distanc...
+#include <fcl/distance.h>                                     // for distance
+#include <fcl/math/transform.h>                               // for Transfo...
+#include <fcl/math/vec_3f.h>                                  // for Vec3f
+#include <fcl/shape/geometric_shapes.h>                       // for Convex:...
+#include <float.h>                                            // for DBL_MAX
+#include <geometric_shapes/bodies.h>                          // for ConvexMesh
+#include <geometric_shapes/shapes.h>                          // for Mesh
+#include <moveit/collision_detection_fcl/collision_common.h>  // for FCLGeom...
+#include <moveit/collision_detection_fcl/fcl_compat.h>        // for FCL_VER...
+#include <moveit/robot_model/link_model.h>                    // for LinkModel
+#include <moveit/robot_model/robot_model.h>                   // for RobotModel
+#include <stddef.h>                                           // for size_t
+#include <tf2/LinearMath/Vector3.h>                           // for Vector3
+#include <urdf/urdfdom_compatibility.h>                       // for ModelIn...
+#include <urdf_model/link.h>                                  // for Link
+#include <urdf_model/model.h>                                 // for ModelIn...
+#include <urdf_model/pose.h>                                  // for Vector3
+#include <urdf_model/types.h>                                 // for Inertia...
 
-#include <bio_ik/goal_types.hpp>
-#include <mutex>
+#include <Eigen/Core>             // for Matri
+#include <bio_ik/goal_types.hpp>  // for TouchGo...
+#include <ext/alloc_traits.h>     // for __alloc...
+#include <map>                    // for map
+#include <memory>                 // for shared_ptr
+#include <mutex>                  // for mutex
+#include <new>                    // for operato...
+#include <unordered_set>          // for unorder...
+#include <vector>                 // for vector
+
+#include "bio_ik/frame.hpp"  // for Vector3
+#include "bio_ik/goal.hpp"   // for GoalCon...
 
 namespace bio_ik {
 
@@ -48,7 +76,7 @@ void TouchGoal::describe(GoalContext& context) const {
   }
   link_model = robot_model->getLinkModel(this->getLinkName());
   size_t link_index = link_model->getLinkIndex();
-  auto touch_goal_normal = normal.normalized();
+  // auto touch_goal_normal = normal.normalized();
   // auto fbrot = fb.rot.normalized();
   auto& collision_link = collision_model->collision_links[link_index];
   if (!collision_link.initialized) {

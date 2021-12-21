@@ -26,7 +26,25 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#include "ik_base.hpp"
+#include <math.h>                            // for sqrt, M_PI
+#include <moveit/robot_model/joint_model.h>  // for JointModel
+#include <moveit/robot_model/link_model.h>   // for LinkModel
+#include <moveit/robot_model/robot_model.h>  // for RobotModelConstPtr, Robo...
+#include <stddef.h>                          // for size_t
+
+#include <algorithm>           // for remove, sort
+#include <ext/alloc_traits.h>  // for __alloc_traits<>::value_...
+#include <memory>              // for allocator_traits<>::value...
+#include <numeric>             // for iota
+#include <string>              // for string
+#include <vector>              // for vector<>::iterator, vector
+
+#include "bio_ik/frame.hpp"        // for Frame, Vector3, Quaternion
+#include "bio_ik/robot_info.hpp"   // for RobotInfo
+#include "forward_kinematics.hpp"  // for RobotFK
+#include "ik_base.hpp"             // for IKBase, IKFactory
+#include "problem.hpp"             // for Problem
+#include "utils.hpp"               // for mix, FNPROFILER, IKParams
 
 namespace bio_ik {
 

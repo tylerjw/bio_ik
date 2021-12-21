@@ -30,7 +30,6 @@
 
 #include <bio_ik/goal.hpp>
 #include <bio_ik/robot_info.hpp>
-
 #include <kdl/treefksolverpos_recursive.hpp>
 #include <kdl_parser/kdl_parser.hpp>
 

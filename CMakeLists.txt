@@ -136,7 +136,6 @@ target_link_libraries(
   PRIVATE
     project_options
     project_warnings
-  PUBLIC
     rclcpp::rclcpp
     # ${rclcpp_LIBRARIES}
     # tf2_eigen_kdl::tf2_eigen_kdl

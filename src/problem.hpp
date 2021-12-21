@@ -26,19 +26,32 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-
-
 #pragma once
 
-#include <bio_ik/goal.hpp>
-#include <bio_ik/robot_info.hpp>
-#include <geometric_shapes/shapes.h>
-#include <moveit/collision_detection/collision_common.h>
-#include <moveit/collision_detection_fcl/collision_common.h>
+#include <fcl/math/vec_3f.h>                                  // for Vec3f
+#include <moveit/collision_detection_fcl/collision_common.h>  // for FCLGeom...
+#include <moveit/collision_detection_fcl/fcl_compat.h>        // for FCL_VER...
+#include <moveit/robot_model/robot_model.h>                   // for RobotMo...
+#include <stddef.h>                                           // for size_t
+#include <sys/types.h>                                        // for ssize_t
 
-#include <vector>
+#include <bio_ik/goal.hpp>        // for GoalCon...
+#include <bio_ik/robot_info.hpp>  // for RobotInfo
+#include <memory>                 // for shared_ptr
+#include <vector>                 // for vector
 
-#include "utils.hpp"
+#include "bio_ik/frame.hpp"  // for Vector3
+#include "utils.hpp"         // for IKParams
+namespace moveit {
+namespace core {
+class JointModelGroup;
+}
+}  // namespace moveit
+namespace moveit {
+namespace core {
+class LinkModel;
+}
+}  // namespace moveit
 
 namespace bio_ik {
 
