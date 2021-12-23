@@ -43,6 +43,8 @@ include(cmake/StaticAnalyzers.cmake)
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_ros REQUIRED)
 find_package(Eigen3 REQUIRED)
+find_package(moveit_core REQUIRED)
+find_package(moveit_ros_planning REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
 
@@ -136,7 +138,12 @@ target_link_libraries(
   PRIVATE
     project_options
     project_warnings
+  PUBLIC
     rclcpp::rclcpp
+    moveit_core::moveit_robot_model
+    moveit_core::moveit_kinematics_base
+    moveit_core::moveit_collision_detection_fcl
+    moveit_ros_planning::moveit_rdf_loader
     # ${rclcpp_LIBRARIES}
     # tf2_eigen_kdl::tf2_eigen_kdl
     Eigen3::Eigen
@@ -158,10 +165,6 @@ target_link_libraries(
     project_options
     project_warnings
     bio_ik
-    rclcpp::rclcpp
-    # ${rclcpp_LIBRARIES}
-    # tf2_eigen_kdl::tf2_eigen_kdl
-    Eigen3::Eigen
     # TODO(tylerjw): what does this change?
     -static-libgcc
     -static-libstdc++
