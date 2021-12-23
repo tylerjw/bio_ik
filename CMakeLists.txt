@@ -144,8 +144,6 @@ target_link_libraries(
     moveit_core::moveit_kinematics_base
     moveit_core::moveit_collision_detection_fcl
     moveit_ros_planning::moveit_rdf_loader
-    # ${rclcpp_LIBRARIES}
-    # tf2_eigen_kdl::tf2_eigen_kdl
     Eigen3::Eigen
     # TODO(tylerjw): what does this change?
     -static-libgcc
@@ -204,7 +202,7 @@ install(
 )
 
 pluginlib_export_plugin_description_file(
-  ${PROJECT_NAME}
+  moveit_core
   bio_ik_kinematics_description.xml
 )
 
