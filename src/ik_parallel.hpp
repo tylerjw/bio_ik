@@ -41,7 +41,6 @@ class ParallelExecutor {
   std::vector<std::thread> threads;
   std::function<void(size_t)> fun;
   boost::barrier barrier;
-  double best_fitness;
 
  public:
   template <class FUN>

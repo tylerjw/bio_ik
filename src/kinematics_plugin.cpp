@@ -132,7 +132,7 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
     return joint_names;
   }
 
-  virtual const std::vector<std::string> &getLinkNames() const {
+  virtual const std::vector<std::string> &getLinkNames() const override {
     LOG_FNC();
     return link_names;
   }
