@@ -1,0 +1,3 @@
+[
+  { include: ["<kdl/frames.inl>", "private", "<kdl/frames.hpp>", "public"] },
+]

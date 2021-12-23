@@ -28,18 +28,18 @@
 
 #include "problem.hpp"  // for Problem, Prob...
 
-#include <float.h>                                      // for DBL_MAX, FLT_MAX
 #include <moveit/collision_detection_fcl/fcl_compat.h>  // for FCL_VERSION_C...
 #include <moveit/robot_model/joint_model.h>             // for JointModel
 #include <moveit/robot_model/joint_model_group.h>       // for JointModelGroup
 #include <moveit/robot_model/link_model.h>              // for LinkModel
 #include <moveit/robot_model/robot_model.h>             // for RobotModelCon...
-#include <stddef.h>                                     // for size_t
 #include <sys/types.h>                                  // for ssize_t
 #include <tf2/LinearMath/Vector3.h>                     // for operator-
 
 #include <bio_ik/goal_types.hpp>  // for PoseGoal, Ori...
+#include <cfloat>                 // for DBL_MAX, FLT_MAX
 #include <cmath>                  // for isfinite, fmin
+#include <cstddef>                // for size_t
 #include <initializer_list>       // for initializer_list
 #include <iosfwd>                 // for ostream
 #include <kdl/frames.hpp>         // for Frame, Rotation
