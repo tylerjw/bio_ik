@@ -138,18 +138,20 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
   }
 
   virtual bool getPositionFK(
-      const std::vector<std::string> &link_names,
-      const std::vector<double> &joint_angles,
-      std::vector<geometry_msgs::msg::Pose> &poses) const override {
+      [[maybe_unused]] const std::vector<std::string> &link_names,
+      [[maybe_unused]] const std::vector<double> &joint_angles,
+      [[maybe_unused]] std::vector<geometry_msgs::msg::Pose> &poses)
+      const override {
     LOG_FNC();
     return false;
   }
 
   virtual bool getPositionIK(
-      const geometry_msgs::msg::Pose &ik_pose,
-      const std::vector<double> &ik_seed_state, std::vector<double> &solution,
-      moveit_msgs::msg::MoveItErrorCodes &error_code,
-      const kinematics::KinematicsQueryOptions &options =
+      [[maybe_unused]] const geometry_msgs::msg::Pose &ik_pose,
+      [[maybe_unused]] const std::vector<double> &ik_seed_state,
+      [[maybe_unused]] std::vector<double> &solution,
+      [[maybe_unused]] moveit_msgs::msg::MoveItErrorCodes &error_code,
+      [[maybe_unused]] const kinematics::KinematicsQueryOptions &options =
           kinematics::KinematicsQueryOptions()) const override {
     LOG_FNC();
     return false;
@@ -364,7 +366,7 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
   virtual bool searchPositionIK(
       const std::vector<geometry_msgs::msg::Pose> &ik_poses,
       const std::vector<double> &ik_seed_state, double timeout,
-      const std::vector<double> &consistency_limits,
+      [[maybe_unused]] const std::vector<double> &consistency_limits,
       std::vector<double> &solution, const IKCallbackFn &solution_callback,
       moveit_msgs::msg::MoveItErrorCodes &error_code,
       const kinematics::KinematicsQueryOptions &options =
@@ -572,8 +574,9 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
     }
   }
 
-  virtual bool supportsGroup(const moveit::core::JointModelGroup *jmg,
-                             std::string *error_text_out = 0) const override {
+  virtual bool supportsGroup(
+      [[maybe_unused]] const moveit::core::JointModelGroup *jmg,
+      [[maybe_unused]] std::string *error_text_out = 0) const override {
     LOG_FNC();
     // LOG_VAR(jmg->getName());
     return true;

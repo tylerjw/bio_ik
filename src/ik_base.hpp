@@ -136,7 +136,7 @@ struct IKBase : Random {
 
   virtual const std::vector<double>& getSolution() const = 0;
 
-  virtual void setParams(const IKParams& p) {}
+  virtual void setParams([[maybe_unused]] const IKParams& p) {}
 
   IKBase(const IKParams& p)
       : Random(p.random_seed),

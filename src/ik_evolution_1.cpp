@@ -183,7 +183,8 @@ struct IKEvolution1 : IKBase {
     angular_scale;*/
   }
 
-  double getHeuristicError(size_t variable_index, bool balanced) {
+  double getHeuristicError(size_t variable_index,
+                           [[maybe_unused]] bool balanced) {
     // return 1;
 
     double heuristic_error = 0;
