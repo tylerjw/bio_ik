@@ -138,21 +138,20 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
   }
 
   virtual bool getPositionFK(
-      [[maybe_unused]] const std::vector<std::string> &link_names,
-      [[maybe_unused]] const std::vector<double> &joint_angles,
-      [[maybe_unused]] std::vector<geometry_msgs::msg::Pose> &poses)
-      const override {
+      [[maybe_unused]] const std::vector<std::string> &,
+      [[maybe_unused]] const std::vector<double> &,
+      [[maybe_unused]] std::vector<geometry_msgs::msg::Pose> &) const override {
     LOG_FNC();
     return false;
   }
 
   virtual bool getPositionIK(
-      [[maybe_unused]] const geometry_msgs::msg::Pose &ik_pose,
-      [[maybe_unused]] const std::vector<double> &ik_seed_state,
-      [[maybe_unused]] std::vector<double> &solution,
-      [[maybe_unused]] moveit_msgs::msg::MoveItErrorCodes &error_code,
-      [[maybe_unused]] const kinematics::KinematicsQueryOptions &options =
-          kinematics::KinematicsQueryOptions()) const override {
+      [[maybe_unused]] const geometry_msgs::msg::Pose &,
+      [[maybe_unused]] const std::vector<double> &,
+      [[maybe_unused]] std::vector<double> &,
+      [[maybe_unused]] moveit_msgs::msg::MoveItErrorCodes &,
+      [[maybe_unused]] const kinematics::KinematicsQueryOptions &)
+      const override {
     LOG_FNC();
     return false;
   }

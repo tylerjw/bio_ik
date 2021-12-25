@@ -46,8 +46,8 @@ struct Frame {
   double __padding[4 - (sizeof(Vector3) / sizeof(double))];
   Quaternion rot;
   inline Frame() {}
-  inline Frame(const tf2::Vector3& pos, const tf2::Quaternion& rot)
-      : pos(pos), rot(rot) {}
+  inline Frame(const tf2::Vector3& _pos, const tf2::Quaternion& _rot)
+      : pos(_pos), rot(_rot) {}
   explicit inline Frame(const KDL::Frame& kdl) {
     pos = tf2::Vector3(kdl.p.x(), kdl.p.y(), kdl.p.z());
     double qx, qy, qz, qw;

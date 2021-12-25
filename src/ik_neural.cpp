@@ -73,10 +73,10 @@ static inline KDL::Twist frameTwist(const Frame& a, const Frame& b)
 */
 
 struct IKNeural : IKBase {
-  std::vector<double> solution;
-  FANN::neural_net net;
+  std::vector<double> solution_;
+  FANN::neural_net net_;
 
-  std::vector<std::pair<fann_type, fann_type>> input_minmax, output_minmax;
+  std::vector<std::pair<fann_type, fann_type>> input_minmax_, output_minmax_;
 
   static void find_minmax(
       const std::vector<fann_type>& values,
@@ -112,38 +112,38 @@ struct IKNeural : IKBase {
     }
   }
 
-  unsigned int input_count, output_count;
+  unsigned int input_count_, output_count_;
 
-  IKNeural(const IKParams& p) : IKBase(p) { trained = false; }
+  IKNeural(const IKParams& p) : IKBase(p) { trained_ = false; }
 
-  bool trained;
+  bool trained_;
 
   void train() {
-    trained = true;
+    trained_ = true;
 
-    input_count =
-        problem.active_variables.size() + problem.tip_link_indices.size() * 6;
-    output_count = problem.active_variables.size();
+    input_count_ =
+        problem_.active_variables.size() + problem_.tip_link_indices.size() * 6;
+    output_count_ = problem_.active_variables.size();
 
-    LOG_VAR(input_count);
-    LOG_VAR(output_count);
+    LOG_VAR(input_count_);
+    LOG_VAR(output_count_);
 
-    // std::vector<unsigned int> levels = {input_count, input_count,
-    // input_count, output_count};
+    // std::vector<unsigned int> levels = {input_count_, input_count_,
+    // input_count_, output_count_};
 
-    // std::vector<unsigned int> levels = {input_count, input_count +
-    // output_count, output_count};
+    // std::vector<unsigned int> levels = {input_count_, input_count_ +
+    // output_count_, output_count_};
 
-    // std::vector<unsigned int> levels = {input_count, input_count +
-    // output_count, input_count + output_count, output_count};
+    // std::vector<unsigned int> levels = {input_count_, input_count_ +
+    // output_count_, input_count_ + output_count_, output_count_};
 
-    // std::vector<unsigned int> levels = {input_count, 100, output_count};
+    // std::vector<unsigned int> levels = {input_count_, 100, output_count_};
 
-    std::vector<unsigned int> levels = {input_count, 50, output_count};
+    std::vector<unsigned int> levels = {input_count_, 50, output_count_};
 
-    net.create_standard_array(levels.size(), levels.data());
+    net_.create_standard_array(levels.size(), levels.data());
 
-    size_t var_count = params.robot_model->getVariableCount();
+    size_t var_count = params_.robot_model->getVariableCount();
     std::vector<double> state1(var_count), state2(var_count);
     std::vector<Frame> frames1, frames2;
 
@@ -156,25 +156,25 @@ struct IKNeural : IKBase {
 
     for (size_t iter = 0; iter < samples; iter++) {
       for (size_t ivar = 0; ivar < var_count; ivar++) {
-        state1[ivar] = random(modelInfo.getMin(ivar), modelInfo.getMax(ivar));
-        state1[ivar] = modelInfo.clip(state1[ivar], ivar);
-        // state2[ivar] = modelInfo.clip(state1[ivar] + random_gauss() *
-        // modelInfo.getSpan(ivar), ivar);
+        state1[ivar] = random(modelInfo_.getMin(ivar), modelInfo_.getMax(ivar));
+        state1[ivar] = modelInfo_.clip(state1[ivar], ivar);
+        // state2[ivar] = modelInfo_.clip(state1[ivar] + random_gauss() *
+        // modelInfo_.getSpan(ivar), ivar);
         state2[ivar] =
-            modelInfo.clip(state1[ivar] + random_gauss() * 0.1, ivar);
+            modelInfo_.clip(state1[ivar] + random_gauss() * 0.1, ivar);
       }
 
-      model.applyConfiguration(state1);
-      frames1 = model.getTipFrames();
-      model.applyConfiguration(state2);
-      frames2 = model.getTipFrames();
+      model_.applyConfiguration(state1);
+      frames1 = model_.getTipFrames();
+      model_.applyConfiguration(state2);
+      frames2 = model_.getTipFrames();
 
-      for (auto ivar : problem.active_variables) {
+      for (auto ivar : problem_.active_variables) {
         inputs.push_back(state1[ivar]);
         outputs.push_back(state2[ivar] - state1[ivar]);
       }
 
-      for (size_t itip = 0; itip < problem.tip_link_indices.size(); itip++) {
+      for (size_t itip = 0; itip < problem_.tip_link_indices.size(); itip++) {
         double translational_scale = 1.0;
         double rotational_scale = 1.0;
 
@@ -197,26 +197,26 @@ struct IKNeural : IKBase {
     for (auto& v : outputs)
       if (!std::isfinite(v)) throw std::runtime_error("NAN");
 
-    input_minmax.resize(input_count);
-    output_minmax.resize(output_count);
+    input_minmax_.resize(input_count_);
+    output_minmax_.resize(output_count_);
 
-    find_minmax(inputs, input_minmax);
-    find_minmax(outputs, output_minmax);
+    find_minmax(inputs, input_minmax_);
+    find_minmax(outputs, output_minmax_);
 
-    normalize(inputs, input_minmax);
-    normalize(outputs, output_minmax);
+    normalize(inputs, input_minmax_);
+    normalize(outputs, output_minmax_);
 
     for (size_t iter = 0; iter < samples; iter++) {
-      input_pp.push_back(inputs.data() + iter * input_count);
-      output_pp.push_back(outputs.data() + iter * output_count);
+      input_pp.push_back(inputs.data() + iter * input_count_);
+      output_pp.push_back(outputs.data() + iter * output_count_);
     }
 
     LOG("neuro ik training");
 
     FANN::training_data train;
-    train.set_train_data(samples, input_count, input_pp.data(), output_count,
+    train.set_train_data(samples, input_count_, input_pp.data(), output_count_,
                          output_pp.data());
-    net.set_callback(
+    net_.set_callback(
         [](FANN::neural_net& net, FANN::training_data& train,
            unsigned int max_epochs, unsigned int epochs_between_reports,
            float desired_error, unsigned int epochs, void* user_data) {
@@ -228,25 +228,25 @@ struct IKNeural : IKBase {
         },
         0);
 
-    net.set_activation_function_hidden(FANN::SIGMOID);
-    net.set_activation_function_output(FANN::SIGMOID);
+    net_.set_activation_function_hidden(FANN::SIGMOID);
+    net_.set_activation_function_output(FANN::SIGMOID);
 
-    net.init_weights(train);
+    net_.init_weights(train);
 
-    net.train_on_data(train, 1000, 1, 0.0001);
+    net_.train_on_data(train, 1000, 1, 0.0001);
 
-    fann_type err = net.test_data(train);
+    fann_type err = net_.test_data(train);
     LOG("neuro ik training error:", err);
 
     /*std::vector<fann_type> iiv, oov, ttv;
     for(size_t iter = 0; iter < 10; iter++)
     {
         auto* ii = input_pp[iter];
-        auto* oo = net.run(ii);
+        auto* oo = net_.run(ii);
         auto* tt = output_pp[iter];
-        iiv.assign(ii, ii + input_count);
-        ttv.assign(tt, tt + output_count);
-        oov.assign(oo, oo + output_count);
+        iiv.assign(ii, ii + input_count_);
+        ttv.assign(tt, tt + output_count_);
+        oov.assign(oo, oo + output_count_);
         LOG_LIST(iiv);
         LOG_LIST(ttv);
         LOG_LIST(oov);
@@ -255,50 +255,50 @@ struct IKNeural : IKBase {
     LOG("training done");
   }
 
-  size_t iterations = 0;
+  size_t iterations_ = 0;
 
   void initialize(const Problem& problem) {
     static std::mutex mutex;
     std::lock_guard<std::mutex> lock(mutex);
     IKBase::initialize(problem);
-    solution = problem.initial_guess;
-    if (!trained) train();
-    iterations = 0;
-    if (thread_index > 0)
-      for (auto& vi : problem.active_variables)
-        solution[vi] = random(modelInfo.getMin(vi), modelInfo.getMax(vi));
+    solution_ = problem_.initial_guess;
+    if (!trained_) train();
+    iterations_ = 0;
+    if (thread_index_ > 0)
+      for (auto& vi : problem_.active_variables)
+        solution_[vi] = random(modelInfo_.getMin(vi), modelInfo_.getMax(vi));
   }
 
-  const std::vector<double>& getSolution() const { return solution; }
+  const std::vector<double>& getSolution() const { return solution_; }
 
-  std::vector<fann_type> inputs, outputs;
+  std::vector<fann_type> inputs_, outputs_;
 
-  std::vector<Frame> tip_objectives;
+  std::vector<Frame> tip_objectives_;
 
   /*void step()
   {
-      //if(iterations > 1) return;
-      iterations++;
+      //if(iterations_ > 1) return;
+      iterations_++;
 
-      inputs.clear();
-      for(auto ivar : problem.active_variables)
+      inputs_.clear();
+      for(auto ivar : problem_.active_variables)
       {
-          inputs.push_back(solution[ivar]);
+          inputs_.push_back(solution_[ivar]);
       }
 
-      tip_objectives.resize(model.getTipFrames().size());
-      for(auto& g : problem.goals)
+      tip_objectives_.resize(model_.getTipFrames().size());
+      for(auto& g : problem_.goals)
       {
-          tip_objectives[g.tip_index] = g.frame;
+          tip_objectives_[g.tip_index] = g.frame;
       }
 
-      model.applyConfiguration(solution);
-      auto& frames1 = model.getTipFrames();
-      auto& frames2 = tip_objectives;
+      model_.applyConfiguration(solution_);
+      auto& frames1 = model_.getTipFrames();
+      auto& frames2 = tip_objectives_;
 
       double scale = 1.0;
 
-      for(size_t itip = 0; itip < tip_objectives.size(); itip++)
+      for(size_t itip = 0; itip < tip_objectives_.size(); itip++)
       {
           double translational_scale = 1.0;
           double rotational_scale = 1.0;
@@ -319,52 +319,52 @@ struct IKNeural : IKBase {
           dpos = dpos * scale;
           drot = drot * scale;
 
-          inputs.push_back(dpos.x());
-          inputs.push_back(dpos.y());
-          inputs.push_back(dpos.z());
+          inputs_.push_back(dpos.x());
+          inputs_.push_back(dpos.y());
+          inputs_.push_back(dpos.z());
 
-          inputs.push_back(drot.x());
-          inputs.push_back(drot.y());
-          inputs.push_back(drot.z());
+          inputs_.push_back(drot.x());
+          inputs_.push_back(drot.y());
+          inputs_.push_back(drot.z());
       }
 
-      normalize(inputs, input_minmax);
+      normalize(inputs_, input_minmax_);
 
-      auto* oo = net.run(inputs.data());
+      auto* oo = net_.run(inputs_.data());
 
-      outputs.assign(oo, oo + output_count);
+      outputs_.assign(oo, oo + output_count_);
 
-      denormalize(outputs, output_minmax);
+      denormalize(outputs_, output_minmax_);
 
-      auto& vv = problem.active_variables;
+      auto& vv = problem_.active_variables;
       for(size_t iout = 0; iout < vv.size(); iout++)
       {
           size_t ivar = vv[iout];
-          solution[ivar] = modelInfo.clip(solution[ivar] + outputs[iout] * 0.1 /
-  scale, ivar);
+          solution_[ivar] = modelInfo_.clip(solution_[ivar] + outputs_[iout] *
+  0.1 / scale, ivar);
       }
   }*/
 
   void step() {
-    // if(iterations > 1) return;
-    iterations++;
+    // if(iterations_ > 1) return;
+    iterations_++;
 
-    inputs.clear();
-    for (auto ivar : problem.active_variables) {
-      inputs.push_back(solution[ivar]);
+    inputs_.clear();
+    for (auto ivar : problem_.active_variables) {
+      inputs_.push_back(solution_[ivar]);
     }
 
-    tip_objectives.resize(model.getTipFrames().size());
-    for (auto& g : problem.goals) {
-      tip_objectives[g.tip_index] = g.frame;
+    tip_objectives_.resize(model_.getTipFrames().size());
+    for (auto& g : problem_.goals) {
+      tip_objectives_[g.tip_index] = g.frame;
     }
 
-    model.applyConfiguration(solution);
-    auto& frames1 = model.getTipFrames();
-    auto& frames2 = tip_objectives;
+    model_.applyConfiguration(solution_);
+    auto& frames1 = model_.getTipFrames();
+    auto& frames2 = tip_objectives_;
 
     double scale = 1.0;
-    for (size_t itip = 0; itip < tip_objectives.size(); itip++) {
+    for (size_t itip = 0; itip < tip_objectives_.size(); itip++) {
       double translational_scale = 1.0;
       double rotational_scale = 1.0;
       auto twist = frameTwist(frames1[itip], frames2[itip]);
@@ -373,44 +373,44 @@ struct IKNeural : IKBase {
                           twist.rot.y() * rotational_scale,
                           twist.rot.z() * rotational_scale);
 
-      /*if(iterations % 2)
+      /*if(iterations_ % 2)
       {
           scale = 1.0 / (0.0000001 + dpos.length());
-          inputs.push_back(dpos.x() * scale);
-          inputs.push_back(dpos.y() * scale);
-          inputs.push_back(dpos.z() * scale);
-          inputs.push_back(0);
-          inputs.push_back(0);
-          inputs.push_back(0);
+          inputs_.push_back(dpos.x() * scale);
+          inputs_.push_back(dpos.y() * scale);
+          inputs_.push_back(dpos.z() * scale);
+          inputs_.push_back(0);
+          inputs_.push_back(0);
+          inputs_.push_back(0);
       } else {
           scale = 1.0 / (0.0000001 + drot.length());
-          inputs.push_back(0);
-          inputs.push_back(0);
-          inputs.push_back(0);
-          inputs.push_back(drot.x() * scale);
-          inputs.push_back(drot.y() * scale);
-          inputs.push_back(drot.z() * scale);
+          inputs_.push_back(0);
+          inputs_.push_back(0);
+          inputs_.push_back(0);
+          inputs_.push_back(drot.x() * scale);
+          inputs_.push_back(drot.y() * scale);
+          inputs_.push_back(drot.z() * scale);
       }*/
 
       {
         scale = 1.0 / (0.0000001 + dpos.length() + drot.length());
-        inputs.push_back(dpos.x() * scale);
-        inputs.push_back(dpos.y() * scale);
-        inputs.push_back(dpos.z() * scale);
-        inputs.push_back(drot.x() * scale);
-        inputs.push_back(drot.y() * scale);
-        inputs.push_back(drot.z() * scale);
+        inputs_.push_back(dpos.x() * scale);
+        inputs_.push_back(dpos.y() * scale);
+        inputs_.push_back(dpos.z() * scale);
+        inputs_.push_back(drot.x() * scale);
+        inputs_.push_back(drot.y() * scale);
+        inputs_.push_back(drot.z() * scale);
       }
     }
-    normalize(inputs, input_minmax);
-    auto* oo = net.run(inputs.data());
-    outputs.assign(oo, oo + output_count);
-    denormalize(outputs, output_minmax);
-    auto& vv = problem.active_variables;
+    normalize(inputs_, input_minmax_);
+    auto* oo = net_.run(inputs_.data());
+    outputs_.assign(oo, oo + output_count_);
+    denormalize(outputs_, output_minmax_);
+    auto& vv = problem_.active_variables;
     for (size_t iout = 0; iout < vv.size(); iout++) {
       size_t ivar = vv[iout];
-      solution[ivar] =
-          modelInfo.clip(solution[ivar] + outputs[iout] * 1 / scale, ivar);
+      solution_[ivar] =
+          modelInfo_.clip(solution_[ivar] + outputs_[iout] * 1 / scale, ivar);
     }
   }
 };
@@ -418,10 +418,10 @@ struct IKNeural : IKBase {
 static IKFactory::Class<IKNeural> neural("neural");
 
 struct IKNeural2 : IKBase {
-  std::vector<double> solution;
-  FANN::neural_net net;
+  std::vector<double> solution_;
+  FANN::neural_net net_;
 
-  std::vector<std::pair<fann_type, fann_type>> input_minmax, output_minmax;
+  std::vector<std::pair<fann_type, fann_type>> input_minmax_, output_minmax_;
 
   /*static void find_minmax(const std::vector<fann_type>& values,
   std::vector<std::pair<fann_type, fann_type>>& minmax)
@@ -481,38 +481,39 @@ struct IKNeural2 : IKBase {
     }
   }
 
-  unsigned int input_count, output_count;
+  unsigned int input_count_, output_count_;
 
-  IKNeural2(const IKParams& p) : IKBase(p) { trained = false; }
+  IKNeural2(const IKParams& p) : IKBase(p) { trained_ = false; }
 
-  bool trained;
+  bool trained_;
 
   void train() {
-    trained = true;
+    trained_ = true;
 
-    input_count = problem.tip_link_indices.size() * 7;
-    output_count = problem.active_variables.size();
+    input_count_ = problem_.tip_link_indices.size() * 7;
+    output_count_ = problem_.active_variables.size();
 
-    LOG_VAR(input_count);
-    LOG_VAR(output_count);
+    LOG_VAR(input_count_);
+    LOG_VAR(output_count_);
 
-    // std::vector<unsigned int> levels = {input_count, 100, 100, output_count};
+    // std::vector<unsigned int> levels = {input_count_, 100, 100,
+    // output_count_};
 
-    // std::vector<unsigned int> levels = {input_count, input_count,
-    // input_count, output_count};
+    // std::vector<unsigned int> levels = {input_count_, input_count_,
+    // input_count_, output_count_};
 
-    std::vector<unsigned int> levels = {input_count, input_count + output_count,
-                                        output_count};
+    std::vector<unsigned int> levels = {
+        input_count_, input_count_ + output_count_, output_count_};
 
-    // std::vector<unsigned int> levels = {input_count, input_count +
-    // output_count, input_count + output_count, output_count};
+    // std::vector<unsigned int> levels = {input_count_, input_count_ +
+    // output_count_, input_count_ + output_count_, output_count_};
 
-    // std::vector<unsigned int> levels = {input_count, output_count};
+    // std::vector<unsigned int> levels = {input_count_, output_count_};
 
-    net.create_standard_array(levels.size(), levels.data());
+    net_.create_standard_array(levels.size(), levels.data());
 
-    size_t var_count = params.robot_model->getVariableCount();
-    std::vector<double> state = problem.initial_guess;
+    size_t var_count = params_.robot_model->getVariableCount();
+    std::vector<double> state = problem_.initial_guess;
     std::vector<Frame> frames;
 
     std::vector<fann_type> inputs, outputs;
@@ -523,15 +524,16 @@ struct IKNeural2 : IKBase {
     unsigned int samples = 10000;
 
     for (size_t iter = 0; iter < samples; iter++) {
-      for (size_t ivar : problem.active_variables)
-        state[ivar] = random(modelInfo.getMin(ivar), modelInfo.getMax(ivar));
+      for (size_t ivar : problem_.active_variables)
+        state[ivar] = random(modelInfo_.getMin(ivar), modelInfo_.getMax(ivar));
 
-      model.applyConfiguration(state);
-      frames = model.getTipFrames();
+      model_.applyConfiguration(state);
+      frames = model_.getTipFrames();
 
-      for (auto ivar : problem.active_variables) outputs.push_back(state[ivar]);
+      for (auto ivar : problem_.active_variables)
+        outputs.push_back(state[ivar]);
 
-      for (size_t itip = 0; itip < problem.tip_link_indices.size(); itip++) {
+      for (size_t itip = 0; itip < problem_.tip_link_indices.size(); itip++) {
         inputs.push_back(frames[itip].pos.x());
         inputs.push_back(frames[itip].pos.y());
         inputs.push_back(frames[itip].pos.z());
@@ -551,26 +553,26 @@ struct IKNeural2 : IKBase {
     for (auto& v : outputs)
       if (!std::isfinite(v)) throw std::runtime_error("NAN");
 
-    input_minmax.resize(input_count);
-    output_minmax.resize(output_count);
+    input_minmax_.resize(input_count_);
+    output_minmax_.resize(output_count_);
 
-    find_minmax(inputs, input_minmax);
-    find_minmax(outputs, output_minmax);
+    find_minmax(inputs, input_minmax_);
+    find_minmax(outputs, output_minmax_);
 
-    normalize(inputs, input_minmax);
-    normalize(outputs, output_minmax);
+    normalize(inputs, input_minmax_);
+    normalize(outputs, output_minmax_);
 
     for (size_t iter = 0; iter < samples; iter++) {
-      input_pp.push_back(inputs.data() + iter * input_count);
-      output_pp.push_back(outputs.data() + iter * output_count);
+      input_pp.push_back(inputs.data() + iter * input_count_);
+      output_pp.push_back(outputs.data() + iter * output_count_);
     }
 
     LOG("neuro ik training");
 
     FANN::training_data train;
-    train.set_train_data(samples, input_count, input_pp.data(), output_count,
+    train.set_train_data(samples, input_count_, input_pp.data(), output_count_,
                          output_pp.data());
-    net.set_callback(
+    net_.set_callback(
         [](FANN::neural_net& net, FANN::training_data& train,
            unsigned int max_epochs, unsigned int epochs_between_reports,
            float desired_error, unsigned int epochs, void* user_data) {
@@ -582,25 +584,25 @@ struct IKNeural2 : IKBase {
         },
         0);
 
-    net.set_activation_function_hidden(FANN::SIGMOID);
-    net.set_activation_function_output(FANN::SIGMOID);
+    net_.set_activation_function_hidden(FANN::SIGMOID);
+    net_.set_activation_function_output(FANN::SIGMOID);
 
-    net.init_weights(train);
+    net_.init_weights(train);
 
-    net.train_on_data(train, 100, 1, 0.0001);
+    net_.train_on_data(train, 100, 1, 0.0001);
 
-    fann_type err = net.test_data(train);
+    fann_type err = net_.test_data(train);
     LOG("neuro ik training error:", err);
 
     /*std::vector<fann_type> iiv, oov, ttv;
     for(size_t iter = 0; iter < 10; iter++)
     {
         auto* ii = input_pp[iter];
-        auto* oo = net.run(ii);
+        auto* oo = net_.run(ii);
         auto* tt = output_pp[iter];
-        iiv.assign(ii, ii + input_count);
-        ttv.assign(tt, tt + output_count);
-        oov.assign(oo, oo + output_count);
+        iiv.assign(ii, ii + input_count_);
+        ttv.assign(tt, tt + output_count_);
+        oov.assign(oo, oo + output_count_);
         LOG_LIST(iiv);
         LOG_LIST(ttv);
         LOG_LIST(oov);
@@ -609,60 +611,60 @@ struct IKNeural2 : IKBase {
     LOG("training done");
   }
 
-  size_t iterations = 0;
+  size_t iterations_ = 0;
 
   void initialize(const Problem& problem) {
     IKBase::initialize(problem);
-    solution = problem.initial_guess;
-    if (!trained) train();
-    iterations = 0;
+    solution_ = problem_.initial_guess;
+    if (!trained_) train();
+    iterations_ = 0;
   }
 
-  const std::vector<double>& getSolution() const { return solution; }
+  const std::vector<double>& getSolution() const { return solution_; }
 
-  std::vector<fann_type> inputs, outputs;
+  std::vector<fann_type> inputs_, outputs_;
 
-  std::vector<Frame> tip_objectives;
+  std::vector<Frame> tip_objectives_;
 
   void step() {
-    if (iterations > 1) return;
-    iterations++;
+    if (iterations_ > 1) return;
+    iterations_++;
 
-    inputs.clear();
+    inputs_.clear();
 
-    tip_objectives.resize(model.getTipFrames().size());
-    for (auto& g : problem.goals) {
-      tip_objectives[g.tip_index] = g.frame;
+    tip_objectives_.resize(model_.getTipFrames().size());
+    for (auto& g : problem_.goals) {
+      tip_objectives_[g.tip_index] = g.frame;
     }
 
-    auto& frames = tip_objectives;
+    auto& frames = tip_objectives_;
 
-    for (size_t itip = 0; itip < tip_objectives.size(); itip++) {
-      inputs.push_back(frames[itip].pos.x());
-      inputs.push_back(frames[itip].pos.y());
-      inputs.push_back(frames[itip].pos.z());
+    for (size_t itip = 0; itip < tip_objectives_.size(); itip++) {
+      inputs_.push_back(frames[itip].pos.x());
+      inputs_.push_back(frames[itip].pos.y());
+      inputs_.push_back(frames[itip].pos.z());
 
       auto rot = frames[itip].rot;
       rot = rot * rot;
       // rot = tf2::Quaternion(0, 0, 0, 1);
-      inputs.push_back(rot.x());
-      inputs.push_back(rot.y());
-      inputs.push_back(rot.z());
-      inputs.push_back(rot.w());
+      inputs_.push_back(rot.x());
+      inputs_.push_back(rot.y());
+      inputs_.push_back(rot.z());
+      inputs_.push_back(rot.w());
     }
 
-    normalize(inputs, input_minmax);
+    normalize(inputs_, input_minmax_);
 
-    auto* oo = net.run(inputs.data());
+    auto* oo = net_.run(inputs_.data());
 
-    outputs.assign(oo, oo + output_count);
+    outputs_.assign(oo, oo + output_count_);
 
-    denormalize(outputs, output_minmax);
+    denormalize(outputs_, output_minmax_);
 
-    auto& vv = problem.active_variables;
+    auto& vv = problem_.active_variables;
     for (size_t iout = 0; iout < vv.size(); iout++) {
       size_t ivar = vv[iout];
-      solution[ivar] = modelInfo.clip(outputs[iout], ivar);
+      solution_[ivar] = modelInfo_.clip(outputs_[iout], ivar);
     }
   }
 };

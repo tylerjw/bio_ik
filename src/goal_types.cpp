@@ -76,7 +76,7 @@ void TouchGoal::describe(GoalContext& context) const {
   }
   link_model = robot_model->getLinkModel(this->getLinkName());
   size_t link_index = link_model->getLinkIndex();
-  // auto touch_goal_normal = normal.normalized();
+  // auto touch_goal_normal = normal_.normalized();
   // auto fbrot = fb.rot.normalized();
   auto& collision_link = collision_model->collision_links[link_index];
   if (!collision_link.initialized) {
@@ -185,7 +185,7 @@ double TouchGoal::evaluate(const GoalContext& context) const {
     if (auto* mesh = dynamic_cast<const shapes::Mesh*>(shape)) {
       auto& s = collision_link.shapes[shape_index];
       double d = DBL_MAX;
-      auto goal_normal = normal;
+      auto goal_normal = normal_;
       quat_mul_vec(fb.rot.inverse(), goal_normal, goal_normal);
       quat_mul_vec(s->frame.rot.inverse(), goal_normal, goal_normal);
       /*{
@@ -223,7 +223,7 @@ double TouchGoal::evaluate(const GoalContext& context) const {
         d = vertex_dot_normal;
         last_collision_vertex = vertex_index;
       }
-      d -= normal.dot(position - fb.pos);
+      d -= normal_.dot(position_ - fb.pos);
       // ROS_INFO("touch goal");
       if (d < dmin) dmin = d;
     } else {
@@ -231,7 +231,7 @@ double TouchGoal::evaluate(const GoalContext& context) const {
       static fcl::Sphere shape1(offset);
       fcl::DistanceRequest request;
       fcl::DistanceResult result;
-      auto pos1 = position - normal * offset * 2;
+      auto pos1 = position_ - normal_ * offset * 2;
       auto* shape2 = collision_link.shapes[shape_index]
                          ->geometry->collision_geometry_.get();
       auto frame2 = Frame(fb.pos, fb.rot.normalized()) *

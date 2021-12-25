@@ -375,11 +375,11 @@ template <class BASE, class... ARGS>
 class Factory {
   typedef BASE* (*Constructor)(ARGS...);
   struct ClassBase {
-    std::string name;
-    std::type_index type;
+    std::string name_;
+    std::type_index type_;
     virtual BASE* create(ARGS... args) const = 0;
     virtual BASE* clone(const BASE*) const = 0;
-    ClassBase() : type(typeid(void)) {}
+    ClassBase() : type_(typeid(void)) {}
   };
   typedef std::set<ClassBase*> MapType;
   static MapType& classes() {
@@ -393,21 +393,21 @@ class Factory {
     BASE* create(ARGS... args) const { return new DERIVED(args...); }
     BASE* clone(const BASE* o) const { return new DERIVED(*(const DERIVED*)o); }
     Class(const std::string& name) {
-      this->name = name;
-      this->type = typeid(DERIVED);
+      ClassBase::name_ = name;
+      ClassBase::type_ = typeid(DERIVED);
       classes().insert(this);
     }
     ~Class() { classes().erase(this); }
   };
   static BASE* create(const std::string& name, ARGS... args) {
     for (auto* f : classes())
-      if (f->name == name) return f->create(args...);
+      if (f->name_ == name) return f->create(args...);
     ERROR("class not found", name);
   }
   template <class DERIVED>
   static DERIVED* clone(const DERIVED* o) {
     for (auto* f : classes())
-      if (f->type == typeid(*o)) return (DERIVED*)f->clone(o);
+      if (f->type_ == typeid(*o)) return (DERIVED*)f->clone(o);
     ERROR("class not found", typeid(*o).name());
   }
 };

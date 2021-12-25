@@ -41,20 +41,20 @@
 namespace bio_ik {
 
 struct IKTest : IKBase {
-  RobotFK_MoveIt fkref;
+  RobotFK_MoveIt fkref_;
 
-  std::vector<double> temp;
+  std::vector<double> temp_;
 
-  double d_rot_sum, d_pos_sum, d_div;
+  double d_rot_sum_, d_pos_sum_, d_div_;
 
-  IKTest(const IKParams& params) : IKBase(params), fkref(params.robot_model) {
-    d_rot_sum = d_pos_sum = d_div = 0;
+  IKTest(const IKParams& params) : IKBase(params), fkref_(params.robot_model) {
+    d_rot_sum_ = d_pos_sum_ = d_div_ = 0;
   }
 
   /*double tipdiff(const std::vector<Frame>& fa, const std::vector<Frame>& fb)
   {
       double diff = 0.0;
-      for(size_t i = 0; i < problem.tip_link_indices.size(); i++)
+      for(size_t i = 0; i < problem_.tip_link_indices.size(); i++)
       {
           //LOG_VAR(fa[i]);
           //LOG_VAR(fb[i]);
@@ -67,19 +67,19 @@ struct IKTest : IKBase {
   void initialize(const Problem& problem) {
     IKBase::initialize(problem);
 
-    fkref.initialize(problem.tip_link_indices);
-    model.initialize(problem.tip_link_indices);
+    fkref_.initialize(problem_.tip_link_indices);
+    model_.initialize(problem_.tip_link_indices);
 
-    fkref.applyConfiguration(problem.initial_guess);
-    model.applyConfiguration(problem.initial_guess);
+    fkref_.applyConfiguration(problem_.initial_guess);
+    model_.applyConfiguration(problem_.initial_guess);
 
-    // double diff = tipdiff(fkref.getTipFrames(), model.getTipFrames());
+    // double diff = tipdiff(fkref_.getTipFrames(), model_.getTipFrames());
     // LOG_VAR(diff);
 
     /*{
-        auto& fa = fkref.getTipFrames();
-        auto& fb = model.getTipFrames();
-        for(size_t i = 0; i < problem.tip_link_indices.size(); i++)
+        auto& fa = fkref_.getTipFrames();
+        auto& fb = model_.getTipFrames();
+        for(size_t i = 0; i < problem_.tip_link_indices.size(); i++)
         {
             LOG("d rot", i, fa[i].rot.angleShortestPath(fb[i].rot));
             LOG("d pos", i, fa[i].pos.distance(fb[i].pos));
@@ -87,48 +87,48 @@ struct IKTest : IKBase {
     }*/
 
     {
-      temp = problem.initial_guess;
-      for (size_t ivar : problem.active_variables)
-        if (modelInfo.isRevolute(ivar) || modelInfo.isPrismatic(ivar))
-          temp[ivar] = modelInfo.clip(temp[ivar] + random(-0.1, 0.1), ivar);
+      temp_ = problem_.initial_guess;
+      for (size_t ivar : problem_.active_variables)
+        if (modelInfo_.isRevolute(ivar) || modelInfo_.isPrismatic(ivar))
+          temp_[ivar] = modelInfo_.clip(temp_[ivar] + random(-0.1, 0.1), ivar);
 
-      fkref.applyConfiguration(temp);
-      auto& fa = fkref.getTipFrames();
+      fkref_.applyConfiguration(temp_);
+      auto& fa = fkref_.getTipFrames();
 
-      model.applyConfiguration(problem.initial_guess);
-      model.initializeMutationApproximator(problem.active_variables);
+      model_.applyConfiguration(problem_.initial_guess);
+      model_.initializeMutationApproximator(problem_.active_variables);
 
       std::vector<aligned_vector<Frame>> fbm;
 
       std::vector<double> mutation_values;
-      for (size_t ivar : problem.active_variables)
-        mutation_values.push_back(temp[ivar]);
+      for (size_t ivar : problem_.active_variables)
+        mutation_values.push_back(temp_[ivar]);
       const double* mutation_ptr = mutation_values.data();
 
-      model.computeApproximateMutations(1, &mutation_ptr, fbm);
+      model_.computeApproximateMutations(1, &mutation_ptr, fbm);
 
       auto& fb = fbm[0];
 
-      // auto& fb = model.getTipFrames();
+      // auto& fb = model_.getTipFrames();
 
-      for (size_t i = 0; i < problem.tip_link_indices.size(); i++) {
+      for (size_t i = 0; i < problem_.tip_link_indices.size(); i++) {
         // LOG("d rot", i, fa[i].rot.angleShortestPath(fb[i].rot));
         // LOG("d pos", i, fa[i].pos.distance(fb[i].pos));
 
-        d_rot_sum += fa[i].rot.angleShortestPath(fb[i].rot);
-        d_pos_sum += fa[i].pos.distance(fb[i].pos);
-        d_div += 1;
+        d_rot_sum_ += fa[i].rot.angleShortestPath(fb[i].rot);
+        d_pos_sum_ += fa[i].pos.distance(fb[i].pos);
+        d_div_ += 1;
       }
     }
 
-    LOG("d rot avg", d_rot_sum / d_div);
-    LOG("d pos avg", d_pos_sum / d_div);
+    LOG("d rot avg", d_rot_sum_ / d_div_);
+    LOG("d pos avg", d_pos_sum_ / d_div_);
   }
 
   void step() {}
 
   const std::vector<double>& getSolution() const {
-    return problem.initial_guess;
+    return problem_.initial_guess;
   }
 };
 

@@ -37,139 +37,143 @@ namespace bio_ik {
 
 // executes a function in parallel on pre-allocated threads
 class ParallelExecutor {
-  volatile bool exit;
-  std::vector<std::thread> threads;
-  std::function<void(size_t)> fun;
-  boost::barrier barrier;
+  volatile bool exit_;
+  std::vector<std::thread> threads_;
+  std::function<void(size_t)> function_;
+  boost::barrier barrier_;
 
  public:
   template <class FUN>
-  ParallelExecutor(size_t thread_count, const FUN& f)
-      : exit(false), threads(thread_count), fun(f), barrier(thread_count) {
+  ParallelExecutor(size_t thread_count, const FUN& function)
+      : exit_(false),
+        threads_(thread_count),
+        function_(function),
+        barrier_(thread_count) {
     for (size_t i = 1; i < thread_count; ++i) {
       std::thread t([this, i]() {
         while (true) {
-          barrier.wait();
-          if (exit) break;
-          fun(i);
-          barrier.wait();
-          if (exit) break;
+          barrier_.wait();
+          if (exit_) break;
+          function_(i);
+          barrier_.wait();
+          if (exit_) break;
         }
       });
-      std::swap(t, threads[i]);
+      std::swap(t, threads_[i]);
     }
   }
   ~ParallelExecutor() {
-    exit = true;
-    barrier.wait();
-    for (auto& t : threads)
+    exit_ = true;
+    barrier_.wait();
+    for (auto& t : threads_)
       if (t.joinable()) t.join();
   }
   void run() {
-    barrier.wait();
-    fun(0);
-    barrier.wait();
+    barrier_.wait();
+    function_(0);
+    barrier_.wait();
   }
 };
 
 // runs ik on multiple threads until a stop criterion is met
 struct IKParallel {
-  IKParams params;
-  std::vector<std::unique_ptr<IKSolver>> solvers;
-  std::vector<std::vector<double>> solver_solutions;
-  std::vector<std::vector<double>> solver_temps;
-  std::vector<int> solver_success;
-  std::vector<double> solver_fitness;
-  size_t thread_count;
-  // std::vector<RobotFK_Fast> fk; // TODO: remove
-  double timeout;
-  bool success;
-  std::atomic<int> finished;
-  std::atomic<uint32_t> iteration_count;
-  std::vector<double> result;
-  std::unique_ptr<ParallelExecutor> par;
-  Problem problem;
-  bool enable_counter;
-  double best_fitness;
+  IKParams params_;
+  std::vector<std::unique_ptr<IKSolver>> solvers_;
+  std::vector<std::vector<double>> solver_solutions_;
+  std::vector<std::vector<double>> solver_temps_;
+  std::vector<int> solver_success_;
+  std::vector<double> solver_fitness_;
+  size_t thread_count_;
+  // std::vector<RobotFK_Fast> fk_; // TODO: remove
+  double timeout_;
+  bool success_;
+  std::atomic<int> finished_;
+  std::atomic<uint32_t> iteration_count_;
+  std::vector<double> result_;
+  std::unique_ptr<ParallelExecutor> parallel_executor_;
+  Problem problem_;
+  bool enable_counter_;
+  double best_fitness_;
 
-  IKParallel(const IKParams& params) : params(params) {
+  IKParallel(const IKParams& params) : params_(params) {
     // solver class name
-    std::string name = params.solver_class_name;
+    std::string name = params_.solver_class_name;
 
-    enable_counter = params.enable_counter;
+    enable_counter_ = params_.enable_counter;
 
-    // create solvers
-    solvers.emplace_back(IKFactory::create(name, params));
-    thread_count = solvers.front()->concurrency();
-    if (params.thread_count) {
-      thread_count = params.thread_count;
+    // create solvers_
+    solvers_.emplace_back(IKFactory::create(name, params_));
+    thread_count_ = solvers_.front()->concurrency();
+    if (params_.thread_count) {
+      thread_count_ = params_.thread_count;
     }
-    while (solvers.size() < thread_count)
-      solvers.emplace_back(IKFactory::clone(solvers.front().get()));
-    for (size_t i = 0; i < thread_count; ++i) solvers[i]->thread_index = i;
+    while (solvers_.size() < thread_count_)
+      solvers_.emplace_back(IKFactory::clone(solvers_.front().get()));
+    for (size_t i = 0; i < thread_count_; ++i) solvers_[i]->thread_index_ = i;
 
-    // while(fk.size() < thread_count) fk.emplace_back(params.robot_model);
+    // while(fk_.size() < thread_count_) fk_.emplace_back(params_.robot_model);
 
     // init buffers
-    solver_solutions.resize(thread_count);
-    solver_temps.resize(thread_count);
-    solver_success.resize(thread_count);
-    solver_fitness.resize(thread_count);
+    solver_solutions_.resize(thread_count_);
+    solver_temps_.resize(thread_count_);
+    solver_success_.resize(thread_count_);
+    solver_fitness_.resize(thread_count_);
 
     // create parallel executor
-    par.reset(new ParallelExecutor(thread_count,
-                                   [this](size_t i) { solverthread(i); }));
+    parallel_executor_.reset(new ParallelExecutor(
+        thread_count_, [this](size_t i) { solverthread(i); }));
   }
 
   void initialize(const Problem& problem) {
-    this->problem = problem;
-    // for(auto& f : fk) f.initialize(problem.tip_link_indices);
+    problem_ = problem;
+    // for(auto& f : fk_) f.initialize(problem_.tip_link_indices);
   }
 
  private:
   void solverthread(size_t i) {
     THREADPROFILER("thread", i);
-    COUNTERPROFILER("solver threads");
+    COUNTERPROFILER("solver threads_");
 
-    // initialize ik solvers
+    // initialize ik solvers_
     {
       BLOCKPROFILER("ik solver init");
-      solvers[i]->initialize(problem);
+      solvers_[i]->initialize(problem_);
     }
 
-    // run solver iterations until solution found or timeout
+    // run solver iterations until solution found or timeout_
     for (size_t iteration = 0;
-         (rclcpp::Clock().now().seconds() < timeout && finished == 0) ||
+         (rclcpp::Clock().now().seconds() < timeout_ && finished_ == 0) ||
          (iteration == 0 && i == 0);
          iteration++) {
-      if (finished) break;
+      if (finished_) break;
 
       // run solver for a few steps
-      solvers[i]->step();
-      iteration_count++;
+      solvers_[i]->step();
+      iteration_count_++;
       for (int it2 = 1; it2 < 4; it2++)
-        if (rclcpp::Clock().now().seconds() < timeout && finished == 0)
-          solvers[i]->step();
+        if (rclcpp::Clock().now().seconds() < timeout_ && finished_ == 0)
+          solvers_[i]->step();
 
-      if (finished) break;
+      if (finished_) break;
 
       // get solution and check stop criterion
-      auto& result = solver_temps[i];
-      result = solvers[i]->getSolution();
-      auto& fk = solvers[i]->model;
+      auto& result = solver_temps_[i];
+      result = solvers_[i]->getSolution();
+      auto& fk = solvers_[i]->model_;
       fk.applyConfiguration(result);
-      bool success = solvers[i]->checkSolution(result, fk.getTipFrames());
-      if (success) finished = 1;
-      solver_success[i] = success;
-      solver_solutions[i] = result;
-      solver_fitness[i] = solvers[i]->computeFitness(result, fk.getTipFrames());
+      bool success = solvers_[i]->checkSolution(result, fk.getTipFrames());
+      if (success) finished_ = 1;
+      solver_success_[i] = success;
+      solver_solutions_[i] = result;
+      solver_fitness_[i] =
+          solvers_[i]->computeFitness(result, fk.getTipFrames());
 
       if (success) break;
     }
 
-    finished = 1;
+    finished_ = 1;
 
-    for (auto& s : solvers) s->canceled = true;
+    for (auto& solver : solvers_) solver->canceled_ = true;
   }
 
  public:
@@ -177,43 +181,43 @@ struct IKParallel {
     BLOCKPROFILER("solve mt");
 
     // prepare
-    iteration_count = 0;
-    result = problem.initial_guess;
-    timeout = problem.timeout;
-    success = false;
-    finished = 0;
-    for (auto& s : solver_solutions) s = problem.initial_guess;
-    for (auto& s : solver_temps) s = problem.initial_guess;
-    for (auto& s : solver_success) s = 0;
-    for (auto& f : solver_fitness) f = DBL_MAX;
-    for (auto& s : solvers) s->canceled = false;
+    iteration_count_ = 0;
+    result_ = problem_.initial_guess;
+    timeout_ = problem_.timeout;
+    success_ = false;
+    finished_ = 0;
+    for (auto& solver : solver_solutions_) solver = problem_.initial_guess;
+    for (auto& solver : solver_temps_) solver = problem_.initial_guess;
+    for (auto& solver : solver_success_) solver = 0;
+    for (auto& f : solver_fitness_) f = DBL_MAX;
+    for (auto& solver : solvers_) solver->canceled_ = false;
 
-    // run solvers
+    // run solvers_
     {
       BLOCKPROFILER("solve mt 2");
-      par->run();
+      parallel_executor_->run();
     }
 
     size_t best_index = 0;
-    best_fitness = DBL_MAX;
+    best_fitness_ = DBL_MAX;
 
     // if exact primary goal matches have been found ...
-    for (size_t i = 0; i < thread_count; ++i) {
-      if (solver_success[i]) {
+    for (size_t i = 0; i < thread_count_; ++i) {
+      if (solver_success_[i]) {
         double fitness;
-        if (solvers[0]->problem.secondary_goals.empty()) {
+        if (solvers_[0]->problem_.secondary_goals.empty()) {
           // ... and if no secondary goals have been specified,
-          // select the best result according to primary goals
-          fitness = solver_fitness[i];
+          // select the best result_ according to primary goals
+          fitness = solver_fitness_[i];
         } else {
           // ... and if secondary goals have been specified,
-          // select the result that best satisfies primary and secondary goals
-          fitness = solver_fitness[i] +
-                    solvers[0]->computeSecondaryFitnessAllVariables(
-                        solver_solutions[i]);
+          // select the result_ that best satisfies primary and secondary goals
+          fitness = solver_fitness_[i] +
+                    solvers_[0]->computeSecondaryFitnessAllVariables(
+                        solver_solutions_[i]);
         }
-        if (fitness < best_fitness) {
-          best_fitness = fitness;
+        if (fitness < best_fitness_) {
+          best_fitness_ = fitness;
           best_index = i;
         }
       }
@@ -221,27 +225,27 @@ struct IKParallel {
 
     // if no exact primary goal matches have been found,
     // select best primary goal approximation
-    if (best_fitness == DBL_MAX) {
-      for (size_t i = 0; i < thread_count; ++i) {
-        if (solver_fitness[i] < best_fitness) {
-          best_fitness = solver_fitness[i];
+    if (best_fitness_ == DBL_MAX) {
+      for (size_t i = 0; i < thread_count_; ++i) {
+        if (solver_fitness_[i] < best_fitness_) {
+          best_fitness_ = solver_fitness_[i];
           best_index = i;
         }
       }
     }
 
-    if (enable_counter) {
-      LOG("iterations", iteration_count);
+    if (enable_counter_) {
+      LOG("iterations", iteration_count_);
     }
 
-    result = solver_solutions[best_index];
-    success = solver_success[best_index];
+    result_ = solver_solutions_[best_index];
+    success_ = solver_success_[best_index];
   }
 
-  double getSolutionFitness() const { return best_fitness; }
+  double getSolutionFitness() const { return best_fitness_; }
 
-  bool getSuccess() const { return success; }
+  bool getSuccess() const { return success_; }
 
-  const std::vector<double>& getSolution() const { return result; }
+  const std::vector<double>& getSolution() const { return result_; }
 };
 }  // namespace bio_ik
