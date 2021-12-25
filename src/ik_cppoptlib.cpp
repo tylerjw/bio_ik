@@ -38,66 +38,66 @@ namespace bio_ik {
 /*
 struct IKOptLibProblem : cppoptlib::Problem<double>
 {
-    IKBase* ik;
-    std::vector<double> fk_values;
-    IKOptLibProblem(IKBase* ik) : ik(ik)
+    IKBase* ik_;
+    std::vector<double> fk_values_;
+    IKOptLibProblem(IKBase* ik) : ik_(ik)
     {
     }
     void initialize()
     {
         // set all variables to initial guess, including inactive ones
-        fk_values = ik->problem.initial_guess;
+        fk_values_ = ik_->problem.initial_guess;
     }
     double value(const TVector& x)
     {
         // fill in active variables and compute fitness
-        for(size_t i = 0; i < ik->problem.active_variables.size(); i++)
-fk_values[ik->problem.active_variables[i]] = x[i]; return
-ik->computeFitness(fk_values);
+        for(size_t i = 0; i < ik_->problem.active_variables.size(); i++)
+fk_values_[ik_->problem.active_variables[i]] = x[i]; return
+ik_->computeFitness(fk_values_);
     }
     bool callback(const cppoptlib::Criteria<double>& state, const TVector& x)
     {
         // check ik timeout
-        return rclcpp::Clock().now().seconds() < ik->problem.timeout;
+        return rclcpp::Clock().now().seconds() < ik_->problem.timeout;
     }
 };
 */
 
 // problem description for cppoptlib
 struct IKOptLibProblem : cppoptlib::BoundedProblem<double> {
-  IKBase* ik;
-  std::vector<double> fk_values;
+  IKBase* ik_;
+  std::vector<double> fk_values_;
   IKOptLibProblem(IKBase* ik)
       : cppoptlib::BoundedProblem<double>(
             TVector(ik->problem.active_variables.size()),
             TVector(ik->problem.active_variables.size())),
-        ik(ik) {
+        ik_(ik) {
     // init bounds
-    for (size_t i = 0; i < ik->problem.active_variables.size(); i++) {
-      m_lowerBound[i] = ik->modelInfo.getMin(ik->problem.active_variables[i]);
-      m_upperBound[i] = ik->modelInfo.getMax(ik->problem.active_variables[i]);
+    for (size_t i = 0; i < ik_->problem.active_variables.size(); i++) {
+      m_lowerBound[i] = ik_->modelInfo.getMin(ik_->problem.active_variables[i]);
+      m_upperBound[i] = ik_->modelInfo.getMax(ik_->problem.active_variables[i]);
       // m_lowerBound[i] = fmax(m_lowerBound[i], -100);
       // m_upperBound[i] = fmin(m_upperBound[i], 100);
     }
   }
   void initialize() {
     // set all variables to initial guess, including inactive ones
-    fk_values = ik->problem.initial_guess;
+    fk_values_ = ik_->problem.initial_guess;
   }
   double value(const TVector& x) {
     // fill in active variables and compute fitness
-    for (size_t i = 0; i < ik->problem.active_variables.size(); i++)
-      fk_values[ik->problem.active_variables[i]] = x[i];
-    // for(size_t i = 0; i < ik->active_variables.size(); i++) LOG(i, x[i]);
-    // LOG(""); for(size_t i = 0; i < ik->active_variables.size(); i++)
+    for (size_t i = 0; i < ik_->problem.active_variables.size(); i++)
+      fk_values_[ik_->problem.active_variables[i]] = x[i];
+    // for(size_t i = 0; i < ik_->active_variables.size(); i++) LOG(i, x[i]);
+    // LOG(""); for(size_t i = 0; i < ik_->active_variables.size(); i++)
     // std::cerr << ((void*)*(uint64_t*)&x[i]) << " "; std::cerr << std::endl;
-    // size_t h = 0; for(size_t i = 0; i < ik->active_variables.size(); i++) h
+    // size_t h = 0; for(size_t i = 0; i < ik_->active_variables.size(); i++) h
     // ^= (std::hash<double>()(x[i]) << i); LOG((void*)h);
-    return ik->computeFitness(fk_values);
+    return ik_->computeFitness(fk_values_);
   }
   bool callback(const cppoptlib::Criteria<double>& state, const TVector& x) {
     // check ik timeout
-    return rclcpp::Clock().now().seconds() < ik->problem.timeout;
+    return rclcpp::Clock().now().seconds() < ik_->problem.timeout;
   }
 };
 
@@ -105,85 +105,85 @@ struct IKOptLibProblem : cppoptlib::BoundedProblem<double> {
 template <class SOLVER, int reset_if_stuck, int threads>
 struct IKOptLib : IKBase {
   // current solution
-  std::vector<double> solution, best_solution, temp;
+  std::vector<double> solution_, best_solution_, temp_;
 
   // cppoptlib solver
-  std::shared_ptr<SOLVER> solver;
+  std::shared_ptr<SOLVER> solver_;
 
   // cppoptlib problem description
-  IKOptLibProblem f;
+  IKOptLibProblem f_;
 
   // reset flag
-  bool reset;
+  bool reset_;
 
   // stop criteria
-  cppoptlib::Criteria<double> crit;
+  cppoptlib::Criteria<double> crit_;
 
-  IKOptLib(const IKParams& p) : IKBase(p), f(this) {}
+  IKOptLib(const IKParams& params) : IKBase(params), f_(this) {}
 
   void initialize(const Problem& problem) {
     IKBase::initialize(problem);
 
     // set initial guess
-    solution = problem.initial_guess;
+    solution_ = problem.initial_guess;
 
     // randomize if more than 1 thread
-    reset = false;
-    if (thread_index > 0) reset = true;
+    reset_ = false;
+    if (thread_index_ > 0) reset_ = true;
 
     // init best solution
-    best_solution = solution;
+    best_solution_ = solution_;
 
     // initialize cppoptlib problem description
-    f = IKOptLibProblem(this);
-    f.initialize();
+    f_ = IKOptLibProblem(this);
+    f_.initialize();
 
     // init stop criteria (timeout will be handled explicitly)
-    crit = cppoptlib::Criteria<double>::defaults();
+    crit_ = cppoptlib::Criteria<double>::defaults();
     // crit.iterations = SIZE_MAX;
-    crit.gradNorm = 1e-10;
-    // p.node_handle.param("optlib_stop", crit.gradNorm, crit.gradNorm);
+    crit_.gradNorm = 1e-10;
+    // p.node_handle.param("optlib_stop", crit_.gradNorm, crit_.gradNorm);
 
-    if (!solver) solver = std::make_shared<SOLVER>();
+    if (!solver_) solver_ = std::make_shared<SOLVER>();
   }
 
-  const std::vector<double>& getSolution() const { return best_solution; }
+  const std::vector<double>& getSolution() const { return best_solution_; }
 
   void step() {
     // set stop criteria
-    solver->setStopCriteria(crit);
+    solver_->setStopCriteria(crit_);
 
     // random reset if stuck (and if random resets are enabled)
-    if (reset) {
+    if (reset_) {
       // LOG("RESET");
-      reset = false;
-      for (auto& vi : problem.active_variables)
-        solution[vi] = random(modelInfo.getMin(vi), modelInfo.getMax(vi));
+      reset_ = false;
+      for (auto& vi : problem_.active_variables)
+        solution_[vi] = random(modelInfo.getMin(vi), modelInfo.getMax(vi));
     }
 
     // set to current positions
-    temp = solution;
-    typename SOLVER::TVector x(problem.active_variables.size());
-    for (size_t i = 0; i < problem.active_variables.size(); i++)
-      x[i] = temp[problem.active_variables[i]];
+    temp_ = solution_;
+    typename SOLVER::TVector x(problem_.active_variables.size());
+    for (size_t i = 0; i < problem_.active_variables.size(); i++)
+      x[i] = temp_[problem_.active_variables[i]];
 
     // solve
-    solver->minimize(f, x);
+    solver_->minimize(f, x);
 
     // get results
-    for (size_t i = 0; i < problem.active_variables.size(); i++)
-      temp[problem.active_variables[i]] = x[i];
+    for (size_t i = 0; i < problem_.active_variables.size(); i++)
+      temp_[problem_.active_variables[i]] = x[i];
 
     // update solution
-    if (computeFitness(temp) < computeFitness(solution)) {
-      solution = temp;
+    if (computeFitness(temp_) < computeFitness(solution_)) {
+      solution_ = temp_;
     } else {
-      if (reset_if_stuck) reset = true;
+      if (reset_if_stuck) reset_ = true;
     }
 
     // update best solution
-    if (computeFitness(solution) < computeFitness(best_solution)) {
-      best_solution = solution;
+    if (computeFitness(solution_) < computeFitness(best_solution_)) {
+      best_solution_ = solution_;
     }
   }
 

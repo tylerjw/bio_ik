@@ -39,22 +39,22 @@
 namespace bio_ik {
 
 struct Random {
-  // std::mt19937 rng;
-  std::minstd_rand rng;
-  // std::ranlux24 rng;
-  // std::knuth_b rng;
-  // std::default_random_engine rng;
+  // std::mt19937 rng_;
+  std::minstd_rand rng_;
+  // std::ranlux24 rng_;
+  // std::knuth_b rng_;
+  // std::default_random_engine rng_;
 
   inline double random() {
-    return std::uniform_real_distribution<double>(0, 1)(rng);
+    return std::uniform_real_distribution<double>(0, 1)(rng_);
   }
 
   inline std::size_t random_index(std::size_t s) {
-    return std::uniform_int_distribution<size_t>(0, s - 1)(rng);
+    return std::uniform_int_distribution<size_t>(0, s - 1)(rng_);
   }
 
   std::normal_distribution<double> normal_distribution;
-  inline double random_gauss() { return normal_distribution(rng); }
+  inline double random_gauss() { return normal_distribution(rng_); }
 
   inline double random(double min, double max) {
     return random() * (max - min) + min;
@@ -115,7 +115,7 @@ struct Random {
     return random_gauss_buffer + i;
   }
 
-  Random(std::minstd_rand::result_type seed) : rng(seed) {
+  Random(std::minstd_rand::result_type seed) : rng_(seed) {
     random_buffer = make_random_buffer();
     random_buffer_index = _xorshift();
     random_gauss_buffer = make_random_gauss_buffer();
@@ -124,42 +124,42 @@ struct Random {
 };
 
 struct IKBase : Random {
-  RobotFK model;
-  RobotInfo modelInfo;
-  IKParams params;
-  int thread_index;
-  Problem problem;
-  std::vector<Frame> null_tip_frames;
-  volatile int canceled;
+  RobotFK model_;
+  RobotInfo modelInfo_;
+  IKParams params_;
+  int thread_index_;
+  Problem problem_;
+  std::vector<Frame> null_tip_frames_;
+  volatile int canceled_;
 
   virtual void step() = 0;
 
   virtual const std::vector<double>& getSolution() const = 0;
 
-  virtual void setParams([[maybe_unused]] const IKParams& p) {}
+  virtual void setParams([[maybe_unused]] const IKParams&) {}
 
-  IKBase(const IKParams& p)
-      : Random(p.random_seed),
-        model(p.robot_model),
-        modelInfo(p.robot_model),
-        params(p) {
-    setParams(p);
+  IKBase(const IKParams& params)
+      : Random(params.random_seed),
+        model_(params.robot_model),
+        modelInfo_(params.robot_model),
+        params_(params) {
+    setParams(params);
   }
   virtual ~IKBase() {}
 
   virtual void initialize(const Problem& problem) {
-    this->problem = problem;
-    this->problem.initialize2();
-    model.initialize(problem.tip_link_indices);
-    // active_variables = problem.active_variables;
-    null_tip_frames.resize(problem.tip_link_indices.size());
+    problem_ = problem;
+    problem_.initialize2();
+    model_.initialize(problem_.tip_link_indices);
+    // active_variables = problem_.active_variables;
+    null_tip_frames_.resize(problem_.tip_link_indices.size());
   }
 
   double computeSecondaryFitnessActiveVariables(
       const double* active_variable_positions) {
-    return problem.computeGoalFitness(problem.secondary_goals,
-                                      null_tip_frames.data(),
-                                      active_variable_positions);
+    return problem_.computeGoalFitness(problem_.secondary_goals,
+                                       null_tip_frames_.data(),
+                                       active_variable_positions);
   }
 
   double computeSecondaryFitnessAllVariables(
@@ -171,26 +171,26 @@ struct IKBase : Random {
   double computeFitnessActiveVariables(
       const std::vector<Frame>& tip_frames,
       const double* active_variable_positions) {
-    return problem.computeGoalFitness(problem.goals, tip_frames.data(),
-                                      active_variable_positions);
+    return problem_.computeGoalFitness(problem_.goals, tip_frames.data(),
+                                       active_variable_positions);
   }
 
   double computeFitnessActiveVariables(
       const aligned_vector<Frame>& tip_frames,
       const double* active_variable_positions) {
-    return problem.computeGoalFitness(problem.goals, tip_frames.data(),
-                                      active_variable_positions);
+    return problem_.computeGoalFitness(problem_.goals, tip_frames.data(),
+                                       active_variable_positions);
   }
 
   double computeCombinedFitnessActiveVariables(
       const std::vector<Frame>& tip_frames,
       const double* active_variable_positions) {
     double ret = 0.0;
-    ret += problem.computeGoalFitness(problem.goals, tip_frames.data(),
-                                      active_variable_positions);
-    ret += problem.computeGoalFitness(problem.secondary_goals,
-                                      null_tip_frames.data(),
-                                      active_variable_positions);
+    ret += problem_.computeGoalFitness(problem_.goals, tip_frames.data(),
+                                       active_variable_positions);
+    ret += problem_.computeGoalFitness(problem_.secondary_goals,
+                                       null_tip_frames_.data(),
+                                       active_variable_positions);
     return ret;
   }
 
@@ -198,18 +198,18 @@ struct IKBase : Random {
       const aligned_vector<Frame>& tip_frames,
       const double* active_variable_positions) {
     double ret = 0.0;
-    ret += problem.computeGoalFitness(problem.goals, tip_frames.data(),
-                                      active_variable_positions);
-    ret += problem.computeGoalFitness(problem.secondary_goals,
-                                      null_tip_frames.data(),
-                                      active_variable_positions);
+    ret += problem_.computeGoalFitness(problem_.goals, tip_frames.data(),
+                                       active_variable_positions);
+    ret += problem_.computeGoalFitness(problem_.secondary_goals,
+                                       null_tip_frames_.data(),
+                                       active_variable_positions);
     return ret;
   }
 
   bool checkSolutionActiveVariables(const std::vector<Frame>& tip_frames,
                                     const double* active_variable_positions) {
-    return problem.checkSolutionActiveVariables(tip_frames,
-                                                active_variable_positions);
+    return problem_.checkSolutionActiveVariables(tip_frames,
+                                                 active_variable_positions);
   }
 
   bool checkSolution(const std::vector<double>& variable_positions,
@@ -222,10 +222,10 @@ struct IKBase : Random {
 
   double* extractActiveVariables(
       const std::vector<double>& variable_positions) {
-    temp_active_variable_positions.resize(problem.active_variables.size());
+    temp_active_variable_positions.resize(problem_.active_variables.size());
     for (size_t i = 0; i < temp_active_variable_positions.size(); i++)
       temp_active_variable_positions[i] =
-          variable_positions[problem.active_variables[i]];
+          variable_positions[problem_.active_variables[i]];
     return temp_active_variable_positions.data();
   }
 
@@ -236,8 +236,8 @@ struct IKBase : Random {
   }
 
   double computeFitness(const std::vector<double>& variable_positions) {
-    model.applyConfiguration(variable_positions);
-    return computeFitness(variable_positions, model.getTipFrames());
+    model_.applyConfiguration(variable_positions);
+    return computeFitness(variable_positions, model_.getTipFrames());
   }
 
   virtual size_t concurrency() const { return 1; }

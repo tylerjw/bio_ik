@@ -123,7 +123,7 @@ class Goal {
     context.setSecondary(secondary_);
     context.setWeight(weight_);
   }
-  virtual double evaluate([[maybe_unused]] const GoalContext& context) const {
+  virtual double evaluate([[maybe_unused]] const GoalContext&) const {
     return 0;
   }
 };

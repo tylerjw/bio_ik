@@ -57,17 +57,17 @@ namespace bio_ik {
 
 class Problem {
  private:
-  bool ros_params_initrd;
-  std::vector<int> joint_usage;
-  std::vector<ssize_t> link_tip_indices;
-  std::vector<double> minimal_displacement_factors;
-  std::vector<double> joint_transmission_goal_temp,
-      joint_transmission_goal_temp2;
-  moveit::core::RobotModelConstPtr robot_model;
-  const moveit::core::JointModelGroup* joint_model_group;
-  IKParams params;
-  RobotInfo modelInfo;
-  double dpos, drot, dtwist;
+  bool ros_params_initrd_;
+  std::vector<int> joint_usage_;
+  std::vector<ssize_t> link_tip_indices_;
+  std::vector<double> minimal_displacement_factors_;
+  std::vector<double> joint_transmission_goal_temp_,
+      joint_transmission_goal_temp2_;
+  moveit::core::RobotModelConstPtr robot_model_;
+  const moveit::core::JointModelGroup* joint_model_group_;
+  IKParams params_;
+  RobotInfo modelInfo_;
+  double dpos_, drot_, dtwist_;
 #if (MOVEIT_FCL_VERSION < FCL_VERSION_CHECK(0, 6, 0))
   struct CollisionShape {
     std::vector<Vector3> vertices;
@@ -84,7 +84,7 @@ class Problem {
     std::vector<std::shared_ptr<CollisionShape>> shapes;
     CollisionLink() : initialized(false) {}
   };
-  std::vector<CollisionLink> collision_links;
+  std::vector<CollisionLink> collision_links_;
 #endif
   size_t addTipLink(const moveit::core::LinkModel* link_model);
 
@@ -141,7 +141,7 @@ class Problem {
                   const std::vector<const Goal*>& goals2,
                   const BioIKKinematicsQueryOptions* options);
   void initialize2();
-  double computeGoalFitness(GoalInfo& goal, const Frame* tip_frames,
+  double computeGoalFitness(GoalInfo& goal_info, const Frame* tip_frames,
                             const double* active_variable_positions);
   double computeGoalFitness(std::vector<GoalInfo>& goals,
                             const Frame* tip_frames,

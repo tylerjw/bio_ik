@@ -62,64 +62,66 @@ enum class Problem::GoalType {
 };
 
 size_t Problem::addTipLink(const moveit::core::LinkModel* link_model) {
-  if (link_tip_indices[link_model->getLinkIndex()] < 0) {
-    link_tip_indices[link_model->getLinkIndex()] = tip_link_indices.size();
+  if (link_tip_indices_[link_model->getLinkIndex()] < 0) {
+    link_tip_indices_[link_model->getLinkIndex()] = tip_link_indices.size();
     tip_link_indices.push_back(link_model->getLinkIndex());
   }
-  return link_tip_indices[link_model->getLinkIndex()];
+  return link_tip_indices_[link_model->getLinkIndex()];
 }
 
-Problem::Problem() : ros_params_initrd(false) {}
+Problem::Problem() : ros_params_initrd_(false) {}
 
 void Problem::initialize(moveit::core::RobotModelConstPtr robot_model,
                          const moveit::core::JointModelGroup* joint_model_group,
                          const IKParams& params,
                          const std::vector<const Goal*>& goals2,
                          const BioIKKinematicsQueryOptions* options) {
-  if (robot_model != this->robot_model) {
-    modelInfo = RobotInfo(robot_model);
+  if (robot_model != robot_model_) {
+    modelInfo_ = RobotInfo(robot_model_);
 #if (MOVEIT_FCL_VERSION < FCL_VERSION_CHECK(0, 6, 0))
-    collision_links.clear();
-    collision_links.resize(robot_model->getLinkModelCount());
+    collision_links_.clear();
+    collision_links_.resize(robot_model_->getLinkModelCount());
 #endif
   }
 
-  this->robot_model = robot_model;
-  this->joint_model_group = joint_model_group;
-  this->params = params;
+  robot_model_ = robot_model;
+  joint_model_group_ = joint_model_group;
+  params_ = params;
 
-  if (!ros_params_initrd) {
-    ros_params_initrd = true;
-    dpos = params.dpos;
-    drot = params.drot;
-    dtwist = params.dtwist;
-    if (dpos < 0.0 || dpos >= FLT_MAX || !std::isfinite(dpos)) dpos = DBL_MAX;
-    if (drot < 0.0 || drot >= FLT_MAX || !std::isfinite(drot)) drot = DBL_MAX;
-    if (dtwist < 0.0 || dtwist >= FLT_MAX || !std::isfinite(dtwist))
-      dtwist = DBL_MAX;
+  if (!ros_params_initrd_) {
+    ros_params_initrd_ = true;
+    dpos_ = params_.dpos;
+    drot_ = params_.drot;
+    dtwist_ = params_.dtwist;
+    if (dpos_ < 0.0 || dpos_ >= FLT_MAX || !std::isfinite(dpos_))
+      dpos_ = DBL_MAX;
+    if (drot_ < 0.0 || drot_ >= FLT_MAX || !std::isfinite(drot_))
+      drot_ = DBL_MAX;
+    if (dtwist_ < 0.0 || dtwist_ >= FLT_MAX || !std::isfinite(dtwist_))
+      dtwist_ = DBL_MAX;
   }
 
-  link_tip_indices.clear();
-  link_tip_indices.resize(robot_model->getLinkModelCount(), -1);
+  link_tip_indices_.clear();
+  link_tip_indices_.resize(robot_model_->getLinkModelCount(), -1);
   tip_link_indices.clear();
 
   active_variables.clear();
-  auto addActiveVariable = [this, robot_model, joint_model_group,
+  auto addActiveVariable = [this, robot_model,
                             options](const std::string& name) -> ssize_t {
     if (options) {
-      auto& joint_name = robot_model->getJointOfVariable(name)->getName();
+      auto& joint_name = robot_model_->getJointOfVariable(name)->getName();
       for (auto& fixed_joint_name : options->fixed_joints) {
         if (fixed_joint_name == joint_name) {
-          return (ssize_t)-1 - (ssize_t)robot_model->getVariableIndex(name);
+          return (ssize_t)-1 - (ssize_t)robot_model_->getVariableIndex(name);
         }
       }
     }
     for (size_t i = 0; i < active_variables.size(); i++)
-      if (name == robot_model->getVariableNames()[active_variables[i]])
+      if (name == robot_model_->getVariableNames()[active_variables[i]])
         return i;
-    for (auto& n : joint_model_group->getVariableNames()) {
+    for (auto& n : joint_model_group_->getVariableNames()) {
       if (n == name) {
-        active_variables.push_back(robot_model->getVariableIndex(name));
+        active_variables.push_back(robot_model_->getVariableIndex(name));
         return active_variables.size() - 1;
       }
     }
@@ -136,7 +138,7 @@ void Problem::initialize(moveit::core::RobotModelConstPtr robot_model,
     goal->describe(goal_info.goal_context);
 
     for (auto& link_name : goal_info.goal_context.goal_link_names_) {
-      auto* link_model = robot_model->getLinkModel(link_name);
+      auto* link_model = robot_model_->getLinkModel(link_name);
       if (!link_model) ERROR("link not found", link_name);
       goal_info.goal_context.goal_link_indices_.push_back(
           addTipLink(link_model));
@@ -173,7 +175,7 @@ void Problem::initialize(moveit::core::RobotModelConstPtr robot_model,
       goal_info.frame.rot = g->getOrientation();
     }
 
-    goal_info.goal_context.joint_model_group_ = joint_model_group;
+    goal_info.goal_context.joint_model_group_ = joint_model_group_;
     goal_info.goal_context.initial_guess_ = initial_guess;
 
     if (goal_info.goal_context.goal_secondary_)
@@ -189,33 +191,34 @@ void Problem::initialize(moveit::core::RobotModelConstPtr robot_model,
   }
 
   // update active variables from active subtree
-  joint_usage.resize(robot_model->getJointModelCount());
-  for (auto& u : joint_usage) u = 0;
+  joint_usage_.resize(robot_model_->getJointModelCount());
+  for (auto& u : joint_usage_) u = 0;
   for (auto tip_index : tip_link_indices)
-    for (auto* link_model = robot_model->getLinkModels()[tip_index]; link_model;
-         link_model = link_model->getParentLinkModel())
-      joint_usage[link_model->getParentJointModel()->getJointIndex()] = 1;
+    for (auto* link_model = robot_model_->getLinkModels()[tip_index];
+         link_model; link_model = link_model->getParentLinkModel())
+      joint_usage_[link_model->getParentJointModel()->getJointIndex()] = 1;
   if (options)
     for (auto& fixed_joint_name : options->fixed_joints)
-      joint_usage[robot_model->getJointModel(fixed_joint_name)
-                      ->getJointIndex()] = 0;
-  for (auto* joint_model : joint_model_group->getActiveJointModels())
-    if (joint_usage[joint_model->getJointIndex()] && !joint_model->getMimic())
+      joint_usage_[robot_model_->getJointModel(fixed_joint_name)
+                       ->getJointIndex()] = 0;
+  for (auto* joint_model : joint_model_group_->getActiveJointModels())
+    if (joint_usage_[joint_model->getJointIndex()] && !joint_model->getMimic())
       for (auto& n : joint_model->getVariableNames()) addActiveVariable(n);
 
   // init weights for minimal displacement goals
   {
-    minimal_displacement_factors.resize(active_variables.size());
+    minimal_displacement_factors_.resize(active_variables.size());
     double s = 0;
-    for (auto ivar : active_variables) s += modelInfo.getMaxVelocityRcp(ivar);
+    for (auto ivar : active_variables) s += modelInfo_.getMaxVelocityRcp(ivar);
     if (s > 0) {
       for (size_t i = 0; i < active_variables.size(); i++) {
         auto ivar = active_variables[i];
-        minimal_displacement_factors[i] = modelInfo.getMaxVelocityRcp(ivar) / s;
+        minimal_displacement_factors_[i] =
+            modelInfo_.getMaxVelocityRcp(ivar) / s;
       }
     } else {
       for (size_t i = 0; i < active_variables.size(); i++)
-        minimal_displacement_factors[i] = 1.0 / active_variables.size();
+        minimal_displacement_factors_[i] = 1.0 / active_variables.size();
     }
   }
 
@@ -227,8 +230,8 @@ void Problem::initialize2() {
     for (auto& g : *gg) {
       g.goal_context.problem_active_variables_ = active_variables;
       g.goal_context.problem_tip_link_indices_ = tip_link_indices;
-      g.goal_context.velocity_weights_ = minimal_displacement_factors;
-      g.goal_context.robot_info_ = &modelInfo;
+      g.goal_context.velocity_weights_ = minimal_displacement_factors_;
+      g.goal_context.robot_info_ = &modelInfo_;
     }
   }
 }
@@ -240,11 +243,11 @@ double Problem::computeGoalFitness(GoalInfo& goal_info, const Frame* tip_frames,
   return goal_info.goal->evaluate(goal_info.goal_context) * goal_info.weight_sq;
 }
 
-double Problem::computeGoalFitness(std::vector<GoalInfo>& goals,
+double Problem::computeGoalFitness(std::vector<GoalInfo>& input_goals,
                                    const Frame* tip_frames,
                                    const double* active_variable_positions) {
   double sum = 0.0;
-  for (auto& goal : goals)
+  for (auto& goal : input_goals)
     sum += computeGoalFitness(goal, tip_frames, active_variable_positions);
   return sum;
 }
@@ -258,66 +261,66 @@ bool Problem::checkSolutionActiveVariables(
 
     switch (goal.goal_type) {
       case GoalType::Position: {
-        if (dpos != DBL_MAX) {
+        if (dpos_ != DBL_MAX) {
           double p_dist = (fb.pos - fa.pos).length();
-          if (!(p_dist <= dpos)) return false;
+          if (!(p_dist <= dpos_)) return false;
         }
-        if (dtwist != DBL_MAX) {
+        if (dtwist_ != DBL_MAX) {
           KDL::Frame fk_kdl, ik_kdl;
           frameToKDL(fa, fk_kdl);
           frameToKDL(fb, ik_kdl);
           KDL::Twist kdl_diff(
               fk_kdl.M.Inverse() * KDL::diff(fk_kdl.p, ik_kdl.p),
               fk_kdl.M.Inverse() * KDL::diff(fk_kdl.M, ik_kdl.M));
-          if (!KDL::Equal(kdl_diff.vel, KDL::Twist::Zero().vel, dtwist))
+          if (!KDL::Equal(kdl_diff.vel, KDL::Twist::Zero().vel, dtwist_))
             return false;
         }
         continue;
       }
 
       case GoalType::Orientation: {
-        if (drot != DBL_MAX) {
+        if (drot_ != DBL_MAX) {
           double r_dist = fb.rot.angleShortestPath(fa.rot);
           r_dist = r_dist * 180 / M_PI;
-          if (!(r_dist <= drot)) return false;
+          if (!(r_dist <= drot_)) return false;
         }
-        if (dtwist != DBL_MAX) {
+        if (dtwist_ != DBL_MAX) {
           KDL::Frame fk_kdl, ik_kdl;
           frameToKDL(fa, fk_kdl);
           frameToKDL(fb, ik_kdl);
           KDL::Twist kdl_diff(
               fk_kdl.M.Inverse() * KDL::diff(fk_kdl.p, ik_kdl.p),
               fk_kdl.M.Inverse() * KDL::diff(fk_kdl.M, ik_kdl.M));
-          if (!KDL::Equal(kdl_diff.rot, KDL::Twist::Zero().rot, dtwist))
+          if (!KDL::Equal(kdl_diff.rot, KDL::Twist::Zero().rot, dtwist_))
             return false;
         }
         continue;
       }
 
       case GoalType::Pose: {
-        if (dpos != DBL_MAX || drot != DBL_MAX) {
+        if (dpos_ != DBL_MAX || drot_ != DBL_MAX) {
           double p_dist = (fb.pos - fa.pos).length();
           double r_dist = fb.rot.angleShortestPath(fa.rot);
           r_dist = r_dist * 180 / M_PI;
-          if (!(p_dist <= dpos)) return false;
-          if (!(r_dist <= drot)) return false;
+          if (!(p_dist <= dpos_)) return false;
+          if (!(r_dist <= drot_)) return false;
         }
-        if (dtwist != DBL_MAX) {
+        if (dtwist_ != DBL_MAX) {
           KDL::Frame fk_kdl, ik_kdl;
           frameToKDL(fa, fk_kdl);
           frameToKDL(fb, ik_kdl);
           KDL::Twist kdl_diff(
               fk_kdl.M.Inverse() * KDL::diff(fk_kdl.p, ik_kdl.p),
               fk_kdl.M.Inverse() * KDL::diff(fk_kdl.M, ik_kdl.M));
-          if (!KDL::Equal(kdl_diff, KDL::Twist::Zero(), dtwist)) return false;
+          if (!KDL::Equal(kdl_diff, KDL::Twist::Zero(), dtwist_)) return false;
         }
         continue;
       }
 
       default: {
         double dmax = DBL_MAX;
-        dmax = std::fmin(dmax, dpos);
-        dmax = std::fmin(dmax, dtwist);
+        dmax = std::fmin(dmax, dpos_);
+        dmax = std::fmin(dmax, dtwist_);
         double d = computeGoalFitness(goal, tip_frames.data(),
                                       active_variable_positions);
         if (!(d < dmax * dmax)) return false;
