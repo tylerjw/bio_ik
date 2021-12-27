@@ -135,11 +135,14 @@ void TouchGoal::describe(GoalContext& context) const {
         // s.points.size(), s.polygons.data());
 
         // workaround for fcl::Convex initialization bug
-        auto* fcl = (fcl::Convex*)::operator new(sizeof(fcl::Convex));
-        fcl->num_points = s.points.size();
-        fcl = new (fcl) fcl::Convex(s.plane_normals.data(), s.plane_dis.data(),
-                                    s.plane_normals.size(), s.points.data(),
-                                    s.points.size(), s.polygons.data());
+        auto fcl = [&s]() -> fcl::Convex* {
+          auto buffer = operator new(sizeof(fcl::Convex));
+          static_cast<fcl::Convex*>(buffer)->num_points = s.points.size();
+          return static_cast<fcl::Convex*>(new (buffer) fcl::Convex(
+              s.plane_normals.data(), s.plane_dis.data(),
+              s.plane_normals.size(), s.points.data(), s.points.size(),
+              s.polygons.data()));
+        }();
 
         s.geometry = decltype(s.geometry)(
             new collision_detection::FCLGeometry(fcl, link_model, shape_index));

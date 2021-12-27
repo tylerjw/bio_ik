@@ -380,6 +380,7 @@ class Factory {
     virtual BASE* create(ARGS... args) const = 0;
     virtual BASE* clone(const BASE*) const = 0;
     ClassBase() : type_(typeid(void)) {}
+    virtual ~ClassBase() {}
   };
   typedef std::set<ClassBase*> MapType;
   static MapType& classes() {
@@ -391,13 +392,15 @@ class Factory {
   template <class DERIVED>
   struct Class : ClassBase {
     BASE* create(ARGS... args) const { return new DERIVED(args...); }
-    BASE* clone(const BASE* o) const { return new DERIVED(*(const DERIVED*)o); }
+    BASE* clone(const BASE* o) const {
+      return new DERIVED(*static_cast<const DERIVED*>(o));
+    }
     Class(const std::string& name) {
       ClassBase::name_ = name;
       ClassBase::type_ = typeid(DERIVED);
       classes().insert(this);
     }
-    ~Class() { classes().erase(this); }
+    virtual ~Class() { classes().erase(this); }
   };
   static BASE* create(const std::string& name, ARGS... args) {
     for (auto* f : classes())
@@ -407,7 +410,7 @@ class Factory {
   template <class DERIVED>
   static DERIVED* clone(const DERIVED* o) {
     for (auto* f : classes())
-      if (f->type_ == typeid(*o)) return (DERIVED*)f->clone(o);
+      if (f->type_ == typeid(*o)) return static_cast<DERIVED*>(f->clone(o));
     ERROR("class not found", typeid(*o).name());
   }
 };
@@ -425,7 +428,7 @@ struct aligned_allocator : public std::allocator<T> {
   T* allocate(size_t s, [[maybe_unused]] const void* hint = 0) {
     void* p;
     if (posix_memalign(&p, A, sizeof(T) * s + 64)) throw std::bad_alloc();
-    return (T*)p;
+    return static_cast<T*>(p);
   }
   void deallocate(T* ptr, [[maybe_unused]] size_t s) { free(ptr); }
   template <class U>

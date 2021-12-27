@@ -112,7 +112,8 @@ void Problem::initialize(moveit::core::RobotModelConstPtr robot_model,
       auto& joint_name = robot_model_->getJointOfVariable(name)->getName();
       for (auto& fixed_joint_name : options->fixed_joints) {
         if (fixed_joint_name == joint_name) {
-          return (ssize_t)-1 - (ssize_t)robot_model_->getVariableIndex(name);
+          return static_cast<ssize_t>(-1) -
+                 static_cast<ssize_t>(robot_model_->getVariableIndex(name));
         }
       }
     }
