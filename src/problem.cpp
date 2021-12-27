@@ -77,10 +77,10 @@ void Problem::initialize(moveit::core::RobotModelConstPtr robot_model,
                          const std::vector<const Goal*>& goals2,
                          const BioIKKinematicsQueryOptions* options) {
   if (robot_model != robot_model_) {
-    modelInfo_ = RobotInfo(robot_model_);
+    modelInfo_ = RobotInfo(robot_model);
 #if (MOVEIT_FCL_VERSION < FCL_VERSION_CHECK(0, 6, 0))
     collision_links_.clear();
-    collision_links_.resize(robot_model_->getLinkModelCount());
+    collision_links_.resize(robot_model->getLinkModelCount());
 #endif
   }
 
