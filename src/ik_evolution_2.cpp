@@ -259,7 +259,8 @@ struct IKEvolution2 : IKBase {
                children_.size() * 4 + 4;
 
     auto* __restrict__ rr = fast_random_gauss_n(s);
-    rr = (const double*)(((size_t)rr + 3) / 4 * 4);
+    rr = reinterpret_cast<const double*>((reinterpret_cast<size_t>(rr) + 3) /
+                                         4 * 4);
 
     /*rmask.resize(s);
     for(auto& m : rmask) m = fast_random() < 0.1 ? 1.0 : 0.0;
@@ -344,8 +345,8 @@ struct IKEvolution2 : IKBase {
       }*/
 
       for (auto quaternion_gene_index : quaternion_genes_) {
-        auto& qpos = (*(Quaternion*)&(
-            children_[child_index].genes[quaternion_gene_index]));
+        auto& qpos = (*reinterpret_cast<Quaternion*>(
+            &children_[child_index].genes[quaternion_gene_index]));
         normalizeFast(qpos);
       }
     }

@@ -77,10 +77,10 @@ void Problem::initialize(moveit::core::RobotModelConstPtr robot_model,
                          const std::vector<const Goal*>& goals2,
                          const BioIKKinematicsQueryOptions* options) {
   if (robot_model != robot_model_) {
-    modelInfo_ = RobotInfo(robot_model_);
+    modelInfo_ = RobotInfo(robot_model);
 #if (MOVEIT_FCL_VERSION < FCL_VERSION_CHECK(0, 6, 0))
     collision_links_.clear();
-    collision_links_.resize(robot_model_->getLinkModelCount());
+    collision_links_.resize(robot_model->getLinkModelCount());
 #endif
   }
 
@@ -112,7 +112,8 @@ void Problem::initialize(moveit::core::RobotModelConstPtr robot_model,
       auto& joint_name = robot_model_->getJointOfVariable(name)->getName();
       for (auto& fixed_joint_name : options->fixed_joints) {
         if (fixed_joint_name == joint_name) {
-          return (ssize_t)-1 - (ssize_t)robot_model_->getVariableIndex(name);
+          return static_cast<ssize_t>(-1) -
+                 static_cast<ssize_t>(robot_model_->getVariableIndex(name));
         }
       }
     }

@@ -909,26 +909,27 @@ class RobotFK_Mutator : public RobotFK_Jacobian {
       if (mutation_approx_mask[itip][variable_index] == 0) continue;
       auto& joint_delta = mutation_approx_frames[itip][variable_index];
       const Frame& tip_frame = input[itip];
-      const double* tip_frame_ptr = (const double*)&tip_frame;
+      const double* tip_frame_ptr = reinterpret_cast<const double*>(&tip_frame);
       __m256d p = _mm256_load_pd(tip_frame_ptr + 0);
       __m256d r = _mm256_load_pd(tip_frame_ptr + 4);
       {
-        auto joint_delta_ptr = (const double* __restrict__) & (joint_delta);
+        auto joint_delta_ptr =
+            reinterpret_cast<const double* __restrict__>(&joint_delta);
         __m256d ff = _mm256_set1_pd(variable_delta);
         p = _mm256_fmadd_pd(ff, _mm256_load_pd(joint_delta_ptr + 0), p);
         r = _mm256_fmadd_pd(ff, _mm256_load_pd(joint_delta_ptr + 4), r);
       }
 #if USE_QUADRATIC_EXTRAPOLATION
       {
-        auto joint_delta_ptr =
-            (const double* __restrict__) &
-            (mutation_approx_quadratics[itip][variable_index]);
+        auto joint_delta_ptr = static_cast<const double* __restrict__>(
+            &mutation_approx_quadratics[itip][variable_index]);
         __m256d ff = _mm256_set1_pd(variable_delta * variable_delta);
         p = _mm256_fmadd_pd(ff, _mm256_load_pd(joint_delta_ptr + 0), p);
       }
 #endif
       auto& tip_mutation = output[itip];
-      double* __restrict__ tip_mutation_ptr = (double*)&tip_mutation;
+      double* __restrict__ tip_mutation_ptr =
+          reinterpret_cast<double*>(&tip_mutation);
       _mm256_store_pd(tip_mutation_ptr + 0, p);
       _mm256_store_pd(tip_mutation_ptr + 4, r);
     }
@@ -946,13 +947,14 @@ class RobotFK_Mutator : public RobotFK_Jacobian {
       if (mutation_approx_mask[itip][variable_index] == 0) continue;
       auto& joint_delta = mutation_approx_frames[itip][variable_index];
       const Frame& tip_frame = input[itip];
-      const double* tip_frame_ptr = (const double*)&tip_frame;
+      const double* tip_frame_ptr = reinterpret_cast<const double*>(&tip_frame);
       __m128d pxy = _mm_load_pd(tip_frame_ptr + 0);
       __m128d pzw = _mm_load_sd(tip_frame_ptr + 2);
       __m128d rxy = _mm_load_pd(tip_frame_ptr + 4);
       __m128d rzw = _mm_load_pd(tip_frame_ptr + 6);
       {
-        auto joint_delta_ptr = (const double* __restrict__) & (joint_delta);
+        auto joint_delta_ptr =
+            reinterpret_cast<const double* __restrict__>(&joint_delta);
         __m128d ff = _mm_set1_pd(variable_delta);
         pxy = _mm_add_pd(pxy, _mm_mul_pd(ff, _mm_load_pd(joint_delta_ptr + 0)));
         pzw = _mm_add_sd(pzw, _mm_mul_sd(ff, _mm_load_sd(joint_delta_ptr + 2)));
@@ -961,16 +963,16 @@ class RobotFK_Mutator : public RobotFK_Jacobian {
       }
 #if USE_QUADRATIC_EXTRAPOLATION
       {
-        auto joint_delta_ptr =
-            (const double* __restrict__) &
-            (mutation_approx_quadratics[itip][variable_index]);
+        auto joint_delta_ptr = static_cast<const double* __restrict__>(
+            &mutation_approx_quadratics[itip][variable_index]);
         __m128d ff = _mm_set1_pd(variable_delta * variable_delta);
         pxy = _mm_add_pd(pxy, _mm_mul_pd(ff, _mm_load_pd(joint_delta_ptr + 0)));
         pzw = _mm_add_sd(pzw, _mm_mul_sd(ff, _mm_load_sd(joint_delta_ptr + 2)));
       }
 #endif
       auto& tip_mutation = output[itip];
-      double* __restrict__ tip_mutation_ptr = (double*)&tip_mutation;
+      double* __restrict__ tip_mutation_ptr =
+          reinterpret_cast<double*>(&tip_mutation);
       _mm_store_pd(tip_mutation_ptr + 0, pxy);
       _mm_store_sd(tip_mutation_ptr + 2, pzw);
       _mm_store_pd(tip_mutation_ptr + 4, rxy);
@@ -1051,7 +1053,7 @@ class RobotFK_Mutator : public RobotFK_Jacobian {
 
       const Frame& tip_frame = tip_frames_aligned[itip];
 
-      const double* tip_frame_ptr = (const double*)&tip_frame;
+      const double* tip_frame_ptr = reinterpret_cast<const double*>(&tip_frame);
       __m256d p0 = _mm256_load_pd(tip_frame_ptr + 0);
       __m256d r0 = _mm256_load_pd(tip_frame_ptr + 4);
 
@@ -1065,8 +1067,8 @@ class RobotFK_Mutator : public RobotFK_Jacobian {
               mutation_values[imutation][vii] - p_variables[variable_index];
 
           {
-            auto joint_delta_ptr =
-                (const double* __restrict__) & (joint_deltas[variable_index]);
+            auto joint_delta_ptr = reinterpret_cast<const double* __restrict__>(
+                &joint_deltas[variable_index]);
             __m256d ff = _mm256_set1_pd(variable_delta);
             p = _mm256_fmadd_pd(ff, _mm256_load_pd(joint_delta_ptr + 0), p);
             r = _mm256_fmadd_pd(ff, _mm256_load_pd(joint_delta_ptr + 4), r);
@@ -1074,9 +1076,8 @@ class RobotFK_Mutator : public RobotFK_Jacobian {
 
 #if USE_QUADRATIC_EXTRAPOLATION
           {
-            auto joint_delta_ptr =
-                (const double* __restrict__) &
-                (mutation_approx_quadratics[itip][variable_index]);
+            auto joint_delta_ptr = reinterpret_cast<const double* __restrict__>(
+                &mutation_approx_quadratics[itip][variable_index]);
             __m256d ff = _mm256_set1_pd(variable_delta * variable_delta);
             p = _mm256_fmadd_pd(ff, _mm256_load_pd(joint_delta_ptr + 0), p);
           }
@@ -1084,7 +1085,8 @@ class RobotFK_Mutator : public RobotFK_Jacobian {
         }
 
         auto& tip_mutation = tip_frame_mutations[imutation][itip];
-        double* __restrict__ tip_mutation_ptr = (double*)&tip_mutation;
+        double* __restrict__ tip_mutation_ptr =
+            reinterpret_cast<double*>(&tip_mutation);
         _mm256_store_pd(tip_mutation_ptr + 0, p);
         _mm256_store_pd(tip_mutation_ptr + 4, r);
       }
@@ -1105,7 +1107,7 @@ class RobotFK_Mutator : public RobotFK_Jacobian {
 
       const Frame& tip_frame = tip_frames_aligned[itip];
 
-      const double* tip_frame_ptr = (const double*)&tip_frame;
+      const double* tip_frame_ptr = reinterpret_cast<const double*>(&tip_frame);
       __m128d pxy0 = _mm_load_pd(tip_frame_ptr + 0);
       __m128d pzw0 = _mm_load_sd(tip_frame_ptr + 2);
       __m128d rxy0 = _mm_load_pd(tip_frame_ptr + 4);
@@ -1123,8 +1125,8 @@ class RobotFK_Mutator : public RobotFK_Jacobian {
               mutation_values[imutation][vii] - p_variables[variable_index];
 
           {
-            auto joint_delta_ptr =
-                (const double* __restrict__) & (joint_deltas[variable_index]);
+            auto joint_delta_ptr = reinterpret_cast<const double* __restrict__>(
+                &joint_deltas[variable_index]);
             __m128d ff = _mm_set1_pd(variable_delta);
             pxy = _mm_add_pd(_mm_mul_pd(ff, _mm_load_pd(joint_delta_ptr + 0)),
                              pxy);
@@ -1138,9 +1140,8 @@ class RobotFK_Mutator : public RobotFK_Jacobian {
 
 #if USE_QUADRATIC_EXTRAPOLATION
           {
-            auto joint_delta_ptr =
-                (const double* __restrict__) &
-                (mutation_approx_quadratics[itip][variable_index]);
+            auto joint_delta_ptr = reinterpret_cast<const double* __restrict__>(
+                &mutation_approx_quadratics[itip][variable_index]);
             __m128d ff = _mm_set1_pd(variable_delta * variable_delta);
             pxy = _mm_add_pd(_mm_mul_pd(ff, _mm_load_pd(joint_delta_ptr + 0)),
                              pxy);
@@ -1151,7 +1152,8 @@ class RobotFK_Mutator : public RobotFK_Jacobian {
         }
 
         auto& tip_mutation = tip_frame_mutations[imutation][itip];
-        double* __restrict__ tip_mutation_ptr = (double*)&tip_mutation;
+        double* __restrict__ tip_mutation_ptr =
+            reinterpret_cast<double*>(&tip_mutation);
         _mm_store_pd(tip_mutation_ptr + 0, pxy);
         _mm_store_sd(tip_mutation_ptr + 2, pzw);
         _mm_store_pd(tip_mutation_ptr + 4, rxy);

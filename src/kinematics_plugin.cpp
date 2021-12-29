@@ -88,7 +88,7 @@ bool isBioIKKinematicsQueryOptions(const void *ptr) {
 const BioIKKinematicsQueryOptions *toBioIKKinematicsQueryOptions(
     const void *ptr) {
   if (isBioIKKinematicsQueryOptions(ptr))
-    return (const BioIKKinematicsQueryOptions *)ptr;
+    return static_cast<const BioIKKinematicsQueryOptions *>(ptr);
   else
     return 0;
 }
@@ -462,7 +462,7 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
     {
       if (!bio_ik_options || !bio_ik_options->replace) {
         for (size_t i = 0; i < tip_frames_.size(); i++) {
-          auto *goal = (PoseGoal *)default_goals[i].get();
+          auto *goal = static_cast<PoseGoal *>(default_goals[i].get());
           goal->setPosition(tipFrames[i].pos);
           goal->setOrientation(tipFrames[i].rot);
         }

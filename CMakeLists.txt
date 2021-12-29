@@ -47,6 +47,7 @@ find_package(moveit_core REQUIRED)
 find_package(moveit_ros_planning REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(backward_ros REQUIRED)
 
 # TODO(tylerjw): re-enable these
 # find_package(OpenMP)
