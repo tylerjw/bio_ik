@@ -17,13 +17,14 @@ jobs:
       fail-fast: false
       matrix:
         env:
-          - NAME: "rolling-testing-ccov"
-            ROS_REPO: testing
+          # TODO(tylerjw): re-enable testing on testing once moveit is fixed on buildfarm
+          # - NAME: "rolling-testing-ccov"
+          #   ROS_REPO: testing
             # TODO(tylerjw): enable coverage once there is a test
             # TARGET_CMAKE_ARGS: -DENABLE_COVERAGE=ON
             # CCOV: true
           - NAME: "rolling-main"
-            ROS_REPO: main
+            # ROS_REPO: main
           - NAME: "address-leak-ub-sanitizers"
             TARGET_CMAKE_ARGS: >
               -DCMAKE_BUILD_TYPE=Debug
@@ -52,6 +53,10 @@ jobs:
 
     env:
       ROS_DISTRO: rolling
+      # TODO(tylerjw): re-enable testing on testing once moveit is fixed on buildfarm
+      ROS_REPO: main
+      UPSTREAM_WORKSPACE: upstream.repos
+      UPSTREAM_CMAKE_ARGS: -DCMAKE_BUILD_TYPE=Release
       # Clear the ccache stats before and log the stats after the build
       AFTER_SETUP_CCACHE: ccache --zero-stats --max-size=10.0G
       AFTER_BUILD_TARGET_WORKSPACE: ccache --show-stats
@@ -62,6 +67,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Cache upstream workspace
+        uses: pat-s/always-upload-cache@v2.1.5
+        with:
+          path: ${{ env.BASEDIR }}/upstream_ws
+          key: ${{ env.CACHE_PREFIX }}-${{ github.run_id }}
+          restore-keys: ${{ env.CACHE_PREFIX }}
+        env:
+          CACHE_PREFIX: upstream_ws-${{ matrix.env.NAME }}-${{ hashFiles('upatream.repos', '.github/workflows/ci.yaml') }}
       # The target directory cache doesn't include the source directory because
       # that comes from the checkout.  See "prepare target_ws for cache" task below
       - name: Cache target workspace

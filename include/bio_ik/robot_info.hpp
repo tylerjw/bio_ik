@@ -67,7 +67,8 @@ class RobotInfo {
 
       bool bounded = bounds.position_bounded_;
 
-      auto* joint_model = model->getJointOfVariable(variables.size());
+      auto* joint_model =
+          model->getJointOfVariable(static_cast<int>(variables.size()));
       if (dynamic_cast<const moveit::core::RevoluteJointModel*>(joint_model)) {
         if (bounds.max_position_ - bounds.min_position_ >= 2 * M_PI * 0.9999) {
           bounded = false;
@@ -93,7 +94,7 @@ class RobotInfo {
 
     for (size_t ivar = 0; ivar < model->getVariableCount(); ivar++) {
       variable_joint_types.push_back(
-          model->getJointOfVariable(ivar)->getType());
+          model->getJointOfVariable(static_cast<int>(ivar))->getType());
     }
   }
 

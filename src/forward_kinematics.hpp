@@ -200,7 +200,7 @@ class RobotJointEvaluator {
 
     joint_axis_list_.clear();
     joint_axis_list_.resize(robot_model_->getJointModelCount());
-    for (size_t i = 0; i < joint_axis_list_.size(); i++) {
+    for (size_t i = 0; i < joint_axis_list_.size(); ++i) {
       auto* joint_model = robot_model_->getJointModel(i);
       if (auto* j = dynamic_cast<const moveit::core::RevoluteJointModel*>(
               joint_model))
@@ -565,9 +565,12 @@ class RobotFK_Jacobian : public RobotFK_Fast {
     // double half_step_size = step_size * 0.5;
     double inv_step_size = 1.0 / step_size;
     auto tip_count = tip_frames.size();
-    jacobian.resize(tip_count * 6, variable_indices.size());
-    for (size_t icol = 0; icol < variable_indices.size(); icol++) {
-      for (size_t itip = 0; itip < tip_count; itip++) {
+    jacobian.resize(static_cast<Eigen::Index>(tip_count * 6),
+                    static_cast<Eigen::Index>(variable_indices.size()));
+    for (Eigen::Index icol = 0;
+         icol < static_cast<Eigen::Index>(variable_indices.size()); ++icol) {
+      for (Eigen::Index itip = 0; itip < static_cast<Eigen::Index>(tip_count);
+           ++itip) {
         jacobian(itip * 6 + 0, icol) = 0;
         jacobian(itip * 6 + 1, icol) = 0;
         jacobian(itip * 6 + 2, icol) = 0;
@@ -578,7 +581,8 @@ class RobotFK_Jacobian : public RobotFK_Fast {
     }
     for (size_t icol = 0; icol < variable_indices.size(); icol++) {
       auto ivar = variable_indices[icol];
-      auto* var_joint_model = robot_model_->getJointOfVariable(ivar);
+      auto* var_joint_model =
+          robot_model_->getJointOfVariable(static_cast<int>(ivar));
       if (var_joint_model->getMimic()) continue;
       for (auto* joint_model :
            joint_dependencies[var_joint_model->getJointIndex()]) {
@@ -613,13 +617,15 @@ class RobotFK_Jacobian : public RobotFK_Fast {
 
               vel = vel.cross(rot);
 
-              jacobian(itip * 6 + 0, icol) += vel.x() * scale;
-              jacobian(itip * 6 + 1, icol) += vel.y() * scale;
-              jacobian(itip * 6 + 2, icol) += vel.z() * scale;
+              auto eigen_itip = static_cast<Eigen::Index>(itip);
+              auto eigen_icol = static_cast<Eigen::Index>(icol);
+              jacobian(eigen_itip * 6 + 0, eigen_icol) += vel.x() * scale;
+              jacobian(eigen_itip * 6 + 1, eigen_icol) += vel.y() * scale;
+              jacobian(eigen_itip * 6 + 2, eigen_icol) += vel.z() * scale;
 
-              jacobian(itip * 6 + 3, icol) += rot.x() * scale;
-              jacobian(itip * 6 + 4, icol) += rot.y() * scale;
-              jacobian(itip * 6 + 5, icol) += rot.z() * scale;
+              jacobian(eigen_itip * 6 + 3, eigen_icol) += rot.x() * scale;
+              jacobian(eigen_itip * 6 + 4, eigen_icol) += rot.y() * scale;
+              jacobian(eigen_itip * 6 + 5, eigen_icol) += rot.z() * scale;
 
               // LOG("a", vel.x(), vel.y(), vel.z(), rot.x(), rot.y(), rot.z());
             }
@@ -641,9 +647,11 @@ class RobotFK_Jacobian : public RobotFK_Fast {
               auto v = axis;
               quat_mul_vec(q, axis, v);
 
-              jacobian(itip * 6 + 0, icol) += v.x() * scale;
-              jacobian(itip * 6 + 1, icol) += v.y() * scale;
-              jacobian(itip * 6 + 2, icol) += v.z() * scale;
+              auto eigen_itip = static_cast<Eigen::Index>(itip);
+              auto eigen_icol = static_cast<Eigen::Index>(icol);
+              jacobian(eigen_itip * 6 + 0, eigen_icol) += v.x() * scale;
+              jacobian(eigen_itip * 6 + 1, eigen_icol) += v.y() * scale;
+              jacobian(eigen_itip * 6 + 2, eigen_icol) += v.z() * scale;
 
               // LOG("a", v.x(), v.y(), v.z(), 0, 0, 0);
             }
@@ -677,17 +685,19 @@ class RobotFK_Jacobian : public RobotFK_Fast {
               Frame tip_frame_2;
               change(link_frame_2, link_frame_1, tip_frame_1, tip_frame_2);
               auto twist = frameTwist(tip_frame_1, tip_frame_2);
-              jacobian(itip * 6 + 0, icol) +=
+              auto eigen_itip = static_cast<Eigen::Index>(itip);
+              auto eigen_icol = static_cast<Eigen::Index>(icol);
+              jacobian(eigen_itip * 6 + 0, eigen_icol) +=
                   twist.vel.x() * inv_step_size * scale;
-              jacobian(itip * 6 + 1, icol) +=
+              jacobian(eigen_itip * 6 + 1, eigen_icol) +=
                   twist.vel.y() * inv_step_size * scale;
-              jacobian(itip * 6 + 2, icol) +=
+              jacobian(eigen_itip * 6 + 2, eigen_icol) +=
                   twist.vel.z() * inv_step_size * scale;
-              jacobian(itip * 6 + 3, icol) +=
+              jacobian(eigen_itip * 6 + 3, eigen_icol) +=
                   twist.rot.x() * inv_step_size * scale;
-              jacobian(itip * 6 + 4, icol) +=
+              jacobian(eigen_itip * 6 + 4, eigen_icol) +=
                   twist.rot.y() * inv_step_size * scale;
-              jacobian(itip * 6 + 5, icol) +=
+              jacobian(eigen_itip * 6 + 5, eigen_icol) +=
                   twist.rot.z() * inv_step_size * scale;
             }
             continue;
@@ -795,18 +805,25 @@ class RobotFK_Mutator : public RobotFK_Jacobian {
         for (size_t itip = 0; itip < tip_count; itip++) {
           {
             Vector3 t;
-            t.setX(mutation_approx_jacobian(itip * 6 + 0, icol));
-            t.setY(mutation_approx_jacobian(itip * 6 + 1, icol));
-            t.setZ(mutation_approx_jacobian(itip * 6 + 2, icol));
+            auto eigen_itip = static_cast<Eigen::Index>(itip);
+            auto eigen_icol = static_cast<Eigen::Index>(icol);
+            t.setX(mutation_approx_jacobian(eigen_itip * 6 + 0, eigen_icol));
+            t.setY(mutation_approx_jacobian(eigen_itip * 6 + 1, eigen_icol));
+            t.setZ(mutation_approx_jacobian(eigen_itip * 6 + 2, eigen_icol));
             quat_mul_vec(tip_frames[itip].rot, t, t);
             mutation_approx_frames[itip][ivar].pos = t;
           }
 
           {
             Quaternion q;
-            q.setX(mutation_approx_jacobian(itip * 6 + 3, icol) * 0.5);
-            q.setY(mutation_approx_jacobian(itip * 6 + 4, icol) * 0.5);
-            q.setZ(mutation_approx_jacobian(itip * 6 + 5, icol) * 0.5);
+            auto eigen_itip = static_cast<Eigen::Index>(itip);
+            auto eigen_icol = static_cast<Eigen::Index>(icol);
+            q.setX(mutation_approx_jacobian(eigen_itip * 6 + 3, eigen_icol) *
+                   0.5);
+            q.setY(mutation_approx_jacobian(eigen_itip * 6 + 4, eigen_icol) *
+                   0.5);
+            q.setZ(mutation_approx_jacobian(eigen_itip * 6 + 5, eigen_icol) *
+                   0.5);
             q.setW(1.0);
             quat_mul_quat(tip_frames[itip].rot, q, q);
             q -= tip_frames[itip].rot;

@@ -127,7 +127,7 @@ struct IKBase : Random {
   RobotFK model_;
   RobotInfo modelInfo_;
   IKParams params_;
-  int thread_index_;
+  size_t thread_index_;
   Problem problem_;
   std::vector<Frame> null_tip_frames_;
   volatile int canceled_;
@@ -139,7 +139,7 @@ struct IKBase : Random {
   virtual void setParams([[maybe_unused]] const IKParams&) {}
 
   IKBase(const IKParams& params)
-      : Random(params.random_seed),
+      : Random(static_cast<long unsigned int>(params.random_seed)),
         model_(params.robot_model),
         modelInfo_(params.robot_model),
         params_(params) {

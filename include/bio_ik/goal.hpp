@@ -65,7 +65,7 @@ class GoalContext {
     if (j >= 0)
       return active_variable_positions_[j];
     else
-      return initial_guess_[-1 - j];
+      return initial_guess_[static_cast<size_t>(std::labs(j))];
   }
   inline const Frame& getProblemLinkFrame(size_t i) const {
     return tip_link_frames_[i];

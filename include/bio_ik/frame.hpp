@@ -43,7 +43,7 @@ typedef tf2::Vector3 Vector3;
 
 struct Frame {
   Vector3 pos;
-  double __padding[4 - (sizeof(Vector3) / sizeof(double))];
+  std::array<double, 4 - (sizeof(Vector3) / sizeof(double))> __padding;
   Quaternion rot;
   inline Frame() {}
   inline Frame(const tf2::Vector3& _pos, const tf2::Quaternion& _rot)
