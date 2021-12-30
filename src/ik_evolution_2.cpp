@@ -31,17 +31,17 @@
 #include <moveit/robot_model/robot_model.h>  // for RobotModel, RobotModelCo...
 #include <stddef.h>                          // for size_t
 
-#include <algorithm>  // for sort
-#include <memory>     // for allocator, __shared_ptr_...
-#include <utility>    // for swap
-#include <vector>     // for vector, vector::size_type
+#include <algorithm>                      // for sort
+#include <bio_ik/forward_kinematics.hpp>  // for RobotFK
+#include <bio_ik/ik_base.hpp>             // for IKBase, IKFactory
+#include <bio_ik/problem.hpp>             // for Problem
+#include <bio_ik/utils.hpp>               // for aligned_vector, BLOCKPRO...
+#include <memory>                         // for allocator, __shared_ptr_...
+#include <utility>                        // for swap
+#include <vector>                         // for vector, vector::size_type
 
-#include "bio_ik/frame.hpp"        // for Frame, normalizeFast
-#include "bio_ik/robot_info.hpp"   // for RobotInfo
-#include "forward_kinematics.hpp"  // for RobotFK
-#include "ik_base.hpp"             // for IKBase, IKFactory
-#include "problem.hpp"             // for Problem
-#include "utils.hpp"               // for aligned_vector, BLOCKPRO...
+#include "bio_ik/frame.hpp"       // for Frame, normalizeFast
+#include "bio_ik/robot_info.hpp"  // for RobotInfo
 
 #ifdef ENABLE_CPP_OPTLIB
 #include "cppoptlib/solver/lbfgssolver.h"

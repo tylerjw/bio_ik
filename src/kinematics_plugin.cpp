@@ -35,15 +35,15 @@
 #include <Eigen/Core>
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
+#include <bio_ik/forward_kinematics.hpp>
 #include <bio_ik/goal.hpp>
+#include <bio_ik/ik_base.hpp>
+#include <bio_ik/problem.hpp>
+#include <bio_ik/utils.hpp>
 #include <kdl_parser/kdl_parser.hpp>
 #include <pluginlib/class_list_macros.hpp>
 
-#include "forward_kinematics.hpp"
-#include "ik_base.hpp"
 #include "ik_parallel.hpp"
-#include "problem.hpp"
-#include "utils.hpp"
 
 // #include <tf2_eigen_kdl/tf2_eigen_kdl.hpp>
 #include <tf2_eigen/tf2_eigen.hpp>
@@ -211,7 +211,7 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
     node_->get_parameter_or("mode", ikparams.solver_class_name,
                             std::string("bio2_memetic"));
     node_->get_parameter_or("counter", ikparams.enable_counter, false);
-    node_->get_parameter_or("threads", ikparams.thread_count, 0);
+    node_->get_parameter_or("threads", ikparams.thread_count, 1);
     node_->get_parameter_or("random_seed", ikparams.random_seed,
                             static_cast<int>(std::random_device()()));
 
