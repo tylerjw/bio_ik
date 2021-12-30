@@ -33,6 +33,7 @@
 #include <moveit/robot_state/robot_state.h>
 
 #include <bio_ik/goal.hpp>
+#include <limits>
 
 namespace bio_ik {
 
@@ -83,7 +84,7 @@ class RobotInfo {
 
       info.span = info.max - info.min;
 
-      if (!(info.span >= 0 && info.span < FLT_MAX)) info.span = 1;
+      if (!(info.span >= 0 && info.span < DBL_MAX)) info.span = 1;
 
       info.max_velocity = bounds.max_velocity_;
       info.max_velocity_rcp =

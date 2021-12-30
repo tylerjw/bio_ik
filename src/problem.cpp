@@ -37,12 +37,12 @@
 #include <tf2/LinearMath/Vector3.h>                     // for operator-
 
 #include <bio_ik/goal_types.hpp>  // for PoseGoal, Ori...
-#include <cfloat>                 // for DBL_MAX, FLT_MAX
 #include <cmath>                  // for isfinite, fmin
 #include <cstddef>                // for size_t
 #include <initializer_list>       // for initializer_list
 #include <iosfwd>                 // for ostream
 #include <kdl/frames.hpp>         // for Frame, Rotation
+#include <limits>                 // for DBL_MAX
 #include <memory>                 // for __shared_ptr_...
 #include <string>                 // for operator==
 #include <vector>                 // for vector
@@ -67,7 +67,6 @@ size_t Problem::addTipLink(const moveit::core::LinkModel* link_model) {
         static_cast<ssize_t>(tip_link_indices.size());
     tip_link_indices.push_back(link_model->getLinkIndex());
   }
-  assert(link_tip_indices_[link_model->getLinkIndex()] >= 0);
   return static_cast<size_t>(link_tip_indices_[link_model->getLinkIndex()]);
 }
 
@@ -95,11 +94,11 @@ void Problem::initialize(moveit::core::RobotModelConstPtr robot_model,
     dpos_ = params_.dpos;
     drot_ = params_.drot;
     dtwist_ = params_.dtwist;
-    if (dpos_ < 0.0 || dpos_ >= FLT_MAX || !std::isfinite(dpos_))
+    if (dpos_ < 0.0 || dpos_ >= DBL_MAX || !std::isfinite(dpos_))
       dpos_ = DBL_MAX;
-    if (drot_ < 0.0 || drot_ >= FLT_MAX || !std::isfinite(drot_))
+    if (drot_ < 0.0 || drot_ >= DBL_MAX || !std::isfinite(drot_))
       drot_ = DBL_MAX;
-    if (dtwist_ < 0.0 || dtwist_ >= FLT_MAX || !std::isfinite(dtwist_))
+    if (dtwist_ < 0.0 || dtwist_ >= DBL_MAX || !std::isfinite(dtwist_))
       dtwist_ = DBL_MAX;
   }
 
