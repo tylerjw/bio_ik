@@ -111,9 +111,9 @@ struct IKEvolution1 : IKBase {
         for (auto* link_model = robot_model->getLinkModel(tip_name); link_model;
              link_model = link_model->getParentLinkModel()) {
           auto* joint_model = link_model->getParentJointModel();
-          int vmin = joint_model->getFirstVariableIndex();
-          int vmax = vmin + joint_model->getVariableCount();
-          for (int vi = vmin; vi < vmax; vi++)
+          auto vmin = joint_model->getFirstVariableIndex();
+          auto vmax = vmin + joint_model->getVariableCount();
+          for (size_t vi = vmin; vi < vmax; vi++)
             chain_lengths_2_[tip_index][vi] = chain_length;
           chain_length +=
               Frame(link_model->getJointOriginTransform()).pos.length();
@@ -135,8 +135,8 @@ struct IKEvolution1 : IKBase {
   HeuristicErrorTree heuristicErrorTree_;
   std::vector<double> solution_;
   std::vector<Individual> population_;
-  int populationSize_;
-  int eliteCount_;
+  size_t populationSize_;
+  size_t eliteCount_;
   std::vector<Individual*> tempPool_;
   std::vector<Individual> tempOffspring_;
   std::vector<double> initialGuess_;
@@ -147,8 +147,8 @@ struct IKEvolution1 : IKBase {
 
   void setParams(const IKParams& params) {
     opt_no_wipeout_ = params.opt_no_wipeout;
-    populationSize_ = params.population_size;
-    eliteCount_ = params.elite_count;
+    populationSize_ = static_cast<size_t>(params.population_size);
+    eliteCount_ = static_cast<size_t>(params.elite_count);
     linear_fitness_ = params.linear_fitness;
   }
 
@@ -316,7 +316,7 @@ struct IKEvolution1 : IKBase {
   void computeExtinctions() {
     double min = population_.front().fitness;
     double max = population_.back().fitness;
-    for (size_t i = 0; i < static_cast<size_t>(populationSize_); ++i) {
+    for (size_t i = 0; i < populationSize_; ++i) {
       double grading =
           static_cast<double>(i) / static_cast<double>(populationSize_ - 1);
       population_[i].extinction =
@@ -343,7 +343,7 @@ struct IKEvolution1 : IKBase {
   double getMutationProbability(const Individual& parentA,
                                 const Individual& parentB) {
     double extinction = 0.5 * (parentA.extinction + parentB.extinction);
-    double inverse = 1.0 / parentA.genes.size();
+    double inverse = 1.0 / static_cast<double>(parentA.genes.size());
     return extinction * (1.0 - inverse) + inverse;
   }
 
@@ -355,7 +355,7 @@ struct IKEvolution1 : IKBase {
          });
   }
 
-  double bounce(double v, int i) {
+  double bounce(double v, size_t i) {
     double c = clip(v, i);
     v = c - (v - c) * 2;
     // v = c + c - v;
@@ -444,7 +444,8 @@ struct IKEvolution1 : IKBase {
 
     // model_.incrementalEnd();
 
-    individual.fitness = fitness_sum / individual.genes.size();
+    individual.fitness =
+        fitness_sum / static_cast<double>(individual.genes.size());
   }
 
   IKEvolution1(const IKParams& p)
@@ -471,7 +472,7 @@ struct IKEvolution1 : IKBase {
       p.fitness = computeFitness(p.genes, false);
     }
 
-    for (int i = 1; i < populationSize_; i++) {
+    for (size_t i = 1; i < populationSize_; ++i) {
       auto& p = population_[i];
       p.genes = solution_;
       p.gradients.clear();
@@ -514,7 +515,7 @@ struct IKEvolution1 : IKBase {
     auto& offspring = tempOffspring_;
     offspring = population_;
 
-    for (size_t i = 0; i < static_cast<size_t>(eliteCount_); ++i) {
+    for (size_t i = 0; i < eliteCount_; ++i) {
       offspring[i] = population_[i];
       exploit(offspring[i]);
     }
@@ -523,8 +524,7 @@ struct IKEvolution1 : IKBase {
     pool.resize(populationSize_);
     iota(pool.begin(), pool.end(), &population_[0]);
 
-    for (size_t i = eliteCount_; i < static_cast<size_t>(populationSize_);
-         ++i) {
+    for (size_t i = eliteCount_; i < populationSize_; ++i) {
       if (pool.size() > 0) {
         auto& parentA = *select(pool);
         auto& parentB = *select(pool);

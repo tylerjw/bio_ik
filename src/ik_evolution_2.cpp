@@ -117,7 +117,8 @@ struct IKEvolution2 : IKBase {
     for (size_t igene = 0; igene < local_problem.active_variables.size();
          igene++) {
       size_t ivar = local_problem.active_variables[igene];
-      auto* joint_model = params_.robot_model->getJointOfVariable(ivar);
+      auto* joint_model =
+          params_.robot_model->getJointOfVariable(static_cast<int>(ivar));
       if (static_cast<size_t>(joint_model->getFirstVariableIndex() + 3) != ivar)
         continue;
       if (joint_model->getType() != moveit::core::JointModel::FLOATING)
@@ -272,7 +273,7 @@ struct IKEvolution2 : IKBase {
       auto& parent = population[0];
       auto& parent2 = population[1];
       double fmix = (child_index % 2 == 0) * 0.2;
-      double gradient_factor = child_index % 3;
+      double gradient_factor = static_cast<double>(child_index % 3);
 
       auto __attribute__((aligned(32)))* __restrict__ parent_genes =
           parent.genes.data();
@@ -402,10 +403,12 @@ struct IKEvolution2 : IKBase {
             }
             {
               BLOCKPROFILER("pre-selection sort");
-              std::sort(children_.begin() + population.size(), children_.end(),
-                        [](const Individual& a, const Individual& b) {
-                          return a.fitness < b.fitness;
-                        });
+              std::sort(
+                  children_.begin() + static_cast<long int>(population.size()),
+                  children_.end(),
+                  [](const Individual& a, const Individual& b) {
+                    return a.fitness < b.fitness;
+                  });
             }
           }
 

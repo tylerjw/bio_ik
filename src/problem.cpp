@@ -63,10 +63,12 @@ enum class Problem::GoalType {
 
 size_t Problem::addTipLink(const moveit::core::LinkModel* link_model) {
   if (link_tip_indices_[link_model->getLinkIndex()] < 0) {
-    link_tip_indices_[link_model->getLinkIndex()] = tip_link_indices.size();
+    link_tip_indices_[link_model->getLinkIndex()] =
+        static_cast<ssize_t>(tip_link_indices.size());
     tip_link_indices.push_back(link_model->getLinkIndex());
   }
-  return link_tip_indices_[link_model->getLinkIndex()];
+  assert(link_tip_indices_[link_model->getLinkIndex()] >= 0);
+  return static_cast<size_t>(link_tip_indices_[link_model->getLinkIndex()]);
 }
 
 Problem::Problem() : ros_params_initrd_(false) {}
@@ -119,11 +121,11 @@ void Problem::initialize(moveit::core::RobotModelConstPtr robot_model,
     }
     for (size_t i = 0; i < active_variables.size(); i++)
       if (name == robot_model_->getVariableNames()[active_variables[i]])
-        return i;
+        return static_cast<ssize_t>(i);
     for (auto& n : joint_model_group_->getVariableNames()) {
       if (n == name) {
         active_variables.push_back(robot_model_->getVariableIndex(name));
-        return active_variables.size() - 1;
+        return static_cast<ssize_t>(active_variables.size()) - 1;
       }
     }
     ERROR("joint variable not found", name);
@@ -219,7 +221,8 @@ void Problem::initialize(moveit::core::RobotModelConstPtr robot_model,
       }
     } else {
       for (size_t i = 0; i < active_variables.size(); i++)
-        minimal_displacement_factors_[i] = 1.0 / active_variables.size();
+        minimal_displacement_factors_[i] =
+            1.0 / static_cast<double>(active_variables.size());
     }
   }
 

@@ -94,7 +94,7 @@ template <class T, class... AA>
 inline void vprint(std::ostream& s, const T& a, const AA&... aa) {
   s << a << " ";
   vprint(s, aa...);
-};
+}
 
 #define LOG2(...) vprint(LOG_STREAM, "ikbio ", __VA_ARGS__)
 
@@ -121,9 +121,9 @@ inline void vprint(std::ostream& s, const T& a, const AA&... aa) {
     vprint(ss, __VA_ARGS__);            \
     throw std::runtime_error(ss.str()); \
   }
-  // #define ERROR(...) { LOG_ALWAYS(__VA_ARGS__); std::raise(SIGINT); }
+// #define ERROR(...) { LOG_ALWAYS(__VA_ARGS__); std::raise(SIGINT); }
 
-  // profiler
+// profiler
 
 #ifdef ENABLE_PROFILER
 
@@ -301,31 +301,33 @@ struct Profiler {
 
 #endif
 
-__attribute__((always_inline)) inline double mix(double a, double b, double f) {
+template <typename T>
+__attribute__((always_inline)) inline T mix(T a, T b, T f) {
   return a * (1.0 - f) + b * f;
 }
 
-__attribute__((always_inline)) inline double clamp(double v, double lo,
-                                                   double hi) {
+template <typename T>
+__attribute__((always_inline)) inline T clamp(T v, T lo, T hi) {
   if (v < lo) v = lo;
   if (v > hi) v = hi;
   return v;
 }
 
-__attribute__((always_inline)) inline double clamp2(double v, double lo,
-                                                    double hi) {
+template <typename T>
+__attribute__((always_inline)) inline T clamp2(T v, T lo, T hi) {
   if (__builtin_expect(v < lo, 0)) v = lo;
   if (__builtin_expect(v > hi, 0)) v = hi;
   return v;
 }
 
-__attribute__((always_inline)) inline double smoothstep(float a, float b,
-                                                        float v) {
+template <typename T>
+__attribute__((always_inline)) inline T smoothstep(T a, T b, T v) {
   v = clamp((v - a) / (b - a), 0.0, 1.0);
   return v * v * (3.0 - 2.0 * v);
 }
 
-__attribute__((always_inline)) inline double sign(double f) {
+template <typename T>
+__attribute__((always_inline)) inline T sign(T f) {
   if (f < 0.0) f = -1.0;
   if (f > 0.0) f = +1.0;
   return f;

@@ -48,7 +48,7 @@ class ParallelExecutor {
       : exit_(false),
         threads_(thread_count),
         function_(function),
-        barrier_(thread_count) {
+        barrier_(static_cast<unsigned int>(thread_count)) {
     for (size_t i = 1; i < thread_count; ++i) {
       std::thread t([this, i]() {
         while (true) {
@@ -105,7 +105,7 @@ struct IKParallel {
     solvers_.emplace_back(IKFactory::create(name, params_));
     thread_count_ = solvers_.front()->concurrency();
     if (params_.thread_count) {
-      thread_count_ = params_.thread_count;
+      thread_count_ = static_cast<size_t>(params_.thread_count);
     }
     while (solvers_.size() < thread_count_)
       solvers_.emplace_back(IKFactory::clone(solvers_.front().get()));

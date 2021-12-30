@@ -145,6 +145,10 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
     return false;
   }
 
+  // Using the non-pure virtual getPositionIK and not overriding.
+  using kinematics::KinematicsBase::getPositionIK;
+
+  // Overriding the pure virtual getPositionIK
   virtual bool getPositionIK(
       [[maybe_unused]] const geometry_msgs::msg::Pose &,
       [[maybe_unused]] const std::vector<double> &,
@@ -399,7 +403,7 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
     // overwrite used variables with seed state
     solution = ik_seed_state;
     {
-      int i = 0;
+      size_t i = 0;
       for (auto &joint_name : getJointNames()) {
         auto *joint_model = robot_model_->getJointModel(joint_name);
         if (!joint_model) continue;
