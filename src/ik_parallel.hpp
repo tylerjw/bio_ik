@@ -129,7 +129,8 @@ struct IKParallel {
       return std::move(*result);
     };
 
-    thread_count_ = static_cast<size_t>(params_.thread_count);
+    solvers_.emplace_back(create_solver());
+    thread_count_ = solvers_.front()->concurrency();
     while (solvers_.size() < thread_count_)
       solvers_.emplace_back(create_solver());
 
