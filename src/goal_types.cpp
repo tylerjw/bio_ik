@@ -142,10 +142,10 @@ void TouchGoal::describe(GoalContext& context) const {
           auto buffer = operator new(sizeof(fcl::Convex));
           static_cast<fcl::Convex*>(buffer)->num_points =
               static_cast<int>(s.points.size());
-          return static_cast<fcl::Convex*>(new (buffer) fcl::Convex(
+          return new (buffer) fcl::Convex(
               s.plane_normals.data(), s.plane_dis.data(),
               static_cast<int>(s.plane_normals.size()), s.points.data(),
-              static_cast<int>(s.points.size()), s.polygons.data()));
+              static_cast<int>(s.points.size()), s.polygons.data());
         }();
 
         s.geometry = decltype(s.geometry)(new collision_detection::FCLGeometry(

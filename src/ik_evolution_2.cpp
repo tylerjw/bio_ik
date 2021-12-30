@@ -119,8 +119,7 @@ struct IKEvolution2 : IKBase {
       size_t ivar = local_problem.active_variables[igene];
       auto* joint_model =
           params_.robot_model->getJointOfVariable(static_cast<int>(ivar));
-      if (static_cast<size_t>(joint_model->getFirstVariableIndex() + 3) != ivar)
-        continue;
+      if (joint_model->getFirstVariableIndex() + 3 != ivar) continue;
       if (joint_model->getType() != moveit::core::JointModel::FLOATING)
         continue;
       quaternion_genes_.push_back(igene);
