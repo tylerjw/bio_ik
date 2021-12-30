@@ -200,8 +200,8 @@ class RobotJointEvaluator {
 
     joint_axis_list_.clear();
     joint_axis_list_.resize(robot_model_->getJointModelCount());
-    for (size_t i = 0; i < joint_axis_list_.size(); i++) {
-      auto* joint_model = robot_model_->getJointModel(static_cast<int>(i));
+    for (size_t i = 0; i < joint_axis_list_.size(); ++i) {
+      auto* joint_model = robot_model_->getJointModel(i);
       if (auto* j = dynamic_cast<const moveit::core::RevoluteJointModel*>(
               joint_model))
         joint_axis_list_[i] =
@@ -1491,8 +1491,7 @@ class RobotFK_MoveIt {
     tipFrames.resize(tip_link_indices.size());
     tipLinks.resize(tip_link_indices.size());
     for (size_t i = 0; i < tip_link_indices.size(); i++)
-      tipLinks[i] =
-          robot_model_->getLinkModel(static_cast<int>(tip_link_indices[i]));
+      tipLinks[i] = robot_model_->getLinkModel(tip_link_indices[i]);
   }
   void applyConfiguration(const std::vector<double>& jj0) {
     BLOCKPROFILER("RobotFK_MoveIt applyConfiguration");
