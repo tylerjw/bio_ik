@@ -32,19 +32,19 @@
 #include <moveit/robot_model/robot_model.h>  // for RobotModelConstPtr, Robo...
 #include <stddef.h>                          // for size_t
 
-#include <algorithm>           // for remove, sort
-#include <ext/alloc_traits.h>  // for __alloc_traits<>::value_...
-#include <memory>              // for allocator_traits<>::value...
-#include <numeric>             // for iota
-#include <string>              // for string
-#include <vector>              // for vector<>::iterator, vector
+#include <algorithm>                      // for remove, sort
+#include <bio_ik/forward_kinematics.hpp>  // for RobotFK
+#include <bio_ik/ik_base.hpp>             // for IKBase, IKFactory
+#include <bio_ik/problem.hpp>             // for Problem
+#include <bio_ik/utils.hpp>               // for mix, FNPROFILER, IKParams
+#include <ext/alloc_traits.h>             // for __alloc_traits<>::value_...
+#include <memory>                         // for allocator_traits<>::value...
+#include <numeric>                        // for iota
+#include <string>                         // for string
+#include <vector>                         // for vector<>::iterator, vector
 
-#include "bio_ik/frame.hpp"        // for Frame, Vector3, Quaternion
-#include "bio_ik/robot_info.hpp"   // for RobotInfo
-#include "forward_kinematics.hpp"  // for RobotFK
-#include "ik_base.hpp"             // for IKBase, IKFactory
-#include "problem.hpp"             // for Problem
-#include "utils.hpp"               // for mix, FNPROFILER, IKParams
+#include "bio_ik/frame.hpp"       // for Frame, Vector3, Quaternion
+#include "bio_ik/robot_info.hpp"  // for RobotInfo
 
 namespace bio_ik {
 
@@ -217,7 +217,7 @@ struct IKEvolution1 : IKBase {
         // if(length) heuristic_error += ta.rot.angle(tb.rot) * length *
         // influence;
 
-        if (length) {
+        if (length != 0) {
           heuristic_error += ta.pos.distance(tb.pos) * influence * 0.5;
           heuristic_error += ta.rot.angle(tb.rot) * length * influence * 0.5;
         } else {
@@ -229,7 +229,7 @@ struct IKEvolution1 : IKBase {
         // if(length) heuristic_error += ta.pos.distance(tb.pos) / length *
         // influence; heuristic_error += ta.rot.angle(tb.rot) * influence;
 
-        if (length) {
+        if (length != 0) {
           heuristic_error += ta.pos.distance(tb.pos) / length * influence * 0.5;
           heuristic_error += ta.rot.angle(tb.rot) * influence * 0.5;
         } else {

@@ -37,11 +37,11 @@
 
 #include <bio_ik/goal.hpp>        // for GoalCon...
 #include <bio_ik/robot_info.hpp>  // for RobotInfo
+#include <bio_ik/utils.hpp>       // for IKParams
 #include <memory>                 // for shared_ptr
 #include <vector>                 // for vector
 
 #include "bio_ik/frame.hpp"  // for Vector3
-#include "utils.hpp"         // for IKParams
 namespace moveit {
 namespace core {
 class JointModelGroup;

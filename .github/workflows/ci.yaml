@@ -35,7 +35,6 @@ jobs:
             TARGET_CMAKE_ARGS: >
               -DCMAKE_BUILD_TYPE=Debug
               -DENABLE_SANITIZER_THREAD=ON
-            ADDITIONAL_DEBS: clang-10
             CC: clang-10
             CXX: clang++-10
             BEFORE_RUN_TARGET_TEST_EMBED: export ASAN_SYMBOLIZER_PATH=$(which llvm-symbolizer-10)
@@ -49,19 +48,23 @@ jobs:
           #   TARGET_CMAKE_ARGS: >
           #     -DENABLE_CLANG_TIDY=ON
           #     -DENABLE_INCLUDE_WHAT_YOU_USE=ON
-          #   ADDITIONAL_DEBS: clang-tidy iwyu clang-9
 
     env:
       ROS_DISTRO: rolling
       # TODO(tylerjw): re-enable testing on testing once moveit is fixed on buildfarm
       ROS_REPO: main
       UPSTREAM_WORKSPACE: upstream.repos
-      UPSTREAM_CMAKE_ARGS: -DCMAKE_BUILD_TYPE=Release
+      UPSTREAM_CMAKE_ARGS: >
+        -DCMAKE_BUILD_TYPE=Release
+        -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=lld
+        -DCMAKE_SHARED_LINKER_FLAGS=-fuse-ld=lld
+        -DCMAKE_MODULE_LINKER_FLAGS=-fuse-ld=lld
       # Clear the ccache stats before and log the stats after the build
       AFTER_SETUP_CCACHE: ccache --zero-stats --max-size=10.0G
       AFTER_BUILD_TARGET_WORKSPACE: ccache --show-stats
       CCACHE_DIR: ${{ github.workspace }}/.ccache
       BASEDIR: ${{ github.workspace }}/.work
+      ADDITIONAL_DEBS: clang-10 clang-9 iwyu clang-tidy lld
 
     name: ${{ matrix.env.NAME }}
     runs-on: ubuntu-latest

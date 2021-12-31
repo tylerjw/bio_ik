@@ -26,8 +26,6 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#include "problem.hpp"  // for Problem, Prob...
-
 #include <moveit/collision_detection_fcl/fcl_compat.h>  // for FCL_VERSION_C...
 #include <moveit/robot_model/joint_model.h>             // for JointModel
 #include <moveit/robot_model/joint_model_group.h>       // for JointModelGroup
@@ -37,6 +35,8 @@
 #include <tf2/LinearMath/Vector3.h>                     // for operator-
 
 #include <bio_ik/goal_types.hpp>  // for PoseGoal, Ori...
+#include <bio_ik/problem.hpp>     // for Problem, Prob...
+#include <bio_ik/utils.hpp>       // for IKParams, ERROR
 #include <cmath>                  // for isfinite, fmin
 #include <cstddef>                // for size_t
 #include <initializer_list>       // for initializer_list
@@ -50,7 +50,6 @@
 #include "bio_ik/frame.hpp"       // for frameToKDL
 #include "bio_ik/goal.hpp"        // for GoalContext
 #include "bio_ik/robot_info.hpp"  // for RobotInfo
-#include "utils.hpp"              // for IKParams, ERROR
 
 namespace bio_ik {
 

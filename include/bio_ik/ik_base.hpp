@@ -28,13 +28,12 @@
 
 #pragma once
 
+#include <bio_ik/forward_kinematics.hpp>
 #include <bio_ik/goal.hpp>
+#include <bio_ik/problem.hpp>
 #include <bio_ik/robot_info.hpp>
+#include <bio_ik/utils.hpp>
 #include <random>
-
-#include "forward_kinematics.hpp"
-#include "problem.hpp"
-#include "utils.hpp"
 
 namespace bio_ik {
 

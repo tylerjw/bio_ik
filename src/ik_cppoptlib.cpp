@@ -26,12 +26,12 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
+#include <bio_ik/ik_base.hpp>
 #include <rclcpp/rclcpp.hpp>
 
 #include "cppoptlib/boundedproblem.h"
 #include "cppoptlib/meta.h"
 #include "cppoptlib/problem.h"
-#include "ik_base.hpp"
 
 namespace bio_ik {
 

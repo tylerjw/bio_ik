@@ -28,15 +28,15 @@
 
 #include <stddef.h>  // for size_t
 
-#include <memory>  // for allocator_traits<>::value_type
-#include <vector>  // for vector
+#include <bio_ik/forward_kinematics.hpp>  // for RobotFK, RobotFK_MoveIt
+#include <bio_ik/ik_base.hpp>             // for IKBase, IKFactory
+#include <bio_ik/problem.hpp>             // for Problem
+#include <bio_ik/utils.hpp>               // for aligned_vector, LOG, IKParams
+#include <memory>                         // for allocator_traits<>::value_type
+#include <vector>                         // for vector
 
-#include "bio_ik/frame.hpp"        // for Frame, Quaternion, Vector3
-#include "bio_ik/robot_info.hpp"   // for RobotInfo
-#include "forward_kinematics.hpp"  // for RobotFK, RobotFK_MoveIt
-#include "ik_base.hpp"             // for IKBase, IKFactory
-#include "problem.hpp"             // for Problem
-#include "utils.hpp"               // for aligned_vector, LOG, IKParams
+#include "bio_ik/frame.hpp"       // for Frame, Quaternion, Vector3
+#include "bio_ik/robot_info.hpp"  // for RobotInfo
 
 namespace bio_ik {
 

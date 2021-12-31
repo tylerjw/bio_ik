@@ -28,10 +28,12 @@
 
 #pragma once
 
+#include <bio_ik/ik_base.hpp>
 #include <boost/thread/barrier.hpp>
+#include <optional>
 #include <rclcpp/rclcpp.hpp>
 
-#include "ik_base.hpp"
+#include "bio_ik/ik_gradient.hpp"
 
 namespace bio_ik {
 
@@ -75,6 +77,26 @@ class ParallelExecutor {
   }
 };
 
+std::optional<std::unique_ptr<IKBase>> makeSolver(const IKParams& params) {
+  if (auto result = makeGradientDecentSolver(params)) return result;
+  // else if(name == "bio1")
+  //   return std::make_unique<IKEvolution1>(params);
+  // else if(name == "bio2")
+  //   return std::make_unique<IKEvolution2<0>>(params);
+  // else if(name == "bio2_memetic")
+  //   return std::make_unique<IKEvolution2<'q'>>(params);
+  // else if(name == "bio2_memetic_l")
+  //   return std::make_unique<IKEvolution2<'l'>>(params);
+  // else if(name == "neural")
+  //   return std::make_unique<IKNeural>(params);
+  // else if(name == "neural2")
+  //   return std::make_unique<IKNeural2>(params);
+  // else if(name == "test")
+  //   return std::make_unique<IKTest>(params);
+  else
+    return std::nullopt;
+}
+
 // runs ik on multiple threads until a stop criterion is met
 struct IKParallel {
   IKParams params_;
@@ -95,20 +117,23 @@ struct IKParallel {
   bool enable_counter_;
   double best_fitness_;
 
-  IKParallel(const IKParams& params) : params_(params) {
-    // solver class name
-    std::string name = params_.solver_class_name;
-
-    enable_counter_ = params_.enable_counter;
-
+  IKParallel(const IKParams& params)
+      : params_(params), enable_counter_(params.enable_counter) {
     // create solvers_
-    solvers_.emplace_back(IKFactory::create(name, params_));
+    auto create_solver = [&params]() {
+      auto result = makeSolver(params);
+      if (!result) {
+        throw std::runtime_error("Invalid Solver Name: " +
+                                 params.solver_class_name);
+      }
+      return std::move(*result);
+    };
+
+    solvers_.emplace_back(create_solver());
     thread_count_ = solvers_.front()->concurrency();
-    if (params_.thread_count) {
-      thread_count_ = static_cast<size_t>(params_.thread_count);
-    }
     while (solvers_.size() < thread_count_)
-      solvers_.emplace_back(IKFactory::clone(solvers_.front().get()));
+      solvers_.emplace_back(create_solver());
+
     for (size_t i = 0; i < thread_count_; ++i) solvers_[i]->thread_index_ = i;
 
     // while(fk_.size() < thread_count_) fk_.emplace_back(params_.robot_model);
