@@ -217,7 +217,7 @@ struct IKEvolution1 : IKBase {
         // if(length) heuristic_error += ta.rot.angle(tb.rot) * length *
         // influence;
 
-        if (length) {
+        if (length != 0) {
           heuristic_error += ta.pos.distance(tb.pos) * influence * 0.5;
           heuristic_error += ta.rot.angle(tb.rot) * length * influence * 0.5;
         } else {
@@ -229,7 +229,7 @@ struct IKEvolution1 : IKBase {
         // if(length) heuristic_error += ta.pos.distance(tb.pos) / length *
         // influence; heuristic_error += ta.rot.angle(tb.rot) * influence;
 
-        if (length) {
+        if (length != 0) {
           heuristic_error += ta.pos.distance(tb.pos) / length * influence * 0.5;
           heuristic_error += ta.rot.angle(tb.rot) * influence * 0.5;
         } else {
