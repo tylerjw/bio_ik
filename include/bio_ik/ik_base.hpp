@@ -122,7 +122,7 @@ struct Random {
   }
 };
 
-struct IKBase : Random {
+struct IKSolver : Random {
   RobotFK model_;
   RobotInfo modelInfo_;
   IKParams params_;
@@ -137,14 +137,14 @@ struct IKBase : Random {
 
   virtual void setParams([[maybe_unused]] const IKParams&) {}
 
-  IKBase(const IKParams& params)
+  IKSolver(const IKParams& params)
       : Random(static_cast<long unsigned int>(params.random_seed)),
         model_(params.robot_model),
         modelInfo_(params.robot_model),
         params_(params) {
     setParams(params);
   }
-  virtual ~IKBase() {}
+  virtual ~IKSolver() {}
 
   virtual void initialize(const Problem& problem) {
     problem_ = problem;
@@ -241,8 +241,4 @@ struct IKBase : Random {
 
   virtual size_t concurrency() const { return 1; }
 };
-
-typedef IKBase IKSolver;
-
-typedef Factory<IKSolver, const IKParams&> IKFactory;
 }  // namespace bio_ik

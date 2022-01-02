@@ -26,10 +26,10 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#include "bio_ik/ik_gradient.hpp"  // for IKGradientDescent
+#include "bio_ik/ik_gradient.hpp"
 
 #include <Eigen/Core>          // For NumTraits
-#include <bio_ik/ik_base.hpp>  // for IKFactory, IKBase
+#include <bio_ik/ik_base.hpp>  // for IKSolver
 #include <bio_ik/problem.hpp>  // for Problem, Problem::GoalInfo
 #include <bio_ik/utils.hpp>    // for FNPROFILER
 #include <cmath>               // for isfinite
@@ -49,7 +49,7 @@ namespace bio_ik {
 template <int IF_STRUCK, size_t N_THREADS>
 void IKGradientDescent<IF_STRUCK, N_THREADS>::initialize(
     const Problem& problem) {
-  IKBase::initialize(problem);
+  IKSolver::initialize(problem);
   solution_ = problem_.initial_guess;
   if (thread_index_ > 0)
     for (auto& vi : problem_.active_variables)
@@ -139,21 +139,6 @@ void IKGradientDescent<IF_STRUCK, N_THREADS>::step() {
     best_solution_ = solution_;
 }
 
-// static IKFactory::Class<IKGradientDescent<' ', 1>> gd("gd");
-// static IKFactory::Class<IKGradientDescent<' ', 2>> gd_2("gd_2");
-// static IKFactory::Class<IKGradientDescent<' ', 4>> gd_4("gd_4");
-// static IKFactory::Class<IKGradientDescent<' ', 8>> gd_8("gd_8");
-
-// static IKFactory::Class<IKGradientDescent<'r', 1>> gd_r("gd_r");
-// static IKFactory::Class<IKGradientDescent<'r', 2>> gd_2_r("gd_r_2");
-// static IKFactory::Class<IKGradientDescent<'r', 4>> gd_4_r("gd_r_4");
-// static IKFactory::Class<IKGradientDescent<'r', 8>> gd_8_r("gd_r_8");
-
-// static IKFactory::Class<IKGradientDescent<'c', 1>> gd_c("gd_c");
-// static IKFactory::Class<IKGradientDescent<'c', 2>> gd_2_c("gd_c_2");
-// static IKFactory::Class<IKGradientDescent<'c', 4>> gd_4_c("gd_c_4");
-// static IKFactory::Class<IKGradientDescent<'c', 8>> gd_8_c("gd_c_8");
-
 // pseudoinverse jacobian solver
 template <class BASE>
 void IKJacobianBase<BASE>::optimizeJacobian(std::vector<double>& solution) {
@@ -223,19 +208,14 @@ void IKJacobianBase<BASE>::optimizeJacobian(std::vector<double>& solution) {
 // pseudoinverse jacobian only
 template <size_t N_THREADS>
 void IKJacobian<N_THREADS>::initialize(const Problem& problem) {
-  IKJacobianBase<IKBase>::initialize(problem);
+  IKJacobianBase<IKSolver>::initialize(problem);
   solution_ = problem_.initial_guess;
   if (thread_index_ > 0)
     for (auto& vi : problem_.active_variables)
       solution_[vi] = random(modelInfo_.getMin(vi), modelInfo_.getMax(vi));
 }
 
-// static IKFactory::Class<IKJacobian<1>> jac("jac");
-// static IKFactory::Class<IKJacobian<2>> jac_2("jac_2");
-// static IKFactory::Class<IKJacobian<4>> jac_4("jac_4");
-// static IKFactory::Class<IKJacobian<8>> jac_8("jac_8");
-
-std::optional<std::unique_ptr<IKBase>> makeGradientDecentSolver(
+std::optional<std::unique_ptr<IKSolver>> makeGradientDecentSolver(
     const IKParams& params) {
   const auto& name = params.solver_class_name;
   if (name == "gd")

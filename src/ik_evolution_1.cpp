@@ -26,6 +26,8 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
+#include "bio_ik/ik_evolution_1.hpp"
+
 #include <math.h>                            // for sqrt, M_PI
 #include <moveit/robot_model/joint_model.h>  // for JointModel
 #include <moveit/robot_model/link_model.h>   // for LinkModel
@@ -34,7 +36,7 @@
 
 #include <algorithm>                      // for remove, sort
 #include <bio_ik/forward_kinematics.hpp>  // for RobotFK
-#include <bio_ik/ik_base.hpp>             // for IKBase, IKFactory
+#include <bio_ik/ik_base.hpp>             // for IKSolver
 #include <bio_ik/problem.hpp>             // for Problem
 #include <bio_ik/utils.hpp>               // for mix, FNPROFILER, IKParams
 #include <ext/alloc_traits.h>             // for __alloc_traits<>::value_...
@@ -48,7 +50,7 @@
 
 namespace bio_ik {
 
-struct IKEvolution1 : IKBase {
+struct IKEvolution1 : IKSolver {
   struct Individual {
     std::vector<double> genes;
     std::vector<double> gradients;
@@ -286,7 +288,7 @@ struct IKEvolution1 : IKBase {
       }
       return fitness_sum;
     } else {
-      return IKBase::computeFitness(genes);
+      return IKSolver::computeFitness(genes);
     }
   }
 
@@ -449,7 +451,7 @@ struct IKEvolution1 : IKBase {
   }
 
   IKEvolution1(const IKParams& p)
-      : IKBase(p),
+      : IKSolver(p),
         populationSize_(12),
         eliteCount_(4),
         in_final_adjustment_loop_(false),
@@ -485,7 +487,7 @@ struct IKEvolution1 : IKBase {
   }
 
   void initialize(const Problem& problem) {
-    IKBase::initialize(problem);
+    IKSolver::initialize(problem);
 
     std::vector<std::string> tips;
     for (auto tip_link_index : problem_.tip_link_indices)
@@ -562,6 +564,13 @@ struct IKEvolution1 : IKBase {
   virtual size_t concurrency() const { return 4; }
 };
 
-static IKFactory::Class<IKEvolution1> cIKEvolution1("bio1");
+std::optional<std::unique_ptr<IKSolver>> makeEvolution1Solver(
+    const IKParams& params) {
+  const auto& name = params.solver_class_name;
+  if (name == "bio1")
+    return std::make_unique<IKEvolution1>(params);
+  else
+    return std::nullopt;
+}
 
 }  // namespace bio_ik

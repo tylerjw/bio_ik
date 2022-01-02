@@ -27,7 +27,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 #include <Eigen/Core>          // For NumTraits
-#include <bio_ik/ik_base.hpp>  // for IKFactory, IKBase
+#include <bio_ik/ik_base.hpp>  // for IKSolver
 #include <bio_ik/problem.hpp>  // for Problem, Problem::GoalInfo
 #include <bio_ik/utils.hpp>    // for FNPROFILER
 #include <cmath>               // for isfinite
@@ -45,11 +45,11 @@ namespace bio_ik {
 
 // simple gradient descent
 template <int IF_STRUCK, size_t N_THREADS>
-struct IKGradientDescent : IKBase {
+struct IKGradientDescent : IKSolver {
   std::vector<double> solution_, best_solution_, gradient_, temp_;
   bool reset_;
 
-  IKGradientDescent(const IKParams& p) : IKBase(p) {}
+  IKGradientDescent(const IKParams& p) : IKSolver(p) {}
 
   void initialize(const Problem& problem);
 
@@ -64,10 +64,10 @@ struct IKGradientDescent : IKBase {
 // (mainly for testing RobotFK_Jacobian::computeJacobian)
 template <class BASE>
 struct IKJacobianBase : BASE {
-  // IKBase functions
+  // IKSolver functions
   using BASE::computeFitness;
 
-  // IKBase variables
+  // IKSolver variables
   using BASE::model_;
   using BASE::modelInfo_;
   using BASE::params_;
@@ -92,17 +92,17 @@ struct IKJacobianBase : BASE {
 
 // pseudoinverse jacobian only
 template <size_t N_THREADS>
-struct IKJacobian : IKJacobianBase<IKBase> {
-  using IKBase::initialize;
+struct IKJacobian : IKJacobianBase<IKSolver> {
+  using IKSolver::initialize;
   std::vector<double> solution_;
-  IKJacobian(const IKParams& params) : IKJacobianBase<IKBase>(params) {}
+  IKJacobian(const IKParams& params) : IKJacobianBase<IKSolver>(params) {}
   void initialize(const Problem& problem);
   const std::vector<double>& getSolution() const { return solution_; }
   void step() { optimizeJacobian(solution_); }
   size_t concurrency() const { return N_THREADS; }
 };
 
-std::optional<std::unique_ptr<IKBase>> makeGradientDecentSolver(
+std::optional<std::unique_ptr<IKSolver>> makeGradientDecentSolver(
     const IKParams& params);
 
 }  // namespace bio_ik
