@@ -42,12 +42,14 @@ include(cmake/StaticAnalyzers.cmake)
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_ros REQUIRED)
+find_package(backward_ros REQUIRED)
 find_package(Eigen3 REQUIRED)
+find_package(fmt REQUIRED)
 find_package(moveit_core REQUIRED)
 find_package(moveit_ros_planning REQUIRED)
 find_package(pluginlib REQUIRED)
+find_package(range-v3 REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(backward_ros REQUIRED)
 
 # TODO(tylerjw): re-enable these
 # find_package(OpenMP)
@@ -79,11 +81,12 @@ find_package(backward_ros REQUIRED)
 
 set(SOURCES
     src/goal_types.cpp
-    src/problem.cpp
-    src/ik_test.cpp
-    src/ik_gradient.cpp
     src/ik_evolution_1.cpp
     src/ik_evolution_2.cpp
+    src/ik_gradient.cpp
+    src/ik_test.cpp
+    src/parameters.cpp
+    src/problem.cpp
 )
 
 # TODO(tylerjw): re-enable this
@@ -107,12 +110,13 @@ target_link_libraries(
     project_options
     project_warnings
   PUBLIC
-    rclcpp::rclcpp
-    moveit_core::moveit_robot_model
-    moveit_core::moveit_kinematics_base
-    moveit_core::moveit_collision_detection_fcl
-    moveit_ros_planning::moveit_rdf_loader
     Eigen3::Eigen
+    moveit_core::moveit_collision_detection_fcl
+    moveit_core::moveit_kinematics_base
+    moveit_core::moveit_robot_model
+    moveit_ros_planning::moveit_rdf_loader
+    range-v3::range-v3
+    rclcpp::rclcpp
     # TODO(tylerjw): what does this change?
     -static-libgcc
     -static-libstdc++

@@ -28,6 +28,8 @@
 
 #include <memory>
 #include <optional>
+#include <set>
+#include <string>
 
 #include "bio_ik/ik_base.hpp"  // for IKSolver
 
@@ -35,5 +37,7 @@ namespace bio_ik {
 
 std::optional<std::unique_ptr<IKSolver>> makeEvolution1Solver(
     const IKParams& params);
+
+std::set<std::string> getEvolution1ModeSet();
 
 }  // namespace bio_ik

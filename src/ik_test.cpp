@@ -137,10 +137,12 @@ struct IKTest : IKSolver {
 
 std::optional<std::unique_ptr<IKSolver>> makeTestSolver(
     const IKParams& params) {
-  const auto& name = params.solver_class_name;
+  const auto& name = params.ros_params.mode;
   if (name == "test")
     return std::make_unique<IKTest>(params);
   else
     return std::nullopt;
 }
+
+std::set<std::string> getTestModeSet() { return {"test"}; }
 }  // namespace bio_ik

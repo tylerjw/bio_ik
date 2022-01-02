@@ -143,15 +143,15 @@ struct IKEvolution1 : IKSolver {
   std::vector<Individual> tempOffspring_;
   std::vector<double> initialGuess_;
 
-  bool opt_no_wipeout_;
+  bool skip_wipeout_;
 
-  bool linear_fitness_;
+  bool enable_linear_fitness_;
 
   void setParams(const IKParams& params) {
-    opt_no_wipeout_ = params.opt_no_wipeout;
-    populationSize_ = static_cast<size_t>(params.population_size);
-    eliteCount_ = static_cast<size_t>(params.elite_count);
-    linear_fitness_ = params.linear_fitness;
+    skip_wipeout_ = params.ros_params.skip_wipeout;
+    populationSize_ = static_cast<size_t>(params.ros_params.population_size);
+    eliteCount_ = static_cast<size_t>(params.ros_params.elite_count);
+    enable_linear_fitness_ = params.ros_params.enable_linear_fitness;
   }
 
   bool in_final_adjustment_loop_;
@@ -268,7 +268,7 @@ struct IKEvolution1 : IKSolver {
   }
 
   double computeFitness(const std::vector<double>& genes, bool balanced) {
-    if (linear_fitness_) {
+    if (enable_linear_fitness_) {
       model_.applyConfiguration(genes);
       double fitness_sum = 0.0;
       for (size_t goal_index = 0; goal_index < problem_.goals.size();
@@ -548,7 +548,7 @@ struct IKEvolution1 : IKSolver {
     computeExtinctions();
 
     if (tryUpdateSolution()) return true;
-    if (opt_no_wipeout_) return false;
+    if (skip_wipeout_) return false;
     if (!checkWipeout()) return false;
 
     init();
@@ -566,11 +566,13 @@ struct IKEvolution1 : IKSolver {
 
 std::optional<std::unique_ptr<IKSolver>> makeEvolution1Solver(
     const IKParams& params) {
-  const auto& name = params.solver_class_name;
+  const auto& name = params.ros_params.mode;
   if (name == "bio1")
     return std::make_unique<IKEvolution1>(params);
   else
     return std::nullopt;
 }
+
+std::set<std::string> getEvolution1ModeSet() { return {"bio1"}; }
 
 }  // namespace bio_ik

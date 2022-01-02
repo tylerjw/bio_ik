@@ -138,7 +138,7 @@ struct IKSolver : Random {
   virtual void setParams([[maybe_unused]] const IKParams&) {}
 
   IKSolver(const IKParams& params)
-      : Random(static_cast<long unsigned int>(params.random_seed)),
+      : Random(static_cast<long unsigned int>(params.ros_params.random_seed)),
         model_(params.robot_model),
         modelInfo_(params.robot_model),
         params_(params) {

@@ -90,9 +90,9 @@ void Problem::initialize(moveit::core::RobotModelConstPtr robot_model,
 
   if (!ros_params_initrd_) {
     ros_params_initrd_ = true;
-    dpos_ = params_.dpos;
-    drot_ = params_.drot;
-    dtwist_ = params_.dtwist;
+    dpos_ = params_.ros_params.dpos;
+    drot_ = params_.ros_params.drot;
+    dtwist_ = params_.ros_params.dtwist;
     if (dpos_ < 0.0 || dpos_ >= DBL_MAX || !std::isfinite(dpos_))
       dpos_ = DBL_MAX;
     if (drot_ < 0.0 || drot_ >= DBL_MAX || !std::isfinite(drot_))

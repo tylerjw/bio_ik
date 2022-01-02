@@ -114,13 +114,13 @@ struct IKParallel {
   double best_fitness_;
 
   IKParallel(const IKParams& params)
-      : params_(params), enable_counter_(params.enable_counter) {
+      : params_(params), enable_counter_(params.ros_params.enable_counter) {
     // create solvers_
     auto create_solver = [&params]() {
       auto result = makeSolver(params);
       if (!result) {
         throw std::runtime_error("Invalid Solver Name: " +
-                                 params.solver_class_name);
+                                 params.ros_params.mode);
       }
       return std::move(*result);
     };

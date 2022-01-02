@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2017, Philipp Sebastian Ruppel
+// Copyright (c) 2022, Tyler Weaver
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -26,16 +26,58 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#include <memory>
-#include <optional>
-#include <set>
-#include <string>
+#pragma once
 
-#include "bio_ik/ik_base.hpp"  // for IKSolver
+#include <cfloat>
+#include <limits>
+#include <optional>
+#include <random>
+#include <rclcpp/rclcpp.hpp>
+#include <string>
 
 namespace bio_ik {
 
-std::optional<std::unique_ptr<IKSolver>> makeTestSolver(const IKParams& params);
-std::set<std::string> getTestModeSet();
+/**
+ * @brief      Parameters settable via ros.
+ */
+struct RosParameters {
+  // Plugin parameters
+  bool enable_profiler = false;
+
+  // IKParallel parameters
+  std::string mode = "bio2_memetic";
+  bool enable_counter = false;
+  int64_t random_seed = static_cast<int64_t>(std::random_device()());
+
+  // Problem parameters
+  double dpos = DBL_MAX;
+  double drot = DBL_MAX;
+  double dtwist = 1e-5;
+
+  // ik_evolution_1 parameters
+  bool skip_wipeout = false;
+  size_t population_size = 8;
+  size_t elite_count = 4;
+  bool enable_linear_fitness = false;
+};
+
+/**
+ * @brief      Validates a ros_params struct
+ *
+ * @param[in]  ros_params  The ros parameters struct
+ *
+ * @return     error string if invalid, nullopt if valid
+ */
+std::optional<std::string> validate(const RosParameters& ros_params);
+
+/**
+ * @brief      Gets the ros parameters
+ *
+ * @param[in]  node  The ros node
+ *
+ * @return     The ros parameters on success, nullopt otherwise
+ */
+std::optional<RosParameters> get_ros_parameters(
+    const rclcpp::Node::SharedPtr& node);
 
 }  // namespace bio_ik

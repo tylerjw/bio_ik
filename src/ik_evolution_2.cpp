@@ -39,8 +39,10 @@
 #include <bio_ik/problem.hpp>             // for Problem
 #include <bio_ik/utils.hpp>               // for aligned_vector, BLOCKPRO...
 #include <memory>                         // for allocator, __shared_ptr_...
-#include <utility>                        // for swap
-#include <vector>                         // for vector, vector::size_type
+#include <set>
+#include <string>
+#include <utility>  // for swap
+#include <vector>   // for vector, vector::size_type
 
 #include "bio_ik/frame.hpp"       // for Frame, normalizeFast
 #include "bio_ik/robot_info.hpp"  // for RobotInfo
@@ -649,7 +651,7 @@ struct IKEvolution2 : IKSolver {
 
 std::optional<std::unique_ptr<IKSolver>> makeEvolution2Solver(
     const IKParams& params) {
-  const auto& name = params.solver_class_name;
+  const auto& name = params.ros_params.mode;
   if (name == "bio2")
     return std::make_unique<IKEvolution2<0>>(params);
   else if (name == "bio2_memetic")
@@ -658,6 +660,10 @@ std::optional<std::unique_ptr<IKSolver>> makeEvolution2Solver(
     return std::make_unique<IKEvolution2<'l'>>(params);
   else
     return std::nullopt;
+}
+
+std::set<std::string> getEvolution2ModeSet() {
+  return {"bio2", "bio2_memetic", "bio2_memetic_l"};
 }
 
 }  // namespace bio_ik

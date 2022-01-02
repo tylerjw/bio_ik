@@ -59,6 +59,8 @@
 #include <tuple>
 #include <type_traits>
 
+#include "bio_ik/parameters.hpp"
+
 using namespace bio_ik;
 
 // implement BioIKKinematicsQueryOptions
@@ -198,32 +200,44 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
     // for(auto& n : joint_names) LOG("joint", n);
     // for(auto& n : link_names) LOG("link", n);
 
-    // bool enable_profiler;
-    node_->get_parameter_or("profiler", enable_profiler, false);
-    // if(enable_profiler) Profiler::start();
-
     robot_info = RobotInfo(robot_model_);
 
-    ikparams.robot_model = robot_model_;
-    ikparams.joint_model_group = joint_model_group;
+    ikparams = IKParams{
+        .robot_model = robot_model_,
+        .joint_model_group = joint_model_group,
+        .ros_params =
+            [&] {
+              if (auto result = get_ros_parameters(node_))
+                return *result;
+              else
+                throw std::runtime_error("Error getting ROS Parameters");
+            }(),
+    };
+
+    if (ikparams.ros_params.enable_profiler) Profiler::start();
 
     // initialize parameters for IKParallel
-    node_->get_parameter_or("mode", ikparams.solver_class_name,
+    node_->get_parameter_or("mode", ikparams.ros_params.mode,
                             std::string("bio2_memetic"));
-    node_->get_parameter_or("counter", ikparams.enable_counter, false);
-    node_->get_parameter_or("random_seed", ikparams.random_seed,
-                            static_cast<int>(std::random_device()()));
+    node_->get_parameter_or("counter", ikparams.ros_params.enable_counter,
+                            false);
+    node_->get_parameter_or("random_seed", ikparams.ros_params.random_seed,
+                            static_cast<int64_t>(std::random_device()()));
 
     // initialize parameters for Problem
-    node_->get_parameter_or("dpos", ikparams.dpos, DBL_MAX);
-    node_->get_parameter_or("drot", ikparams.drot, DBL_MAX);
-    node_->get_parameter_or("dtwist", ikparams.dtwist, 1e-5);
+    node_->get_parameter_or("dpos", ikparams.ros_params.dpos, DBL_MAX);
+    node_->get_parameter_or("drot", ikparams.ros_params.drot, DBL_MAX);
+    node_->get_parameter_or("dtwist", ikparams.ros_params.dtwist, 1e-5);
 
     // initialize parameters for ik_evolution_1
-    node_->get_parameter_or("no_wipeout", ikparams.opt_no_wipeout, false);
-    node_->get_parameter_or("population_size", ikparams.population_size, 8);
-    node_->get_parameter_or("elite_count", ikparams.elite_count, 4);
-    node_->get_parameter_or("linear_fitness", ikparams.linear_fitness, false);
+    node_->get_parameter_or("skip_wipeout", ikparams.ros_params.skip_wipeout,
+                            false);
+    // node_->get_parameter_or("population_size",
+    //                         ikparams.ros_params.population_size, 8);
+    // node_->get_parameter_or("elite_count", ikparams.ros_params.elite_count,
+    // 4);
+    node_->get_parameter_or("enable_linear_fitness",
+                            ikparams.ros_params.enable_linear_fitness, false);
 
     temp_state.reset(new moveit::core::RobotState(robot_model_));
 
@@ -380,7 +394,7 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
 
     // LOG("a");
 
-    if (enable_profiler) Profiler::start();
+    if (ikparams.ros_params.enable_profiler) Profiler::start();
 
     auto *bio_ik_options = toBioIKKinematicsQueryOptions(&options);
 
