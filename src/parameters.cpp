@@ -51,6 +51,8 @@ using namespace ranges;
 using Descriptor = rcl_interfaces::msg::ParameterDescriptor;
 using rclcpp::ParameterValue;
 
+namespace {
+
 class DescriptorBuilder {
   Descriptor msg_;
 
@@ -109,45 +111,12 @@ class DescriptorBuilder {
   }
 };
 
-std::string declare(const rclcpp::Node::SharedPtr& node,
-                    const std::string& name, const std::string& default_value,
-                    const Descriptor& descriptor = Descriptor()) {
+template <typename T>
+T declare(const rclcpp::Node::SharedPtr& node, const std::string& name,
+          const T& default_value, const Descriptor& descriptor = Descriptor()) {
   return node
       ->declare_parameter(name, ParameterValue(default_value), descriptor)
-      .get<std::string>();
-}
-
-bool declare(const rclcpp::Node::SharedPtr& node, const std::string& name,
-             bool default_value, const Descriptor& descriptor = Descriptor()) {
-  return node
-      ->declare_parameter(name, ParameterValue(default_value), descriptor)
-      .get<bool>();
-}
-
-double declare(const rclcpp::Node::SharedPtr& node, const std::string& name,
-               double default_value,
-               const Descriptor& descriptor = Descriptor()) {
-  return node
-      ->declare_parameter(name, ParameterValue(default_value), descriptor)
-      .get<double>();
-}
-
-int64_t declare(const rclcpp::Node::SharedPtr& node, const std::string& name,
-                int64_t default_value,
-                const Descriptor& descriptor = Descriptor()) {
-  return node
-      ->declare_parameter(name, ParameterValue(default_value), descriptor)
-      .get<int64_t>();
-}
-
-size_t declare(const rclcpp::Node::SharedPtr& node, const std::string& name,
-               size_t default_value,
-               const Descriptor& descriptor = Descriptor()) {
-  return static_cast<size_t>(
-      node->declare_parameter(
-              name, ParameterValue(static_cast<int64_t>(default_value)),
-              descriptor)
-          .get<int64_t>());
+      .get<T>();
 }
 
 std::set<std::string> valid_modes() {
@@ -162,6 +131,8 @@ std::set<std::string> valid_modes() {
   valid_modes.insert(test.begin(), test.begin());
   return valid_modes;
 }
+
+}  // namespace
 
 std::optional<std::string> validate(const RosParameters& ros_params) {
   if (valid_modes().count(ros_params.mode) == 0)
@@ -188,11 +159,13 @@ std::optional<RosParameters> get_ros_parameters(
       .drot = declare(node, "drot", ros_params.drot),
       .dtwist = declare(node, "dtwist", ros_params.dtwist),
       .skip_wipeout = declare(node, "skip_wipeout", ros_params.skip_wipeout),
-      .population_size =
-          declare(node, "population_size", ros_params.population_size,
-                  DescriptorBuilder().integer_range(2)),
-      .elite_count = declare(node, "elite_count", ros_params.elite_count,
-                             DescriptorBuilder().integer_range(2)),
+      .population_size = static_cast<size_t>(
+          declare(node, "population_size",
+                  static_cast<int64_t>(ros_params.population_size),
+                  DescriptorBuilder().integer_range(2))),
+      .elite_count = static_cast<size_t>(declare(
+          node, "elite_count", static_cast<int64_t>(ros_params.elite_count),
+          DescriptorBuilder().integer_range(2))),
       .enable_linear_fitness = declare(node, "enable_linear_fitness",
                                        ros_params.enable_linear_fitness),
   };
