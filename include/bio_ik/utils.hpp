@@ -41,36 +41,14 @@
 #include <unordered_map>
 #include <unordered_set>
 
-// #include <tf2_eigen_kdl/tf2_eigen_kdl.hpp>
-
-// #include <XmlRpcException.h>
-
-//#include <link.h>
-
-//#include <boost/align/aligned_allocator.hpp>
-//#include <Eigen/Eigen>
+#include "bio_ik/parameters.hpp"
 
 namespace bio_ik {
 
 struct IKParams {
   moveit::core::RobotModelConstPtr robot_model;
   const moveit::core::JointModelGroup* joint_model_group;
-
-  // IKParallel parameters
-  std::string solver_class_name;
-  bool enable_counter;
-  int random_seed;
-
-  // Problem parameters
-  double dpos;
-  double drot;
-  double dtwist;
-
-  // ik_evolution_1 parameters
-  bool opt_no_wipeout;
-  int population_size;
-  int elite_count;
-  bool linear_fitness;
+  RosParameters ros_params;
 };
 
 // Uncomment to enable logging

@@ -36,6 +36,8 @@
 #include <kdl/frames.hpp>      // for Twist, Vector
 #include <memory>
 #include <optional>
+#include <set>
+#include <string>
 #include <vector>  // for vector, allocator
 
 #include "bio_ik/frame.hpp"       // for Frame, frameTwist
@@ -104,5 +106,6 @@ struct IKJacobian : IKJacobianBase<IKSolver> {
 
 std::optional<std::unique_ptr<IKSolver>> makeGradientDecentSolver(
     const IKParams& params);
+std::set<std::string> getGradientDecentModeSet();
 
 }  // namespace bio_ik

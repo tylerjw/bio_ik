@@ -15,13 +15,15 @@
 
   <buildtool_depend>ament_cmake_ros</buildtool_depend>
 
+  <depend>backward_ros</depend>
   <depend>eigen</depend>
+  <depend>fmt</depend>
   <depend>moveit_core</depend>
   <depend>moveit_ros_planning</depend>
   <depend>pluginlib</depend>
+  <depend>range-v3</depend>
   <depend>rclcpp</depend>
   <depend>tf2_kdl</depend>
-  <depend>backward_ros</depend>
 
   <!-- <depend>tf2</depend> -->
   <!-- <depend>tf2_eigen</depend> -->
