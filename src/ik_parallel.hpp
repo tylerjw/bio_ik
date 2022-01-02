@@ -33,7 +33,10 @@
 #include <optional>
 #include <rclcpp/rclcpp.hpp>
 
+#include "bio_ik/ik_evolution_1.hpp"
+#include "bio_ik/ik_evolution_2.hpp"
 #include "bio_ik/ik_gradient.hpp"
+#include "bio_ik/ik_test.hpp"
 
 namespace bio_ik {
 
@@ -77,22 +80,15 @@ class ParallelExecutor {
   }
 };
 
-std::optional<std::unique_ptr<IKBase>> makeSolver(const IKParams& params) {
-  if (auto result = makeGradientDecentSolver(params)) return result;
-  // else if(name == "bio1")
-  //   return std::make_unique<IKEvolution1>(params);
-  // else if(name == "bio2")
-  //   return std::make_unique<IKEvolution2<0>>(params);
-  // else if(name == "bio2_memetic")
-  //   return std::make_unique<IKEvolution2<'q'>>(params);
-  // else if(name == "bio2_memetic_l")
-  //   return std::make_unique<IKEvolution2<'l'>>(params);
-  // else if(name == "neural")
-  //   return std::make_unique<IKNeural>(params);
-  // else if(name == "neural2")
-  //   return std::make_unique<IKNeural2>(params);
-  // else if(name == "test")
-  //   return std::make_unique<IKTest>(params);
+std::optional<std::unique_ptr<IKSolver>> makeSolver(const IKParams& params) {
+  if (auto evolution_1 = makeEvolution1Solver(params))
+    return evolution_1;
+  else if (auto evolution_2 = makeEvolution2Solver(params))
+    return evolution_2;
+  else if (auto gradient = makeGradientDecentSolver(params))
+    return gradient;
+  else if (auto test = makeTestSolver(params))
+    return test;
   else
     return std::nullopt;
 }

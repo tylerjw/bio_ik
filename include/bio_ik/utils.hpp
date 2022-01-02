@@ -361,61 +361,6 @@ struct XORShift64 {
   }
 };
 
-// class factory
-//
-// registering a class:
-//   static Factory<Base>::Class<Derived> reg("Derived");
-//
-// instantiation:
-//   Base* obj = Factory<Base>::create("Derived");
-//
-// cloning and object:
-//   p = Factory<Base>::clone(o);
-//
-template <class BASE, class... ARGS>
-class Factory {
-  typedef BASE* (*Constructor)(ARGS...);
-  struct ClassBase {
-    std::string name_;
-    std::type_index type_;
-    virtual BASE* create(ARGS... args) const = 0;
-    virtual BASE* clone(const BASE*) const = 0;
-    ClassBase() : type_(typeid(void)) {}
-    virtual ~ClassBase() {}
-  };
-  typedef std::set<ClassBase*> MapType;
-  static MapType& classes() {
-    static MapType ff;
-    return ff;
-  }
-
- public:
-  template <class DERIVED>
-  struct Class : ClassBase {
-    BASE* create(ARGS... args) const { return new DERIVED(args...); }
-    BASE* clone(const BASE* o) const {
-      return new DERIVED(*static_cast<const DERIVED*>(o));
-    }
-    Class(const std::string& name) {
-      ClassBase::name_ = name;
-      ClassBase::type_ = typeid(DERIVED);
-      classes().insert(this);
-    }
-    virtual ~Class() { classes().erase(this); }
-  };
-  static BASE* create(const std::string& name, ARGS... args) {
-    for (auto* f : classes())
-      if (f->name_ == name) return f->create(args...);
-    ERROR("class not found", name);
-  }
-  template <class DERIVED>
-  static DERIVED* clone(const DERIVED* o) {
-    for (auto* f : classes())
-      if (f->type_ == typeid(*o)) return static_cast<DERIVED*>(f->clone(o));
-    ERROR("class not found", typeid(*o).name());
-  }
-};
-
 // Alloctes memory properly aligned for SIMD operations
 template <class T, size_t A>
 struct aligned_allocator : public std::allocator<T> {
@@ -442,54 +387,4 @@ struct aligned_allocator : public std::allocator<T> {
 template <class T>
 struct aligned_vector : std::vector<T, aligned_allocator<T, 32>> {};
 
-// Helper class for reading structured data from ROS parameter server
-// class XmlRpcReader
-// {
-//     typedef XmlRpc::XmlRpcValue var;
-//     var& v;
-
-// public:
-//     XmlRpcReader(var& v)
-//         : v(v)
-//     {
-//     }
-
-// private:
-//     XmlRpcReader at(int i) { return v[i]; }
-//     void conv(bool& r) { r = (bool)v; }
-//     void conv(double& r) { r = (v.getType() == var::TypeInt) ?
-//     ((double)(int)v) : ((double)v); } void conv(tf2::Vector3& r)
-//     {
-//         double x, y, z;
-//         at(0).conv(x);
-//         at(1).conv(y);
-//         at(2).conv(z);
-//         r = tf2::Vector3(x, y, z);
-//     }
-//     void conv(tf2::Quaternion& r)
-//     {
-//         double x, y, z, w;
-//         at(0).conv(x);
-//         at(1).conv(y);
-//         at(2).conv(z);
-//         at(3).conv(w);
-//         r = tf2::Quaternion(x, y, z, w).normalized();
-//     }
-//     void conv(std::string& r) { r = (std::string)v; }
-
-// public:
-//     template <class T> void param(const char* key, T& r)
-//     {
-//         if(!v.hasMember(key)) return;
-//         try
-//         {
-//             XmlRpcReader(v[key]).conv(r);
-//         }
-//         catch(const XmlRpc::XmlRpcException& e)
-//         {
-//             LOG(key);
-//             throw;
-//         }
-//     }
-// };
 }  // namespace bio_ik

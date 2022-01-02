@@ -66,35 +66,6 @@ find_package(backward_ros REQUIRED)
 #     set(OpenMP_LIBS)
 # endif()
 
-# option(USE_FANN "build the neural-network-based IK solver (experimental)" OFF)
-# if(USE_FANN)
-#     find_library(FANN_LIBRARIES NAMES fann)
-#     find_path(FANN_INCLUDE_DIRS NAMES fann.h)
-#     if(NOT FANN_INCLUDE_DIRS OR NOT FANN_LIBRARIES)
-#         message(FATAL_ERROR "Neural network solver requested, but libfann was not found.")
-#     else()
-#         message("Found libfann: ${FANN_LIBRARIES} / ${FANN_INCLUDE_DIRS}")
-#     endif()
-# else()
-#     set(FANN_LIBRARIES)
-#     set(FANN_INCLUDE_DIRS)
-# endif()
-
-# option(USE_CPPOPTLIB "Include gradient-based solvers from CppNumericalSolvers (bio_ik also provides its own solver)" OFF)
-# if(USE_CPPOPTLIB)
-#     find_path(CPPOPTLIB_INCLUDE_DIRS
-#         NAMES cppoptlib/solver/bfgssolver.h
-#         HINTS ../../CppNumericalSolvers/include)
-#     if(NOT CPPOPTLIB_INCLUDE_DIRS)
-#         message(FATAL_ERROR "cppoptlib support requested, but the headers could not be found.")
-#     else()
-#         message("Found cppoptlib: ${CPPOPTLIB_INCLUDE_DIRS}")
-#     endif()
-#     add_definitions(-DENABLE_CPP_OPTLIB)
-# else()
-#     set(CPPOPTLIB_INCLUDE_DIRS)
-# endif()
-
 # TODO(tylerjw) re-enable optimizations
 # if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 #   add_compile_options(-frecord-gcc-switches)
@@ -118,10 +89,6 @@ set(SOURCES
 # TODO(tylerjw): re-enable this
 # if(USE_FANN)
 #     list(APPEND SOURCES src/ik_neural.cpp)
-# endif()
-
-# if(USE_CPPOPTLIB)
-#     list(APPEND SOURCES src/ik_cppoptlib.cpp)
 # endif()
 
 # include_directories(

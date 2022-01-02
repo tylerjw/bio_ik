@@ -26,10 +26,12 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
+#include "bio_ik/ik_test.hpp"
+
 #include <stddef.h>  // for size_t
 
 #include <bio_ik/forward_kinematics.hpp>  // for RobotFK, RobotFK_MoveIt
-#include <bio_ik/ik_base.hpp>             // for IKBase, IKFactory
+#include <bio_ik/ik_base.hpp>             // for IKSolver
 #include <bio_ik/problem.hpp>             // for Problem
 #include <bio_ik/utils.hpp>               // for aligned_vector, LOG, IKParams
 #include <memory>                         // for allocator_traits<>::value_type
@@ -40,14 +42,15 @@
 
 namespace bio_ik {
 
-struct IKTest : IKBase {
+struct IKTest : IKSolver {
   RobotFK_MoveIt fkref_;
 
   std::vector<double> temp_;
 
   double d_rot_sum_, d_pos_sum_, d_div_;
 
-  IKTest(const IKParams& params) : IKBase(params), fkref_(params.robot_model) {
+  IKTest(const IKParams& params)
+      : IKSolver(params), fkref_(params.robot_model) {
     d_rot_sum_ = d_pos_sum_ = d_div_ = 0;
   }
 
@@ -65,7 +68,7 @@ struct IKTest : IKBase {
   }*/
 
   void initialize(const Problem& problem) {
-    IKBase::initialize(problem);
+    IKSolver::initialize(problem);
 
     fkref_.initialize(problem_.tip_link_indices);
     model_.initialize(problem_.tip_link_indices);
@@ -132,5 +135,12 @@ struct IKTest : IKBase {
   }
 };
 
-static IKFactory::Class<IKTest> test("test");
+std::optional<std::unique_ptr<IKSolver>> makeTestSolver(
+    const IKParams& params) {
+  const auto& name = params.solver_class_name;
+  if (name == "test")
+    return std::make_unique<IKTest>(params);
+  else
+    return std::nullopt;
+}
 }  // namespace bio_ik

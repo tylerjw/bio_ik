@@ -26,6 +26,8 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
+#include "bio_ik/ik_evolution_2.hpp"
+
 #include <math.h>                            // for fabs
 #include <moveit/robot_model/joint_model.h>  // for JointModel, JointModel::...
 #include <moveit/robot_model/robot_model.h>  // for RobotModel, RobotModelCo...
@@ -33,7 +35,7 @@
 
 #include <algorithm>                      // for sort
 #include <bio_ik/forward_kinematics.hpp>  // for RobotFK
-#include <bio_ik/ik_base.hpp>             // for IKBase, IKFactory
+#include <bio_ik/ik_base.hpp>             // for IKSolver
 #include <bio_ik/problem.hpp>             // for Problem
 #include <bio_ik/utils.hpp>               // for aligned_vector, BLOCKPRO...
 #include <memory>                         // for allocator, __shared_ptr_...
@@ -43,15 +45,11 @@
 #include "bio_ik/frame.hpp"       // for Frame, normalizeFast
 #include "bio_ik/robot_info.hpp"  // for RobotInfo
 
-#ifdef ENABLE_CPP_OPTLIB
-#include "cppoptlib/solver/lbfgssolver.h"
-#endif
-
 namespace bio_ik {
 
 // fast evolutionary inverse kinematics
 template <int memetic>
-struct IKEvolution2 : IKBase {
+struct IKEvolution2 : IKSolver {
   struct Individual {
     aligned_vector<double> genes;
     aligned_vector<double> gradients;
@@ -78,24 +76,7 @@ struct IKEvolution2 : IKBase {
   aligned_vector<double> genes_min_, genes_max_, genes_span_;
   aligned_vector<double> gradient_, temp_;
 
-  IKEvolution2(const IKParams& p) : IKBase(p) {}
-
-#ifdef ENABLE_CPP_OPTLIB
-  struct OptlibProblem : cppoptlib::Problem<double> {
-    IKEvolution2* ik_;
-    OptlibProblem(IKEvolution2* ik) : ik_(ik) {}
-    double value(const TVector& x) {
-      const double* genes = x.data();
-      ik_->model_.computeApproximateMutations(1, &genes, ik_->phenotypes_);
-      return ik_->computeCombinedFitnessActiveVariables(ik_->phenotypes_[0],
-                                                        genes);
-    }
-  };
-  typedef cppoptlib::LbfgsSolver<OptlibProblem> OptlibSolver;
-  std::shared_ptr<OptlibSolver> optlib_solver_;
-  std::shared_ptr<OptlibProblem> optlib_problem_;
-  typename OptlibSolver::TVector optlib_vector_;
-#endif
+  IKEvolution2(const IKParams& p) : IKSolver(p) {}
 
   void genesToJointVariables(const Individual& individual,
                              std::vector<double>& variables) {
@@ -110,7 +91,7 @@ struct IKEvolution2 : IKBase {
   void initialize(const Problem& local_problem) {
     BLOCKPROFILER("initialization");
 
-    IKBase::initialize(local_problem);
+    IKSolver::initialize(local_problem);
 
     // init list of quaternion joint genes to be normalized during each mutation
     quaternion_genes_.clear();
@@ -610,35 +591,6 @@ struct IKEvolution2 : IKBase {
             }
           }
         }
-
-#ifdef ENABLE_CPP_OPTLIB
-        // cppoptlib::LbfgsSolver memetic test
-        if (memetic == 'o') {
-          auto& individual = population[0];
-
-          // create cppoptlib solver and cppoptlib problem, if not yet existing
-          if (!optlib_solver_) {
-            optlib_solver_ = std::make_shared<OptlibSolver>();
-            cppoptlib::Criteria<double> crit;
-            crit.iterations = 4;
-            optlib_solver_->setStopCriteria(crit);
-            optlib_problem_ = std::make_shared<OptlibProblem>(this);
-          }
-
-          // init starting point
-          optlib_vector_.resize(problem_.active_variables.size());
-          for (size_t i = 0; i < problem_.active_variables.size(); i++)
-            optlib_vector_[i] = individual.genes[i];
-
-          // solve
-          optlib_solver_->minimize(*optlib_problem_, optlib_vector_);
-
-          // get result
-          for (size_t i = 0; i < problem_.active_variables.size(); i++)
-            individual.genes[i] = modelInfo_.clip(optlib_vector_[i],
-                                                  problem_.active_variables[i]);
-        }
-#endif
       }
     }
 
@@ -695,11 +647,17 @@ struct IKEvolution2 : IKBase {
   virtual size_t concurrency() const { return 4; }
 };
 
-static IKFactory::Class<IKEvolution2<0>> bio2("bio2");
-static IKFactory::Class<IKEvolution2<'q'>> bio2_memetic("bio2_memetic");
-static IKFactory::Class<IKEvolution2<'l'>> bio2_memetic_l("bio2_memetic_l");
+std::optional<std::unique_ptr<IKSolver>> makeEvolution2Solver(
+    const IKParams& params) {
+  const auto& name = params.solver_class_name;
+  if (name == "bio2")
+    return std::make_unique<IKEvolution2<0>>(params);
+  else if (name == "bio2_memetic")
+    return std::make_unique<IKEvolution2<'q'>>(params);
+  else if (name == "bio2_memetic_l")
+    return std::make_unique<IKEvolution2<'l'>>(params);
+  else
+    return std::nullopt;
+}
 
-#ifdef ENABLE_CPP_OPTLIB
-static IKFactory::Class<IKEvolution2<'o'>> bio2_memetic_0("bio2_memetic_lbfgs");
-#endif
 }  // namespace bio_ik
