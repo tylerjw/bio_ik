@@ -1,4 +1,9 @@
 # bio-ik
+[![Formatting (pre-commit)](https://github.com/tylerjw/bio_ik/actions/workflows/format.yaml/badge.svg?branch=ros2)](https://github.com/tylerjw/bio_ik/actions/workflows/format.yaml?query=branch%3Aros2)
+[![CI](https://github.com/tylerjw/bio_ik/actions/workflows/ci.yaml/badge.svg?branch=ros2)](https://github.com/tylerjw/bio_ik/actions/workflows/ci.yaml?query=branch%3Aros2)
+[![Pre-release](https://github.com/tylerjw/bio_ik/actions/workflows/prerelease.yaml/badge.svg?branch=ros2)](https://github.com/tylerjw/bio_ik/actions/workflows/prerelease.yaml?query=branch%3Aros2)
+[![Doxygen](https://github.com/tylerjw/bio_ik/actions/workflows/doxygen.yaml/badge.svg?branch=ros2)](https://github.com/tylerjw/bio_ik/actions/workflows/doxygen.yaml?query=branch%3Aros2)
+[![Code Coverage](https://codecov.io/gh/tylerjw/bio_ik/branch/ros2/graph/badge.svg?token=W7uHKcY0ly)](https://codecov.io/gh/tylerjw/arm_teleop)
 
 ## Disclaimer
 
