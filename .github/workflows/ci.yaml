@@ -120,6 +120,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: ${{ env.BASEDIR }}/target_ws/coverage.info
+          base-path: ${{ env.BASEDIR }}/target_ws/src/bio_ik
       - name: Prepare target_ws for cache
         if: always()
         run: |

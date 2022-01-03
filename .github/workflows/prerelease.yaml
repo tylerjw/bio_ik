@@ -5,9 +5,10 @@ name: pre-release
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - ros2
+  # TODO(tylerjw): re-enable this once moveit release is fixed
+  # push:
+  #   branches:
+  #     - ros2
 
 jobs:
   default:
