@@ -136,41 +136,40 @@ std::set<std::string> valid_modes() {
 
 std::optional<std::string> validate(const RosParameters& ros_params) {
   if (valid_modes().count(ros_params.mode) == 0)
-    return fmt::format("Mode: {}\nValid Modes: {}\n", ros_params.mode,
+    return fmt::format("Mode: \"{}\" is not in set: {}\n", ros_params.mode,
                        valid_modes());
   return std::nullopt;
 }
 
 std::optional<RosParameters> get_ros_parameters(
     const rclcpp::Node::SharedPtr& node) {
-  using rclcpp::ParameterValue;
-  RosParameters ros_params;
-
-  auto ros_parameters = RosParameters{
+  const auto default_values = RosParameters{};
+  const auto ros_params = RosParameters{
       .enable_profiler =
-          declare(node, "enable_profiler", ros_params.enable_profiler,
+          declare(node, "enable_profiler", default_values.enable_profiler,
                   DescriptorBuilder().additional_constraints(
                       fmt::format("One of {}", valid_modes()))),
-      .mode = declare(node, "mode", ros_params.mode),
+      .mode = declare(node, "mode", default_values.mode),
       .enable_counter =
-          declare(node, "enable_counter", ros_params.enable_counter),
-      .random_seed = declare(node, "random_seed", ros_params.random_seed),
-      .dpos = declare(node, "dpos", ros_params.dpos),
-      .drot = declare(node, "drot", ros_params.drot),
-      .dtwist = declare(node, "dtwist", ros_params.dtwist),
-      .skip_wipeout = declare(node, "skip_wipeout", ros_params.skip_wipeout),
+          declare(node, "enable_counter", default_values.enable_counter),
+      .random_seed = declare(node, "random_seed", default_values.random_seed),
+      .dpos = declare(node, "dpos", default_values.dpos),
+      .drot = declare(node, "drot", default_values.drot),
+      .dtwist = declare(node, "dtwist", default_values.dtwist),
+      .skip_wipeout =
+          declare(node, "skip_wipeout", default_values.skip_wipeout),
       .population_size = static_cast<size_t>(
           declare(node, "population_size",
-                  static_cast<int64_t>(ros_params.population_size),
+                  static_cast<int64_t>(default_values.population_size),
                   DescriptorBuilder().integer_range(2))),
       .elite_count = static_cast<size_t>(declare(
-          node, "elite_count", static_cast<int64_t>(ros_params.elite_count),
+          node, "elite_count", static_cast<int64_t>(default_values.elite_count),
           DescriptorBuilder().integer_range(2))),
       .enable_linear_fitness = declare(node, "enable_linear_fitness",
-                                       ros_params.enable_linear_fitness),
+                                       default_values.enable_linear_fitness),
   };
 
-  if (auto error = validate(ros_params)) {
+  if (const auto error = validate(ros_params)) {
     RCLCPP_ERROR_STREAM(rclcpp::get_logger("bio_ik"), *error);
     return std::nullopt;
   } else {

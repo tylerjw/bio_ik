@@ -111,6 +111,7 @@ target_link_libraries(
     project_warnings
   PUBLIC
     Eigen3::Eigen
+    fmt::fmt
     moveit_core::moveit_collision_detection_fcl
     moveit_core::moveit_kinematics_base
     moveit_core::moveit_robot_model
