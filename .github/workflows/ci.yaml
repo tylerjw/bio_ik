@@ -17,14 +17,12 @@ jobs:
       fail-fast: false
       matrix:
         env:
-          # TODO(tylerjw): re-enable testing on testing once moveit is fixed on buildfarm
-          # - NAME: "rolling-testing-ccov"
-          #   ROS_REPO: testing
-            # TODO(tylerjw): enable coverage once there is a test
-            # TARGET_CMAKE_ARGS: -DENABLE_COVERAGE=ON
-            # CCOV: true
+          - NAME: "rolling-testing-ccov"
+            ROS_REPO: testing
+            TARGET_CMAKE_ARGS: -DENABLE_COVERAGE=ON
+            CCOV: true
           - NAME: "rolling-main"
-            # ROS_REPO: main
+            ROS_REPO: main
           - NAME: "address-leak-ub-sanitizers"
             TARGET_CMAKE_ARGS: >
               -DCMAKE_BUILD_TYPE=Debug
@@ -51,8 +49,6 @@ jobs:
 
     env:
       ROS_DISTRO: rolling
-      # TODO(tylerjw): re-enable testing on testing once moveit is fixed on buildfarm
-      ROS_REPO: main
       UPSTREAM_WORKSPACE: upstream.repos
       UPSTREAM_CMAKE_ARGS: >
         -DCMAKE_BUILD_TYPE=Release

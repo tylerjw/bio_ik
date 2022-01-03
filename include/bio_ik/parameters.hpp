@@ -28,6 +28,8 @@
 
 #pragma once
 
+#include <fmt/core.h>
+
 #include <cfloat>
 #include <limits>
 #include <optional>
@@ -59,6 +61,15 @@ struct RosParameters {
   size_t population_size = 8;
   size_t elite_count = 4;
   bool enable_linear_fitness = false;
+
+  inline operator std::string() const {
+    return fmt::format(
+        "[RosParameters: enable_profiler={}, mode={}, enable_counter={}, "
+        "random_seed={}, dpos={}, drot={}, dtwist={}, skip_wipeout={}, "
+        "population_size={}, elite_count={}, enable_linear_fitness={}]",
+        enable_profiler, mode, enable_counter, random_seed, dpos, drot, dtwist,
+        skip_wipeout, population_size, elite_count, enable_linear_fitness);
+  }
 };
 
 /**

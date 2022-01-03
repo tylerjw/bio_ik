@@ -9,4 +9,11 @@ if(BUILD_TESTING)
   #   project_warnings
   #   bio_ik
   # )
+
+  ament_add_gtest(parameter_tests parameter_tests.cpp)
+  target_link_libraries(parameter_tests
+    project_options
+    project_warnings
+    bio_ik
+  )
 endif()
