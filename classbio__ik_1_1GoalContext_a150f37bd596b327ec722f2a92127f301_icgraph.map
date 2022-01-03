@@ -1,0 +1,10 @@
+<map id="bio_ik::GoalContext::setWeight" name="bio_ik::GoalContext::setWeight">
+<area shape="rect" id="node1" title=" " alt="" coords="685,136,836,177"/>
+<area shape="rect" id="node2" href="$classbio__ik_1_1Goal.html#af9e00a2584f6ad6d17ada1e81adaa5db" title=" " alt="" coords="475,143,637,170"/>
+<area shape="rect" id="node3" href="$classbio__ik_1_1LinkGoalBase.html#a91e95d1f41fb01b1ec2cc3e7575d97f6" title=" " alt="" coords="254,5,413,47"/>
+<area shape="rect" id="node4" href="$classbio__ik_1_1JointVariableGoal.html#a2c46f5797a5d3a46118712e925ba8c61" title=" " alt="" coords="243,71,424,112"/>
+<area shape="rect" id="node5" href="$classbio__ik_1_1JointFunctionGoal.html#a438699b13c10ce32d2f84532067f708d" title=" " alt="" coords="242,136,425,177"/>
+<area shape="rect" id="node6" href="$classbio__ik_1_1BalanceGoal.html#a3c1928e22a9af1966af296be78158e75" title=" " alt="" coords="258,201,409,243"/>
+<area shape="rect" id="node7" href="$classbio__ik_1_1Problem.html#aa6acf42fffb4cc7972bb756a69979d0a" title=" " alt="" coords="240,267,427,294"/>
+<area shape="rect" id="node8" href="$structbio__ik__kinematics__plugin_1_1BioIKKinematicsPlugin.html#ab033f109ee500aa4d34d46e8f2b50793" title=" " alt="" coords="5,253,192,309"/>
+</map>

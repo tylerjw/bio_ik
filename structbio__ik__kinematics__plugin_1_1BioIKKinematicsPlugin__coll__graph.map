@@ -1,0 +1,8 @@
+<map id="bio_ik_kinematics_plugin::BioIKKinematicsPlugin" name="bio_ik_kinematics_plugin::BioIKKinematicsPlugin">
+<area shape="rect" id="node1" title=" " alt="" coords="315,184,502,225"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,95,212,121"/>
+<area shape="rect" id="node3" href="$structbio__ik_1_1IKParams.html" title=" " alt="" coords="237,95,367,121"/>
+<area shape="rect" id="node4" href="$structbio__ik_1_1RosParameters.html" title="Parameters settable via ros." alt="" coords="219,5,385,32"/>
+<area shape="rect" id="node5" href="$classbio__ik_1_1RobotInfo.html" title=" " alt="" coords="392,95,524,121"/>
+<area shape="rect" id="node6" href="$classbio__ik_1_1Problem.html" title=" " alt="" coords="549,95,671,121"/>
+</map>

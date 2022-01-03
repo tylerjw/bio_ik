@@ -1,0 +1,22 @@
+<map id="bio_ik::Goal" name="bio_ik::Goal">
+<area shape="rect" id="node1" title=" " alt="" coords="5,183,104,209"/>
+<area shape="rect" id="node2" href="$classbio__ik_1_1AvoidJointLimitsGoal.html" title=" " alt="" coords="171,5,375,32"/>
+<area shape="rect" id="node3" href="$classbio__ik_1_1BalanceGoal.html" title=" " alt="" coords="198,56,349,83"/>
+<area shape="rect" id="node4" href="$classbio__ik_1_1CenterJointsGoal.html" title=" " alt="" coords="184,107,363,133"/>
+<area shape="rect" id="node5" href="$classbio__ik_1_1JointFunctionGoal.html" title=" " alt="" coords="182,157,365,184"/>
+<area shape="rect" id="node6" href="$classbio__ik_1_1JointVariableGoal.html" title=" " alt="" coords="183,208,364,235"/>
+<area shape="rect" id="node7" href="$classbio__ik_1_1LinkGoalBase.html" title=" " alt="" coords="194,259,353,285"/>
+<area shape="rect" id="node19" href="$classbio__ik_1_1MinimalDisplacementGoal.html" title=" " alt="" coords="152,309,395,336"/>
+<area shape="rect" id="node20" href="$classbio__ik_1_1RegularizationGoal.html" title=" " alt="" coords="177,360,370,387"/>
+<area shape="rect" id="node8" href="$classbio__ik_1_1ConeGoal.html" title=" " alt="" coords="469,5,601,32"/>
+<area shape="rect" id="node9" href="$classbio__ik_1_1DirectionGoal.html" title=" " alt="" coords="455,56,614,83"/>
+<area shape="rect" id="node10" href="$classbio__ik_1_1LineGoal.html" title=" " alt="" coords="471,107,598,133"/>
+<area shape="rect" id="node11" href="$classbio__ik_1_1LinkFunctionGoal.html" title=" " alt="" coords="444,157,625,184"/>
+<area shape="rect" id="node12" href="$classbio__ik_1_1LookAtGoal.html" title=" " alt="" coords="463,208,607,235"/>
+<area shape="rect" id="node13" href="$classbio__ik_1_1MaxDistanceGoal.html" title=" " alt="" coords="443,259,627,285"/>
+<area shape="rect" id="node14" href="$classbio__ik_1_1MinDistanceGoal.html" title=" " alt="" coords="445,309,625,336"/>
+<area shape="rect" id="node15" href="$classbio__ik_1_1OrientationGoal.html" title=" " alt="" coords="449,360,621,387"/>
+<area shape="rect" id="node16" href="$classbio__ik_1_1PoseGoal.html" title=" " alt="" coords="469,411,600,437"/>
+<area shape="rect" id="node17" href="$classbio__ik_1_1PositionGoal.html" title=" " alt="" coords="459,461,610,488"/>
+<area shape="rect" id="node18" href="$classbio__ik_1_1SideGoal.html" title=" " alt="" coords="471,512,598,539"/>
+</map>

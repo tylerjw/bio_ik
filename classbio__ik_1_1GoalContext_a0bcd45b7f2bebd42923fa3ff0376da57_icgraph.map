@@ -1,0 +1,6 @@
+<map id="bio_ik::GoalContext::getProblemVariableWeight" name="bio_ik::GoalContext::getProblemVariableWeight">
+<area shape="rect" id="node1" title=" " alt="" coords="265,71,468,112"/>
+<area shape="rect" id="node2" href="$classbio__ik_1_1AvoidJointLimitsGoal.html#a1420f2c980163355ec78900b6ca15c1f" title=" " alt="" coords="24,5,199,47"/>
+<area shape="rect" id="node3" href="$classbio__ik_1_1CenterJointsGoal.html#a296ded3a090be2c340099d9e318b54ce" title=" " alt="" coords="22,71,201,112"/>
+<area shape="rect" id="node4" href="$classbio__ik_1_1MinimalDisplacementGoal.html#ab7a32aa9c01834a808f78126e9ab2e40" title=" " alt="" coords="5,136,217,177"/>
+</map>
