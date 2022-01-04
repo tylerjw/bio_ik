@@ -39,11 +39,10 @@ TEST(ParameterTests, DefaultValidMode)  // NOLINT
   const auto ros_params = bio_ik::RosParameters{};
 
   // WHEN we call validate
-  const auto result = bio_ik::validate(ros_params);
+  const auto status = bio_ik::validate(ros_params);
 
-  // THEN we expect the result to not contain an error
-  EXPECT_FALSE(result.has_value())
-      << "bio_ik::validate returned error: " << *result;
+  // THEN we expect the status to not contain an error
+  EXPECT_TRUE(status) << "bio_ik::validate returned error: " << status.what;
 }
 
 TEST(ParameterTests, NotValidMode)  // NOLINT
@@ -52,10 +51,10 @@ TEST(ParameterTests, NotValidMode)  // NOLINT
   const auto ros_params = bio_ik::RosParameters{.mode = "invalid"};
 
   // WHEN we call validate
-  const auto result = bio_ik::validate(ros_params);
+  const auto status = bio_ik::validate(ros_params);
 
-  // THEN we expect the result to contain an error
-  EXPECT_TRUE(result.has_value()) << "bio_ik::validate did not return an error";
+  // THEN we expect the status to contain an error
+  EXPECT_FALSE(status) << "bio_ik::validate did not return an error";
 }
 
 TEST(ParameterTests, GetIsValid)  // NOLIINT
@@ -65,8 +64,8 @@ TEST(ParameterTests, GetIsValid)  // NOLIINT
       bio_ik::get_ros_parameters(std::make_shared<rclcpp::Node>("_"));
 
   // THEN we expect the result to be valid
-  EXPECT_TRUE(ros_params.has_value())
-      << "get_ros_parameters did not return a result";
+  EXPECT_TRUE(ros_params) << "get_ros_parameters returned error: "
+                          << ros_params.error().what;
 }
 
 TEST(ParameterTests, DefaultSameAsRosDefault)  // NOLINT
@@ -81,8 +80,8 @@ TEST(ParameterTests, DefaultSameAsRosDefault)  // NOLINT
 
   // THEN we expect the result to have a value and that to be the same as the
   // default constructed one except for the random seed
-  ASSERT_TRUE(ros_params.has_value())
-      << "get_ros_parameters did not return a result";
+  ASSERT_TRUE(ros_params) << "get_ros_parameters returned error: "
+                          << ros_params.error().what;
   EXPECT_TRUE([](const auto& lhs, const auto& rhs) {
     return std::tie(lhs.enable_profiler, lhs.mode, lhs.enable_counter, lhs.dpos,
                     lhs.drot, lhs.dtwist, lhs.skip_wipeout, lhs.population_size,
@@ -114,7 +113,7 @@ TEST(ParameterTests, GetInvalidParameters)  // NOLINT
   auto result = bio_ik::get_ros_parameters(node);
 
   // THEN we expect the result to have failed
-  EXPECT_FALSE(result.has_value())
+  EXPECT_FALSE(result)
       << "get_ros_parameters should have returned no value, returned: " +
              std::string(result.value());
 }

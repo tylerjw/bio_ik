@@ -31,7 +31,7 @@
 #include <fmt/format.h>
 #include <fmt/ranges.h>
 
-#include <optional>
+#include <bio_ik/status_or.hpp>
 #include <range/v3/all.hpp>
 #include <rcl_interfaces/msg/floating_point_range.hpp>
 #include <rcl_interfaces/msg/integer_range.hpp>
@@ -134,14 +134,14 @@ std::set<std::string> valid_modes() {
 
 }  // namespace
 
-std::optional<std::string> validate(const RosParameters& ros_params) {
+Status validate(const RosParameters& ros_params) {
   if (valid_modes().count(ros_params.mode) == 0)
-    return fmt::format("Mode: \"{}\" is not in set: {}\n", ros_params.mode,
-                       valid_modes());
-  return std::nullopt;
+    return Status(fmt::format("Mode: \"{}\" is not in set: {}\n",
+                              ros_params.mode, valid_modes()));
+  return OKStatus();
 }
 
-std::optional<RosParameters> get_ros_parameters(
+StatusOr<RosParameters> get_ros_parameters(
     const rclcpp::Node::SharedPtr& node) {
   const auto default_values = RosParameters{};
   const auto ros_params = RosParameters{
@@ -169,9 +169,9 @@ std::optional<RosParameters> get_ros_parameters(
                                        default_values.enable_linear_fitness),
   };
 
-  if (const auto error = validate(ros_params)) {
-    RCLCPP_ERROR_STREAM(rclcpp::get_logger("bio_ik"), *error);
-    return std::nullopt;
+  if (const auto status = validate(ros_params); !status) {
+    RCLCPP_ERROR_STREAM(rclcpp::get_logger("bio_ik"), status.what);
+    return unexpected(status);
   } else {
     return ros_params;
   }

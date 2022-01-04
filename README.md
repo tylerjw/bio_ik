@@ -1,10 +1,19 @@
 # bio-ik
 [![Formatting (pre-commit)](https://github.com/tylerjw/bio_ik/actions/workflows/format.yaml/badge.svg?branch=ros2)](https://github.com/tylerjw/bio_ik/actions/workflows/format.yaml?query=branch%3Aros2)
 [![CI](https://github.com/tylerjw/bio_ik/actions/workflows/ci.yaml/badge.svg?branch=ros2)](https://github.com/tylerjw/bio_ik/actions/workflows/ci.yaml?query=branch%3Aros2)
-[![Pre-release](https://github.com/tylerjw/bio_ik/actions/workflows/prerelease.yaml/badge.svg?branch=ros2)](https://github.com/tylerjw/bio_ik/actions/workflows/prerelease.yaml?query=branch%3Aros2)
 [![Doxygen](https://github.com/tylerjw/bio_ik/actions/workflows/doxygen.yaml/badge.svg?branch=ros2)](https://github.com/tylerjw/bio_ik/actions/workflows/doxygen.yaml?query=branch%3Aros2)
+[![Pre-release](https://github.com/tylerjw/bio_ik/actions/workflows/prerelease.yaml/badge.svg?branch=ros2)](https://github.com/tylerjw/bio_ik/actions/workflows/prerelease.yaml?query=branch%3Aros2)
+
+[![Space Metric](https://tylerjw.testspace.com/spaces/159418/badge?token=7d91716246bf500bb9cea44a5c8b17e3e179873e)](https://tylerjw.testspace.com/spaces/159418?utm_campaign=badge&utm_medium=referral&utm_source=test "Test Cases")
 [![Code Coverage](https://codecov.io/gh/tylerjw/bio_ik/branch/ros2/graph/badge.svg?token=W7uHKcY0ly)](https://codecov.io/gh/tylerjw/bio_ik)
 [![Coverage Status](https://coveralls.io/repos/github/tylerjw/bio_ik/badge.svg?branch=ros2)](https://coveralls.io/github/tylerjw/bio_ik?branch=ros2)
+
+[![license](https://img.shields.io/github/license/tylerjw/bio_ik)](https://github.com/tylerjw/bio_ik/blob/ros2/LICENSE)
+[![LOC](https://img.shields.io/tokei/lines/github/tylerjw/bio_ik)](#)
+[![Open Issues](https://img.shields.io/github/issues-raw/tylerjw/bio_ik)](https://github.com/tylerjw/bio_ik/issues)
+[![pull requests](https://img.shields.io/github/issues-pr/tylerjw/bio_ik)](https://github.com/tylerjw/bio_ik/pulls)
+[![contributors](https://img.shields.io/github/contributors/tylerjw/bio_ik)](https://github.com/tylerjw/bio_ik/graphs/contributors)
+[![last commit](https://img.shields.io/github/last-commit/tylerjw/bio_ik/ros2)](https://github.com/tylerjw/bio_ik/commits/ros2)
 
 ## Disclaimer
 
