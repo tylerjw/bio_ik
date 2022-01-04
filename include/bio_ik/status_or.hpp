@@ -28,67 +28,33 @@
 
 #pragma once
 
-#include <fmt/core.h>
-
-#include <cfloat>
-#include <limits>
-#include <random>
-#include <rclcpp/rclcpp.hpp>
 #include <string>
+#include <tuple>
 
-#include "bio_ik/status_or.hpp"
+#include "_external/expected.hpp"
 
 namespace bio_ik {
 
-/**
- * @brief      Parameters settable via ros.
- */
-struct RosParameters {
-  // Plugin parameters
-  bool enable_profiler = false;
+enum class Error { OK, ERROR };
 
-  // IKParallel parameters
-  std::string mode = "bio2_memetic";
-  bool enable_counter = false;
-  int64_t random_seed = static_cast<int64_t>(std::random_device()());
+struct Status {
+  Error value = Error::OK;
+  std::string what = "";
 
-  // Problem parameters
-  double dpos = DBL_MAX;
-  double drot = DBL_MAX;
-  double dtwist = 1e-5;
+  Status() = default;
+  Status(const std::string& error_string)
+      : value(Error::ERROR), what(error_string) {}
 
-  // ik_evolution_1 parameters
-  bool skip_wipeout = false;
-  size_t population_size = 8;
-  size_t elite_count = 4;
-  bool enable_linear_fitness = false;
-
-  inline operator std::string() const {
-    return fmt::format(
-        "[RosParameters: enable_profiler={}, mode={}, enable_counter={}, "
-        "random_seed={}, dpos={}, drot={}, dtwist={}, skip_wipeout={}, "
-        "population_size={}, elite_count={}, enable_linear_fitness={}]",
-        enable_profiler, mode, enable_counter, random_seed, dpos, drot, dtwist,
-        skip_wipeout, population_size, elite_count, enable_linear_fitness);
+  inline operator bool() const noexcept { return value == Error::OK; }
+  inline bool operator==(const Status& other) {
+    return std::tie(value, what) == std::tie(other.value, other.what);
   }
 };
+auto OKStatus = [] { return Status(); };
 
-/**
- * @brief      Validates a ros_params struct
- *
- * @param[in]  ros_params  The ros parameters struct
- *
- * @return     error string if invalid, ok if valid
- */
-Status validate(const RosParameters& ros_params);
-
-/**
- * @brief      Gets the ros parameters
- *
- * @param[in]  node  The ros node
- *
- * @return     The ros parameters on success, error status otherwise
- */
-StatusOr<RosParameters> get_ros_parameters(const rclcpp::Node::SharedPtr& node);
+using tl::expected;
+using tl::unexpected;
+template <typename T>
+using StatusOr = expected<T, Status>;
 
 }  // namespace bio_ik

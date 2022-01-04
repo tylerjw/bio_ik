@@ -108,7 +108,7 @@ jobs:
         with:
           docker: ros:rolling-ros-base-focal
           workdir: ${{ env.BASEDIR }}/target_ws
-          ignore: '"*/target_ws/build/*" "*/target_ws/install/*" "*/test/*"'
+          ignore: '"*/target_ws/build/*" "*/target_ws/install/*" "*/test/*" "*/_external/*"'
       - name: Upload codecov report
         uses: codecov/codecov-action@v2
         if: matrix.env.CCOV && steps.ici.outputs.target_test_results == '0'
