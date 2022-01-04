@@ -1,10 +1,17 @@
 # bio-ik
+[![license](https://img.shields.io/github/license/tylerjw/bio_ik)](#)
 [![Formatting (pre-commit)](https://github.com/tylerjw/bio_ik/actions/workflows/format.yaml/badge.svg?branch=ros2)](https://github.com/tylerjw/bio_ik/actions/workflows/format.yaml?query=branch%3Aros2)
 [![CI](https://github.com/tylerjw/bio_ik/actions/workflows/ci.yaml/badge.svg?branch=ros2)](https://github.com/tylerjw/bio_ik/actions/workflows/ci.yaml?query=branch%3Aros2)
 [![Pre-release](https://github.com/tylerjw/bio_ik/actions/workflows/prerelease.yaml/badge.svg?branch=ros2)](https://github.com/tylerjw/bio_ik/actions/workflows/prerelease.yaml?query=branch%3Aros2)
 [![Doxygen](https://github.com/tylerjw/bio_ik/actions/workflows/doxygen.yaml/badge.svg?branch=ros2)](https://github.com/tylerjw/bio_ik/actions/workflows/doxygen.yaml?query=branch%3Aros2)
 [![Code Coverage](https://codecov.io/gh/tylerjw/bio_ik/branch/ros2/graph/badge.svg?token=W7uHKcY0ly)](https://codecov.io/gh/tylerjw/bio_ik)
 [![Coverage Status](https://coveralls.io/repos/github/tylerjw/bio_ik/badge.svg?branch=ros2)](https://coveralls.io/github/tylerjw/bio_ik?branch=ros2)
+[![Testspace tests](https://img.shields.io/testspace/tests/tylerjw/bio_ik/ros2?failed_label=failed&passed_label=passed&skipped_label=skipped)](https://tylerjw.testspace.com/spaces/159418)
+[![LOC](https://img.shields.io/tokei/lines/github/tylerjw/bio_ik)](#)
+[![Open Issues](https://img.shields.io/github/issues-raw/tylerjw/bio_ik)](#)
+[![pull requests](https://img.shields.io/github/issues-pr/tylerjw/bio_ik)](#)
+[![contributors](https://img.shields.io/github/contributors/tylerjw/bio_ik)](#)
+[![last commit](https://img.shields.io/github/last-commit/tylerjw/bio_ik/ros2)](#)
 
 ## Disclaimer
 
