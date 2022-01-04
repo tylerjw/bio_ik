@@ -1,5 +1,5 @@
 <map id="TEST" name="TEST">
 <area shape="rect" id="node1" title=" " alt="" coords="5,5,60,32"/>
-<area shape="rect" id="node2" href="$namespacebio__ik.html#a67039c6c8c0ef8fb32b1977c2166e167" title="Gets the ros parameters." alt="" coords="108,5,307,32"/>
-<area shape="rect" id="node3" href="$namespacebio__ik.html#adc5ddb55a24bd5a5430d26b852f46d90" title="Validates a ros_params struct." alt="" coords="355,5,477,32"/>
+<area shape="rect" id="node2" href="$namespacebio__ik.html#a2cdcf91f1d45175f7003c5f9a2ebef70" title="Gets the ros parameters." alt="" coords="108,5,307,32"/>
+<area shape="rect" id="node3" href="$namespacebio__ik.html#aa80846176570f4cbff7ef40dca34d300" title="Validates a ros_params struct." alt="" coords="355,5,477,32"/>
 </map>

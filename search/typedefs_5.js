@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['size_5ftype_933',['size_type',['../structbio__ik_1_1aligned__allocator.html#a8ab538cf80cc656ead29f2ffc3432406',1,'bio_ik::aligned_allocator']]]
+  ['pointer_1210',['pointer',['../structbio__ik_1_1aligned__allocator.html#a2e2716008d3dc1de921f3af34f0ee652',1,'bio_ik::aligned_allocator']]]
 ];
