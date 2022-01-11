@@ -16,10 +16,12 @@ public:
     problem_active_variables_.push_back(0);
     active_variable_positions_ = &var;
     initial_guess_.push_back(0);
+    velocity_weights_.push_back(1);
   }
 
   Frame & getFrame() { return fr; }
   void setActiveVariable(double v) { var = v; }
+  void setWeight(double w) { velocity_weights_[0] = w; }
 
 private:
   Frame fr;
@@ -234,6 +236,35 @@ TEST(BioIK, regularization_goal) {
     // WHEN we evaluate the cost
     // THEN we expect to get the square of the joint position.
     EXPECT_NEAR(goal.evaluate(context), v * v, 1e-3);
+  }
+}
+
+TEST(BioIK, minimial_displacement_goal) {
+  // GIVEN a RegularizationGoal and a MinimalDisplacementGoal, and a weight of 1
+  RegularizationGoal rgoal;
+  MinimalDisplacementGoal mgoal;
+  MyContext context;
+
+  // WHEN we compare the costs of the RegularizationGoal and MinimalDisplacementGoal
+  // THEN we expect they are the same
+  EXPECT_EQ(rgoal.evaluate(context), mgoal.evaluate(context));
+
+  for (double v = 0; v <= 1; v += 0.1) {
+    context.setActiveVariable(v);
+    EXPECT_EQ(rgoal.evaluate(context), mgoal.evaluate(context));
+  }
+
+  // GIVEN a RegularizationGoal and a MinimalDisplacementGoal, and a weight of 0.5
+  context.setWeight(0.5);
+
+  // WHEN we compare the costs of the RegularizationGoal and MinimalDisplacementGoal
+  // THEN we expect the cost of the MinimalDisplacementGoal to be
+  // smaller by a factor of 0.5 * 0.5 = 0.25.
+  EXPECT_EQ(0.25 * rgoal.evaluate(context), mgoal.evaluate(context));
+
+  for (double v = 0; v <= 1; v += 0.1) {
+    context.setActiveVariable(v);
+    EXPECT_EQ(0.25 * rgoal.evaluate(context), mgoal.evaluate(context));
   }
 }
 
