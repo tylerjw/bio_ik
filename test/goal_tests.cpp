@@ -17,6 +17,7 @@ public:
     active_variable_positions_ = &var;
     initial_guess_.push_back(0);
     velocity_weights_.push_back(1);
+    goal_variable_indices_.push_back(0);
   }
 
   Frame & getFrame() { return fr; }
@@ -266,6 +267,31 @@ TEST(BioIK, minimial_displacement_goal) {
     context.setActiveVariable(v);
     EXPECT_EQ(0.25 * rgoal.evaluate(context), mgoal.evaluate(context));
   }
+}
+
+TEST(BioIK, JointVariableGoal) {
+  // GIVEN a joint value of 0, and a JointVariableGoal of 0
+  JointVariableGoal goal("", 0);
+  MyContext context;
+  context.setActiveVariable(0);
+
+  // WHEN we evalute the cost
+  // THEN we expect to get 0, since the target and actual joint values
+  // are the same.
+  EXPECT_EQ(goal.evaluate(context), 0);
+
+  // GIVEN a joint value of 0, and a target value of 0.5
+  goal.setVariablePosition(0.5);
+  // WHEN we evaluate the cost
+  // THEN we expect to get (0.5 - 0) ^ 2 = 0.25
+  EXPECT_NEAR(goal.evaluate(context), 0.25, 1e-3);
+
+  // GIVEN a joint value of 0.5, and a target value of 0
+  context.setActiveVariable(0.5);
+  goal.setVariablePosition(0);
+  // WHEN we evaluate the cost
+  // THEN we expect to get (0 - 0.5) ^ 2 = 0.25
+  EXPECT_NEAR(goal.evaluate(context), 0.25, 1e-3);
 }
 
 int main(int argc, char ** argv) {
