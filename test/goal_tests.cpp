@@ -181,6 +181,38 @@ TEST(BioIK, max_distance_goal) {
   EXPECT_NEAR(goal.evaluate(context), 0.25, 1e-3);
 }
 
+TEST(BioIK, min_distance_goal) {
+  // GIVEN a link frame at (0, 0, 0), a goal frame at (0, 0, 0), and a
+  // min. distance of 1
+  MinDistanceGoal goal("", tf2::Vector3(0, 0, 0), 1);
+  MyContext context;
+
+  // WHEN we evaluate the cost
+  // THEN we expect to get 1, which is the square of the quantity
+  // (distance between frames) - (min. distance).
+  EXPECT_EQ(goal.evaluate(context), 1);
+
+  // GIVEN a goal frame at (0.5, 0, 0)
+  goal.setTarget(tf2::Vector3(0.5, 0, 0));
+  // WHEN we evaluate the cost
+  // THEN we expect to get 0.25.
+  EXPECT_NEAR(goal.evaluate(context), 0.25, 1e-3);
+
+  // GIVEN a goal frame at (1, 0, 0)
+  goal.setTarget(tf2::Vector3(1, 0, 0));
+  // WHEN we evaluate the cost
+  // THEN we expect to get zero, since the distance between the two
+  // frames is equal to the min. distance.
+  EXPECT_EQ(goal.evaluate(context), 0);
+
+  // GIVEN a goal frame at (1.5, 0, 0)
+  goal.setTarget(tf2::Vector3(1.5, 0, 0));
+  // WHEN we evaluate the cost
+  // THEN we expect to get 0, since the distance between the frames is
+  // greater than the min. distance.
+  EXPECT_EQ(goal.evaluate(context), 0);
+}
+
 int main(int argc, char ** argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
