@@ -13,12 +13,17 @@ public:
   {
     tip_link_frames_ = &fr;
     goal_link_indices_.push_back(0);
+    problem_active_variables_.push_back(0);
+    active_variable_positions_ = &var;
+    initial_guess_.push_back(0);
   }
 
   Frame & getFrame() { return fr; }
+  void setActiveVariable(double v) { var = v; }
 
 private:
   Frame fr;
+  double var = 0;
 };
 
 TEST(BioIK, position_goal) {
@@ -211,6 +216,25 @@ TEST(BioIK, min_distance_goal) {
   // THEN we expect to get 0, since the distance between the frames is
   // greater than the min. distance.
   EXPECT_EQ(goal.evaluate(context), 0);
+}
+
+TEST(BioIK, regularization_goal) {
+  // GIVEN an a joint position of 0, and an initial guess of 0.
+  RegularizationGoal goal;
+  MyContext context;
+
+  // WHEN we evaluate the cost
+  // THEN we expect to get 0, since the current joint position matches
+  // the initial guess.
+  EXPECT_EQ(goal.evaluate(context), 0);
+
+  for (double v = 0; v <= 1; v += 0.1) {
+    // GIVEN an arbitrary joint position, and an initial guess of 0.
+    context.setActiveVariable(v);
+    // WHEN we evaluate the cost
+    // THEN we expect to get the square of the joint position.
+    EXPECT_NEAR(goal.evaluate(context), v * v, 1e-3);
+  }
 }
 
 int main(int argc, char ** argv) {
