@@ -294,6 +294,24 @@ TEST(BioIK, JointVariableGoal) {
   EXPECT_NEAR(goal.evaluate(context), 0.25, 1e-3);
 }
 
+TEST(BioIK, JointFunctionGoal) {
+  // GIVEN a JointFunctionGoal that sets all temp values to 1, and an
+  // initial joint value of 0.
+  JointFunctionGoal goal({""}, [](std::vector<double>& v) { std::fill(v.begin(), v.end(), 1); });
+  MyContext context;
+
+  // WHEN we evaluate the cost
+  // THEN we expect to get 1
+  EXPECT_EQ(goal.evaluate(context), 1);
+
+  // GIVEN an initial joint value of -1.
+  context.setActiveVariable(-1);
+
+  // WHEN we evaluate the cost
+  // THEN we expect to get (-1 - 1) ^ 2 = 4.
+  EXPECT_EQ(goal.evaluate(context), 4);
+}
+
 int main(int argc, char ** argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
