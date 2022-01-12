@@ -34,7 +34,7 @@
 using namespace bio_ik;
 
 class MyRobotInfo : public RobotInfo {
-public:
+ public:
   MyRobotInfo() {
     VariableInfo info;
     info.clip_min = info.min = -0.5 * M_PI;
@@ -47,11 +47,10 @@ public:
 };
 
 class MyContext : public GoalContext {
-public:
-  MyContext(const tf2::Vector3 & position = tf2::Vector3(0, 0, 0),
-            const tf2::Quaternion & orientation = tf2::Quaternion(0, 0, 0, 1)) :
-    fr(position, orientation)
-  {
+ public:
+  MyContext(const tf2::Vector3& position = tf2::Vector3(0, 0, 0),
+            const tf2::Quaternion& orientation = tf2::Quaternion(0, 0, 0, 1))
+      : fr(position, orientation) {
     tip_link_frames_ = &fr;
     goal_link_indices_.push_back(0);
     problem_active_variables_.push_back(0);
@@ -62,11 +61,11 @@ public:
     robot_info_ = &info;
   }
 
-  Frame & getFrame() { return fr; }
+  Frame& getFrame() { return fr; }
   void setActiveVariable(double v) { var = v; }
   void setWeight(double w) { velocity_weights_[0] = w; }
 
-private:
+ private:
   Frame fr;
   double var = 0;
   MyRobotInfo info;
@@ -128,15 +127,18 @@ TEST(BioIK, orientation_goal) {
 
   // GIVEN a link frame with orientation (0, 0, 0, 1) and a goal frame
   // with orientation (0, sqrt(2)/2, sqrt(2)/2, 0)
-  goal.setOrientation(tf2::Quaternion(0, 0.5 * std::sqrt(2), 0.5 * std::sqrt(2), 0));
+  goal.setOrientation(
+      tf2::Quaternion(0, 0.5 * std::sqrt(2), 0.5 * std::sqrt(2), 0));
   // WHEN we calculate the cost
   // THEN we expect to get 2, which is the square of the magnitude of
-  // (0, sqrt(2)/2, sqrt(2)/2, 0) - (0, 0, 0, 1) = (0, sqrt(2)/2, sqrt(2)/2, -1).
+  // (0, sqrt(2)/2, sqrt(2)/2, 0) - (0, 0, 0, 1) = (0, sqrt(2)/2, sqrt(2)/2,
+  // -1).
   EXPECT_EQ(goal.evaluate(context), 2);
 }
 
 TEST(BioIK, pose_goal) {
-  // GIVEN a position goal, and orientation goal, and a pose goal (with rotation scale = 1)
+  // GIVEN a position goal, and orientation goal, and a pose goal (with rotation
+  // scale = 1)
   tf2::Quaternion orientation(0, 0, 0, 1);
   tf2::Vector3 position(0, 0, 0);
   PositionGoal pgoal("", position);
@@ -152,19 +154,22 @@ TEST(BioIK, pose_goal) {
   // cost of the position goal plus the scale squared times the cost
   // of the orientation goal.
   EXPECT_EQ(goal.evaluate(context), 0);
-  EXPECT_EQ(goal.evaluate(context), pgoal.evaluate(context) + scale * scale * ogoal.evaluate(context));
+  EXPECT_EQ(goal.evaluate(context),
+            pgoal.evaluate(context) + scale * scale * ogoal.evaluate(context));
 
   position.setValue(1, 0, 0);
   goal.setPosition(position);
   pgoal.setPosition(position);
   EXPECT_EQ(goal.evaluate(context), 1);
-  EXPECT_EQ(goal.evaluate(context), pgoal.evaluate(context) + scale * scale * ogoal.evaluate(context));
+  EXPECT_EQ(goal.evaluate(context),
+            pgoal.evaluate(context) + scale * scale * ogoal.evaluate(context));
 
   orientation.setValue(1, 0, 0, 0);
   goal.setOrientation(orientation);
   ogoal.setOrientation(orientation);
   EXPECT_EQ(goal.evaluate(context), 3);
-  EXPECT_EQ(goal.evaluate(context), pgoal.evaluate(context) + scale * scale * ogoal.evaluate(context));
+  EXPECT_EQ(goal.evaluate(context),
+            pgoal.evaluate(context) + scale * scale * ogoal.evaluate(context));
 }
 
 TEST(BioIK, look_at_goal) {
@@ -416,8 +421,8 @@ TEST(BioIK, minimial_displacement_goal) {
   MinimalDisplacementGoal mgoal;
   MyContext context;
 
-  // WHEN we compare the costs of the RegularizationGoal and MinimalDisplacementGoal
-  // THEN we expect they are the same
+  // WHEN we compare the costs of the RegularizationGoal and
+  // MinimalDisplacementGoal THEN we expect they are the same
   EXPECT_EQ(rgoal.evaluate(context), mgoal.evaluate(context));
 
   for (double v = 0; v <= 1; v += 0.1) {
@@ -425,12 +430,13 @@ TEST(BioIK, minimial_displacement_goal) {
     EXPECT_EQ(rgoal.evaluate(context), mgoal.evaluate(context));
   }
 
-  // GIVEN a RegularizationGoal and a MinimalDisplacementGoal, and a weight of 0.5
+  // GIVEN a RegularizationGoal and a MinimalDisplacementGoal, and a weight of
+  // 0.5
   context.setWeight(0.5);
 
-  // WHEN we compare the costs of the RegularizationGoal and MinimalDisplacementGoal
-  // THEN we expect the cost of the MinimalDisplacementGoal to be
-  // smaller by a factor of 0.5 * 0.5 = 0.25.
+  // WHEN we compare the costs of the RegularizationGoal and
+  // MinimalDisplacementGoal THEN we expect the cost of the
+  // MinimalDisplacementGoal to be smaller by a factor of 0.5 * 0.5 = 0.25.
   EXPECT_EQ(0.25 * rgoal.evaluate(context), mgoal.evaluate(context));
 
   for (double v = 0; v <= 1; v += 0.1) {
@@ -445,7 +451,7 @@ TEST(BioIK, joint_variable_goal) {
   MyContext context;
   context.setActiveVariable(0);
 
-  // WHEN we evalute the cost
+  // WHEN we evaluate the cost
   // THEN we expect to get 0, since the target and actual joint values
   // are the same.
   EXPECT_EQ(goal.evaluate(context), 0);
@@ -467,7 +473,8 @@ TEST(BioIK, joint_variable_goal) {
 TEST(BioIK, joint_function_goal) {
   // GIVEN a JointFunctionGoal that sets all temp values to 1, and an
   // initial joint value of 0.
-  JointFunctionGoal goal({""}, [](std::vector<double>& v) { std::fill(v.begin(), v.end(), 1); });
+  JointFunctionGoal goal(
+      {""}, [](std::vector<double>& v) { std::fill(v.begin(), v.end(), 1); });
   MyContext context;
 
   // WHEN we evaluate the cost
@@ -485,7 +492,10 @@ TEST(BioIK, joint_function_goal) {
 TEST(BioIK, link_function_goal) {
   // GIVEN a LinkFunctionGoal that returns the square of the distance
   // from the origin, and an initial position of (1, 1, 1).
-  LinkFunctionGoal goal("", [](const tf2::Vector3& v, [[maybe_unused]] const tf2::Quaternion& q) { return v.length2(); });
+  LinkFunctionGoal goal(
+      "", [](const tf2::Vector3& v, [[maybe_unused]] const tf2::Quaternion& q) {
+        return v.length2();
+      });
   MyContext context(tf2::Vector3(1, 1, 1));
 
   // WHEN we evaluate the cost
@@ -493,8 +503,11 @@ TEST(BioIK, link_function_goal) {
   EXPECT_EQ(goal.evaluate(context), 3);
 
   // GIVEN a LinkFunctionGoal that returns the square of the distance
-  // from the point (1, 1, 1), and the same link positon.
-  goal.setLinkFunction([](const tf2::Vector3& v, [[maybe_unused]] const tf2::Quaternion& q) { return v.distance2(tf2::Vector3(1, 1, 1)); });
+  // from the point (1, 1, 1), and the same link position.
+  goal.setLinkFunction(
+      [](const tf2::Vector3& v, [[maybe_unused]] const tf2::Quaternion& q) {
+        return v.distance2(tf2::Vector3(1, 1, 1));
+      });
 
   // WHEN we evaluate the cost
   // THEN we expect to get 0.
@@ -641,7 +654,7 @@ TEST(BioIK, cone_goal) {
   EXPECT_NEAR(goal.evaluate(context), 0, 1e-3);
 }
 
-int main(int argc, char ** argv) {
+int main(int argc, char** argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
