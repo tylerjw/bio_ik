@@ -38,6 +38,7 @@
 namespace bio_ik {
 
 class RobotInfo {
+ protected:
   struct VariableInfo {
     double clip_min, clip_max;
     double span;

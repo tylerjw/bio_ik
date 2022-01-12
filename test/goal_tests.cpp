@@ -5,6 +5,19 @@
 
 using namespace bio_ik;
 
+class MyRobotInfo : public RobotInfo {
+public:
+  MyRobotInfo() {
+    VariableInfo info;
+    info.clip_min = info.min = -0.5 * M_PI;
+    info.clip_max = info.max = 0.5 * M_PI;
+    info.span = info.max - info.min;
+    info.max_velocity = info.max_velocity_rcp = 0;
+
+    variables.push_back(info);
+  }
+};
+
 class MyContext : public GoalContext {
 public:
   MyContext(const tf2::Vector3 & position = tf2::Vector3(0, 0, 0),
@@ -18,6 +31,7 @@ public:
     initial_guess_.push_back(0);
     velocity_weights_.push_back(1);
     goal_variable_indices_.push_back(0);
+    robot_info_ = &info;
   }
 
   Frame & getFrame() { return fr; }
@@ -27,6 +41,7 @@ public:
 private:
   Frame fr;
   double var = 0;
+  MyRobotInfo info;
 };
 
 TEST(BioIK, position_goal) {
@@ -254,6 +269,52 @@ TEST(BioIK, line_goal) {
   v.setValue(2, 2, 0);
   context.getFrame().setPosition(v);
   EXPECT_EQ(goal.evaluate(context), 4);
+}
+
+TEST(BioIK, avoid_joint_limits_goal) {
+  // GIVEN an AvoidJointLimitsGoal, joint limits of +/- pi/2, and a
+  // joint coordinate of 0.
+  AvoidJointLimitsGoal goal;
+  MyContext context;
+
+  // WHEN we evaluate the cost
+  // THEN we expect to get 0.
+  EXPECT_EQ(goal.evaluate(context), 0);
+
+  // WHEN we set the joint coordinate to pi/4 and re-evaluate the cost
+  // THEN we expect to get 0.
+  context.setActiveVariable(M_PI_4);
+  EXPECT_EQ(goal.evaluate(context), 0);
+
+  // WHEN we set the joint coordinate to pi/2 and re-evaluate the cost
+  // THEN we expect to get (pi/2)^2.
+  context.setActiveVariable(M_PI_2);
+  EXPECT_NEAR(goal.evaluate(context), M_PI_2 * M_PI_2, 1e-3);
+
+  // WHEN we set the joint coordinate to 3*pi/4 and re-evaluate the cost
+  // THEN we expect to get pi^2.
+  context.setActiveVariable(3.0 * M_PI_4);
+  EXPECT_NEAR(goal.evaluate(context), M_PI * M_PI, 1e-3);
+
+  // WHEN we set the joint coordinate to pi and re-evaluate the cost
+  // THEN we expect to get (3*pi/2)^2.
+  context.setActiveVariable(M_PI);
+  EXPECT_NEAR(goal.evaluate(context), 9.0 * M_PI_2 * M_PI_2, 1e-3);
+
+  // WHEN we set the joint coordinate to -3*pi/4 and re-evaluate the cost
+  // THEN we expect to get pi^2.
+  context.setActiveVariable(-3.0 * M_PI_4);
+  EXPECT_NEAR(goal.evaluate(context), M_PI * M_PI, 1e-3);
+
+  // WHEN we set the joint coordinate to -pi/2 and re-evaluate the cost
+  // THEN we expect to get (pi/2)^2.
+  context.setActiveVariable(-M_PI_2);
+  EXPECT_NEAR(goal.evaluate(context), M_PI_2 * M_PI_2, 1e-3);
+
+  // WHEN we set the joint coordinate to -pi/4 and re-evaluate the cost
+  // THEN we expect to get 0.
+  context.setActiveVariable(-M_PI_4);
+  EXPECT_EQ(goal.evaluate(context), 0);
 }
 
 TEST(BioIK, regularization_goal) {
