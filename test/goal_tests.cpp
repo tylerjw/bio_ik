@@ -221,6 +221,41 @@ TEST(BioIK, min_distance_goal) {
   EXPECT_EQ(goal.evaluate(context), 0);
 }
 
+TEST(BioIK, line_goal) {
+  // GIVEN a LineGoal whose line is aligned with the global x-axis,
+  // and a link position of (0, 0, 0).
+  LineGoal goal("", tf2::Vector3(0, 0, 0), tf2::Vector3(1, 0, 0));
+  MyContext context;
+
+  // WHEN we evaluate the cost
+  // THEN we expect to get 0, since the link is on the line.
+  EXPECT_EQ(goal.evaluate(context), 0);
+
+  // WHEN we move the link to (1, 0, 0) and re-evaluate the cost.
+  // THEN we expect to get 0.
+  tf2::Vector3 v(1, 0, 0);
+  context.getFrame().setPosition(v);
+  EXPECT_EQ(goal.evaluate(context), 0);
+
+  // WHEN we move the link to (0, 1, 0) and re-evaluate the cost.
+  // THEN we expect to get 1.
+  v.setValue(0, 1, 0);
+  context.getFrame().setPosition(v);
+  EXPECT_EQ(goal.evaluate(context), 1);
+
+  // WHEN we move the link to (1, 1, 0) and re-evaluate the cost.
+  // THEN we expect to get 1.
+  v.setValue(0, 1, 0);
+  context.getFrame().setPosition(v);
+  EXPECT_EQ(goal.evaluate(context), 1);
+
+  // WHEN we move the link to (2, 2, 0) and re-evaluate the cost.
+  // THEN we expect to get 4.
+  v.setValue(2, 2, 0);
+  context.getFrame().setPosition(v);
+  EXPECT_EQ(goal.evaluate(context), 4);
+}
+
 TEST(BioIK, regularization_goal) {
   // GIVEN an a joint position of 0, and an initial guess of 0.
   RegularizationGoal goal;
