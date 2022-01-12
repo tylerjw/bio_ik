@@ -441,35 +441,35 @@ TEST(BioIK, side_goal) {
   // WHEN we rotate the link by pi/4 about the z-axis and re-evaluate
   // the cost.
   // THEN we expect to get (1/sqrt(2))^2 = 1/2.
-  tf2::Quaternion q(tf2::Vector3(0, 0, 1), TF2SIMD_PI * 0.25);
+  tf2::Quaternion q(tf2::Vector3(0, 0, 1), M_PI_4);
   context.getFrame().setOrientation(q);
   EXPECT_NEAR(goal.evaluate(context), 0.5, 1e-3);
 
   // WHEN we rotate the link by pi/2 about the z-axis and re-evaluate
   // the cost.
   // THEN we expect to get 0.
-  q.setRotation(tf2::Vector3(0, 0, 1), TF2SIMD_PI * 0.5);
+  q.setRotation(tf2::Vector3(0, 0, 1), M_PI_2);
   context.getFrame().setOrientation(q);
   EXPECT_NEAR(goal.evaluate(context), 0, 1e-3);
 
   // WHEN we rotate the link by pi about the z-axis and re-evaluate
   // the cost.
   // THEN we expect to get 0.
-  q.setRotation(tf2::Vector3(0, 0, 1), TF2SIMD_PI);
+  q.setRotation(tf2::Vector3(0, 0, 1), M_PI);
   context.getFrame().setOrientation(q);
   EXPECT_NEAR(goal.evaluate(context), 0, 1e-3);
 
   // WHEN we rotate the link by 3*pi/2 about the z-axis and
   // re-evaluate the cost.
   // THEN we expect to get 0.
-  q.setRotation(tf2::Vector3(0, 0, 1), 3.0 * TF2SIMD_PI / 2.0);
+  q.setRotation(tf2::Vector3(0, 0, 1), 3.0 * M_PI_2);
   context.getFrame().setOrientation(q);
   EXPECT_NEAR(goal.evaluate(context), 0, 1e-3);
 
   // WHEN we rotate the link by 7*pi/4 about the z-axis and
   // re-evaluate the cost.
   // THEN we expect to get 0.5.
-  q.setRotation(tf2::Vector3(0, 0, 1), 7.0 * TF2SIMD_PI / 4.0);
+  q.setRotation(tf2::Vector3(0, 0, 1), 7.0 * M_PI_4);
   context.getFrame().setOrientation(q);
   EXPECT_NEAR(goal.evaluate(context), 0.5, 1e-3);
 }
@@ -487,35 +487,35 @@ TEST(BioIK, direction_goal) {
   // WHEN we rotate the link by pi/4 about the z-axis and re-evaluate
   // the cost
   // THEN we expect to get 0.58579.
-  tf2::Quaternion q(tf2::Vector3(0, 0, 1), TF2SIMD_PI * 0.25);
+  tf2::Quaternion q(tf2::Vector3(0, 0, 1), M_PI_4);
   context.getFrame().setOrientation(q);
   EXPECT_NEAR(goal.evaluate(context), 0.58579, 1e-3);
 
   // WHEN we rotate the link by pi/2 about the z-axis and re-evaluate
   // the cost
   // THEN we expect to get 2.
-  q.setRotation(tf2::Vector3(0, 0, 1), TF2SIMD_PI * 0.5);
+  q.setRotation(tf2::Vector3(0, 0, 1), M_PI_2);
   context.getFrame().setOrientation(q);
   EXPECT_NEAR(goal.evaluate(context), 2, 1e-3);
 
   // WHEN we rotate the link by pi about the z-axis and re-evaluate
   // the cost
   // THEN we expect to get 4.
-  q.setRotation(tf2::Vector3(0, 0, 1), TF2SIMD_PI);
+  q.setRotation(tf2::Vector3(0, 0, 1), M_PI);
   context.getFrame().setOrientation(q);
   EXPECT_NEAR(goal.evaluate(context), 4, 1e-3);
 
   // WHEN we rotate the link by 3*pi/2 about the z-axis and
   // re-evaluate the cost
   // THEN we expect to get 2.
-  q.setRotation(tf2::Vector3(0, 0, 1), 3.0 * TF2SIMD_PI / 2.0);
+  q.setRotation(tf2::Vector3(0, 0, 1), 3.0 * M_PI_2);
   context.getFrame().setOrientation(q);
   EXPECT_NEAR(goal.evaluate(context), 2, 1e-3);
 
   // WHEN we rotate the link by 7*pi/4 about the z-axis and
   // re-evaluate the cost
   // THEN we expect to get 0.58579.
-  q.setRotation(tf2::Vector3(0, 0, 1), 7.0 * TF2SIMD_PI / 4.0);
+  q.setRotation(tf2::Vector3(0, 0, 1), 7.0 * M_PI_4);
   context.getFrame().setOrientation(q);
   EXPECT_NEAR(goal.evaluate(context), 0.58579, 1e-3);
 }
@@ -524,7 +524,7 @@ TEST(BioIK, cone_goal) {
   // GIVEN a ConeGoal that wants the link's x-axis to lie within a
   // cone aligned with the global x-axis, with an angle of pi/4, and
   // an initial link orientation of (0, 0, 0, 1).
-  ConeGoal goal("", tf2::Vector3(1, 0, 0), tf2::Vector3(1, 0, 0), TF2SIMD_PI * 0.25);
+  ConeGoal goal("", tf2::Vector3(1, 0, 0), tf2::Vector3(1, 0, 0), M_PI_4);
   MyContext context;
 
   // WHEN we evaluate the cost
@@ -534,35 +534,35 @@ TEST(BioIK, cone_goal) {
   // WHEN we rotate the link by pi/4 about the z-axis and re-evaluate
   // the cost
   // THEN we expect to get 0.
-  tf2::Quaternion q(tf2::Vector3(0, 0, 1), TF2SIMD_PI * 0.25);
+  tf2::Quaternion q(tf2::Vector3(0, 0, 1), M_PI_4);
   context.getFrame().setOrientation(q);
   EXPECT_NEAR(goal.evaluate(context), 0, 1e-3);
 
   // WHEN we rotate the link by pi/2 about the z-axis and re-evaluate
   // the cost
   // THEN we expect to get (pi/2-pi/4)^2 = (pi/4)^2.
-  q.setRotation(tf2::Vector3(0, 0, 1), TF2SIMD_PI * 0.5);
+  q.setRotation(tf2::Vector3(0, 0, 1), M_PI_2);
   context.getFrame().setOrientation(q);
-  EXPECT_NEAR(goal.evaluate(context), TF2SIMD_PI * TF2SIMD_PI / 16.0, 1e-3);
+  EXPECT_NEAR(goal.evaluate(context), M_PI_4 * M_PI_4, 1e-3);
 
   // WHEN we rotate the link by pi about the z-axis and re-evaluate
   // the cost
   // THEN we expect to get (pi - pi/4)^2 = (3*pi/4)^2.
-  q.setRotation(tf2::Vector3(0, 0, 1), TF2SIMD_PI);
+  q.setRotation(tf2::Vector3(0, 0, 1), M_PI);
   context.getFrame().setOrientation(q);
-  EXPECT_NEAR(goal.evaluate(context), TF2SIMD_PI * TF2SIMD_PI * 9.0 / 16.0, 1e-3);
+  EXPECT_NEAR(goal.evaluate(context), 9.0 * M_PI_4 * M_PI_4, 1e-3);
 
   // WHEN we rotate the link by 3*pi/2 about the z-axis and
   // re-evaluate the cost
   // THEN we expect to get (pi/4)^2.
-  q.setRotation(tf2::Vector3(0, 0, 1), 3.0 * TF2SIMD_PI / 2.0);
+  q.setRotation(tf2::Vector3(0, 0, 1), 3.0 * M_PI_2);
   context.getFrame().setOrientation(q);
-  EXPECT_NEAR(goal.evaluate(context), TF2SIMD_PI * TF2SIMD_PI / 16.0, 1e-3);
+  EXPECT_NEAR(goal.evaluate(context), M_PI_4 * M_PI_4, 1e-3);
 
   // WHEN we rotate the link by 7*pi/4 about the z-axis and
   // re-evaluate the cost
   // THEN we expect to get 0.
-  q.setRotation(tf2::Vector3(0, 0, 1), 7.0 * TF2SIMD_PI / 4.0);
+  q.setRotation(tf2::Vector3(0, 0, 1), 7.0 * M_PI_4);
   context.getFrame().setOrientation(q);
   EXPECT_NEAR(goal.evaluate(context), 0, 1e-3);
 }
