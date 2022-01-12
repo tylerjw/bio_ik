@@ -269,7 +269,7 @@ TEST(BioIK, minimial_displacement_goal) {
   }
 }
 
-TEST(BioIK, JointVariableGoal) {
+TEST(BioIK, joint_variable_goal) {
   // GIVEN a joint value of 0, and a JointVariableGoal of 0
   JointVariableGoal goal("", 0);
   MyContext context;
@@ -294,7 +294,7 @@ TEST(BioIK, JointVariableGoal) {
   EXPECT_NEAR(goal.evaluate(context), 0.25, 1e-3);
 }
 
-TEST(BioIK, JointFunctionGoal) {
+TEST(BioIK, joint_function_goal) {
   // GIVEN a JointFunctionGoal that sets all temp values to 1, and an
   // initial joint value of 0.
   JointFunctionGoal goal({""}, [](std::vector<double>& v) { std::fill(v.begin(), v.end(), 1); });
@@ -310,6 +310,25 @@ TEST(BioIK, JointFunctionGoal) {
   // WHEN we evaluate the cost
   // THEN we expect to get (-1 - 1) ^ 2 = 4.
   EXPECT_EQ(goal.evaluate(context), 4);
+}
+
+TEST(BioIK, link_function_goal) {
+  // GIVEN a LinkFunctionGoal that returns the square of the distance
+  // from the origin, and an initial position of (1, 1, 1).
+  LinkFunctionGoal goal("", [](const tf2::Vector3& v, [[maybe_unused]] const tf2::Quaternion& q) { return v.length2(); });
+  MyContext context(tf2::Vector3(1, 1, 1));
+
+  // WHEN we evaluate the cost
+  // THEN we expect to get 1^2 + 1^2 + 1^2 = 3.
+  EXPECT_EQ(goal.evaluate(context), 3);
+
+  // GIVEN a LinkFunctionGoal that returns the square of the distance
+  // from the point (1, 1, 1), and the same link positon.
+  goal.setLinkFunction([](const tf2::Vector3& v, [[maybe_unused]] const tf2::Quaternion& q) { return v.distance2(tf2::Vector3(1, 1, 1)); });
+
+  // WHEN we evaluate the cost
+  // THEN we expect to get 0.
+  EXPECT_EQ(goal.evaluate(context), 0);
 }
 
 int main(int argc, char ** argv) {
