@@ -331,6 +331,53 @@ TEST(BioIK, link_function_goal) {
   EXPECT_EQ(goal.evaluate(context), 0);
 }
 
+TEST(BioIK, side_goal) {
+  // GIVEN a SideGoal that wants to point the link's x-axis away from
+  // the global x-axis, and an link orientation of (0, 0, 0, 1) (which
+  // aligns the two axes).
+  SideGoal goal("", tf2::Vector3(1, 0, 0), tf2::Vector3(1, 0, 0));
+  MyContext context;
+
+  // WHEN we evaluate the cost
+  // THEN we expect to get 1.
+  EXPECT_EQ(goal.evaluate(context), 1);
+
+  // WHEN we rotate the link by pi/4 about the z-axis and re-evaluate
+  // the cost.
+  // THEN we expect to get (1/sqrt(2))^2 = 1/2.
+  tf2::Quaternion q(tf2::Vector3(0, 0, 1), TF2SIMD_PI * 0.25);
+  context.getFrame().setOrientation(q);
+  EXPECT_NEAR(goal.evaluate(context), 0.5, 1e-3);
+
+  // WHEN we rotate the link by pi/2 about the z-axis and re-evaluate
+  // the cost.
+  // THEN we expect to get 0.
+  q.setRotation(tf2::Vector3(0, 0, 1), TF2SIMD_PI * 0.5);
+  context.getFrame().setOrientation(q);
+  EXPECT_NEAR(goal.evaluate(context), 0, 1e-3);
+
+  // WHEN we rotate the link by pi about the z-axis and re-evaluate
+  // the cost.
+  // THEN we expect to get 0.
+  q.setRotation(tf2::Vector3(0, 0, 1), TF2SIMD_PI);
+  context.getFrame().setOrientation(q);
+  EXPECT_NEAR(goal.evaluate(context), 0, 1e-3);
+
+  // WHEN we rotate the link by 3*pi/2 about the z-axis and
+  // re-evaluate the cost.
+  // THEN we expect to get 0.
+  q.setRotation(tf2::Vector3(0, 0, 1), 3.0 * TF2SIMD_PI / 2.0);
+  context.getFrame().setOrientation(q);
+  EXPECT_NEAR(goal.evaluate(context), 0, 1e-3);
+
+  // WHEN we rotate the link by 7*pi/4 about the z-axis and
+  // re-evaluate the cost.
+  // THEN we expect to get 0.5.
+  q.setRotation(tf2::Vector3(0, 0, 1), 7.0 * TF2SIMD_PI / 4.0);
+  context.getFrame().setOrientation(q);
+  EXPECT_NEAR(goal.evaluate(context), 0.5, 1e-3);
+}
+
 int main(int argc, char ** argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
