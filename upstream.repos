@@ -1,9 +1,21 @@
 repositories:
   moveit2:
     type: git
-    url: https://github.com/tylerjw/moveit2
-    version: 539c2289bdfe3c3410bae63ed115fc0a47a87a7d
+    url: https://github.com/ros-planning/moveit2
+    version: main
   moveit_msgs:
     type: git
     url: https://github.com/ros-planning/moveit_msgs
     version: 2.2.0
+  moveit_resources:
+    type: git
+    url: https://github.com/ros-planning/moveit_resources
+    version: ros2
+  launch_param_builder:
+    type: git
+    url: https://github.com/PickNikRobotics/launch_param_builder
+    version: 0.1.0
+  ros2_control:
+    type: git
+    url: https://github.com/ros-controls/ros2_control.git
+    version: 2.1.0
