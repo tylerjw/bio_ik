@@ -21,8 +21,9 @@ jobs:
             ROS_REPO: testing
             TARGET_CMAKE_ARGS: -DENABLE_COVERAGE=ON
             CCOV: true
-          - NAME: "rolling-main"
-            ROS_REPO: main
+          # TODO: re-enable testing on rolling-main once ros2_control issue is fixed
+          # - NAME: "rolling-main"
+          #   ROS_REPO: main
           - NAME: "address-leak-ub-sanitizers"
             TARGET_CMAKE_ARGS: >
               -DCMAKE_BUILD_TYPE=Debug

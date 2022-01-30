@@ -28,8 +28,6 @@
 
 #pragma once
 
-#include <rcl_interfaces/msg/floating_point_range.hpp>
-#include <rcl_interfaces/msg/integer_range.hpp>
 #include <rcl_interfaces/msg/parameter_descriptor.hpp>
 #include <rcl_interfaces/msg/parameter_type.hpp>
 #include <rclcpp/rclcpp.hpp>
