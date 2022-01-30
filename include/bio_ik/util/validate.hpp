@@ -28,33 +28,56 @@
 
 #pragma once
 
-#include <string>
-#include <tuple>
+#include <fmt/format.h>
 
-#include "_external/expected.hpp"
+#include <cmath>
+#include <limits>
+#include <optional>
 
-namespace bio_ik {
+#include "bio_ik/util/result.hpp"
 
-enum class Error { OK, ERROR };
+namespace validate {
 
-struct Status {
-  Error value = Error::OK;
-  std::string what = "";
+template <typename T>
+struct range {
+  T from = std::numeric_limits<T>::min();
+  T to = std::numeric_limits<T>::max();
+  std::optional<T> step = std::nullopt;
+  double step_threshold = 1e-3;
 
-  Status() = default;
-  Status(const std::string& error_string)
-      : value(Error::ERROR), what(error_string) {}
+  constexpr Result<T> operator()(T value) const {
+    if (value < from || value > to) {
+      return OutOfRange(
+          fmt::format("{} is outside of the range [{}, {}]", value, from, to));
+    }
 
-  inline operator bool() const noexcept { return value == Error::OK; }
-  inline bool operator==(const Status& other) {
-    return std::tie(value, what) == std::tie(other.value, other.what);
+    if (step) {
+      const double step_value = static_cast<double>(step.value());
+      const double ratio = static_cast<double>(value - from) / step_value;
+      const double distance = abs(ratio - round(ratio));
+      if (distance < step_threshold) {
+        return OutOfRange(fmt::format(
+            "{} is {} away from the nearest valid step", value, distance));
+      }
+    }
+
+    return value;
   }
 };
-auto OKStatus = [] { return Status(); };
 
-using tl::expected;
-using tl::unexpected;
+template <typename Rng, typename T>
+constexpr Result<T> in(const Rng& valid_values, const T& value) {
+  if (!ranges::contains(valid_values, value)) {
+    return OutOfRange(fmt::format("{} is not in {}", value, valid_values));
+  }
+  return value;
+}
+
 template <typename T>
-using StatusOr = expected<T, Status>;
+constexpr Result<T> make_named_error(const Error& error,
+                                     const std::string& name) {
+  return make_unexpected(Error{
+      .code = error.code, .what = fmt::format("{}: {}", name, error.what)});
+}
 
-}  // namespace bio_ik
+}  // namespace validate

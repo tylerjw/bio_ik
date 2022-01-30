@@ -36,14 +36,14 @@
 #include <rclcpp/rclcpp.hpp>
 #include <string>
 
-#include "bio_ik/status_or.hpp"
+#include "bio_ik/util/result.hpp"
 
 namespace bio_ik {
 
 /**
  * @brief      Parameters settable via ros.
  */
-struct RosParameters {
+struct [[nodiscard]] RosParameters {
   // Plugin parameters
   bool enable_profiler = false;
 
@@ -65,9 +65,10 @@ struct RosParameters {
 
   inline operator std::string() const {
     return fmt::format(
-        "[RosParameters: enable_profiler={}, mode={}, enable_counter={}, "
-        "random_seed={}, dpos={}, drot={}, dtwist={}, skip_wipeout={}, "
-        "population_size={}, elite_count={}, enable_linear_fitness={}]",
+        "[bio_ik::RosParameters:\n  enable_profiler={},\n  mode={},\n  "
+        "enable_counter={},\n  random_seed={},\n  dpos={},\n  drot={},\n  "
+        "dtwist={},\n  skip_wipeout={},\n  population_size={},\n  "
+        "elite_count={},\n  enable_linear_fitness={},\n]",
         enable_profiler, mode, enable_counter, random_seed, dpos, drot, dtwist,
         skip_wipeout, population_size, elite_count, enable_linear_fitness);
   }
@@ -78,9 +79,9 @@ struct RosParameters {
  *
  * @param[in]  ros_params  The ros parameters struct
  *
- * @return     error string if invalid, ok if valid
+ * @return     The ros parameters on success, error status otherwise
  */
-Status validate(const RosParameters& ros_params);
+[[nodiscard]] Result<RosParameters> validate(const RosParameters& ros_params);
 
 /**
  * @brief      Gets the ros parameters
@@ -89,6 +90,7 @@ Status validate(const RosParameters& ros_params);
  *
  * @return     The ros parameters on success, error status otherwise
  */
-StatusOr<RosParameters> get_ros_parameters(const rclcpp::Node::SharedPtr& node);
+[[nodiscard]] Result<RosParameters> get_ros_parameters(
+    const rclcpp::Node::SharedPtr& node);
 
 }  // namespace bio_ik

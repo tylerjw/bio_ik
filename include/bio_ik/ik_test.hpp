@@ -26,6 +26,8 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
+#pragma once
+
 #include <memory>
 #include <optional>
 #include <set>
@@ -36,6 +38,7 @@
 namespace bio_ik {
 
 std::optional<std::unique_ptr<IKSolver>> makeTestSolver(const IKParams& params);
-std::set<std::string> getTestModeSet();
+
+const auto getTestModes = []() { return std::set<std::string>{"test"}; };
 
 }  // namespace bio_ik

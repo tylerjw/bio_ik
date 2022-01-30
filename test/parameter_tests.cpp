@@ -39,10 +39,11 @@ TEST(ParameterTests, DefaultValidMode)  // NOLINT
   const auto ros_params = bio_ik::RosParameters{};
 
   // WHEN we call validate
-  const auto status = bio_ik::validate(ros_params);
+  const auto result = bio_ik::validate(ros_params);
 
-  // THEN we expect the status to not contain an error
-  EXPECT_TRUE(status) << "bio_ik::validate returned error: " << status.what;
+  // THEN we expect the result to not contain an error
+  EXPECT_TRUE(result) << "bio_ik::validate returned error: "
+                      << result.error().what;
 }
 
 TEST(ParameterTests, NotValidMode)  // NOLINT
@@ -51,10 +52,10 @@ TEST(ParameterTests, NotValidMode)  // NOLINT
   const auto ros_params = bio_ik::RosParameters{.mode = "invalid"};
 
   // WHEN we call validate
-  const auto status = bio_ik::validate(ros_params);
+  const auto result = bio_ik::validate(ros_params);
 
-  // THEN we expect the status to contain an error
-  EXPECT_FALSE(status) << "bio_ik::validate did not return an error";
+  // THEN we expect the result to contain an error
+  EXPECT_FALSE(result) << "bio_ik::validate did not return an error";
 }
 
 TEST(ParameterTests, GetIsValid)  // NOLIINT
@@ -102,12 +103,60 @@ TEST(ParameterTests, StringOperator)  // NOLINT
   EXPECT_NO_THROW(auto _ = std::string(bio_ik::RosParameters{}));
 }
 
-TEST(ParameterTests, GetInvalidParameters)  // NOLINT
+TEST(ParameterTests, GetInvalidMode)  // NOLINT
 {
   // GIVEN a ros node with a parameter override
   auto node = std::make_shared<rclcpp::Node>(
       "_", rclcpp::NodeOptions().append_parameter_override(
                "mode", rclcpp::ParameterValue("invalid")));
+
+  // WHEN we call get_ros_parameters
+  auto result = bio_ik::get_ros_parameters(node);
+
+  // THEN we expect the result to have failed
+  EXPECT_FALSE(result)
+      << "get_ros_parameters should have returned no value, returned: " +
+             std::string(result.value());
+}
+
+TEST(ParameterTests, GetInvalidPopulationSize)  // NOLINT
+{
+  // GIVEN a ros node with a parameter override
+  auto node = std::make_shared<rclcpp::Node>(
+      "_", rclcpp::NodeOptions().append_parameter_override(
+               "population_size", rclcpp::ParameterValue(1)));
+
+  // WHEN we call get_ros_parameters
+  auto result = bio_ik::get_ros_parameters(node);
+
+  // THEN we expect the result to have failed
+  EXPECT_FALSE(result)
+      << "get_ros_parameters should have returned no value, returned: " +
+             std::string(result.value());
+}
+
+TEST(ParameterTests, GetInvalidEliteCount)  // NOLINT
+{
+  // GIVEN a ros node with a parameter override
+  auto node = std::make_shared<rclcpp::Node>(
+      "_", rclcpp::NodeOptions().append_parameter_override(
+               "elite_count", rclcpp::ParameterValue(1)));
+
+  // WHEN we call get_ros_parameters
+  auto result = bio_ik::get_ros_parameters(node);
+
+  // THEN we expect the result to have failed
+  EXPECT_FALSE(result)
+      << "get_ros_parameters should have returned no value, returned: " +
+             std::string(result.value());
+}
+
+TEST(ParameterTests, GetInvalidModeType)  // NOLINT
+{
+  // GIVEN a ros node with a parameter override
+  auto node = std::make_shared<rclcpp::Node>(
+      "_", rclcpp::NodeOptions().append_parameter_override(
+               "mode", rclcpp::ParameterValue(1)));
 
   // WHEN we call get_ros_parameters
   auto result = bio_ik::get_ros_parameters(node);

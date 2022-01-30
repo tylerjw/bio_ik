@@ -662,8 +662,4 @@ std::optional<std::unique_ptr<IKSolver>> makeEvolution2Solver(
     return std::nullopt;
 }
 
-std::set<std::string> getEvolution2ModeSet() {
-  return {"bio2", "bio2_memetic", "bio2_memetic_l"};
-}
-
 }  // namespace bio_ik

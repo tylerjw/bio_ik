@@ -573,6 +573,4 @@ std::optional<std::unique_ptr<IKSolver>> makeEvolution1Solver(
     return std::nullopt;
 }
 
-std::set<std::string> getEvolution1ModeSet() { return {"bio1"}; }
-
 }  // namespace bio_ik

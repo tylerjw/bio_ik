@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2017, Philipp Sebastian Ruppel
+// Copyright (c) 2022, Tyler Weaver
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -28,18 +28,48 @@
 
 #pragma once
 
-#include <memory>
-#include <optional>
-#include <set>
-#include <string>
+#include <tuple>
 
-#include "bio_ik/ik_base.hpp"  // for IKSolver
+/**
+ * @brief      Curried template copied from
+ *             https://gitlab.com/manning-fpcpp-book/code-examples/-/blob/master/chapter-11/make-curried/main.cpp
+ *
+ * @tparam     Function      The function to curry
+ * @tparam     CapturedArgs  The args to capture
+ */
+template <typename Function, typename... CapturedArgs>
+class Curried {
+ private:
+  using CapturedArgsTuple = std::tuple<std::decay_t<CapturedArgs>...>;
 
-namespace bio_ik {
+  template <typename... Args>
+  static auto capture_by_copy(Args&&... args) {
+    return std::tuple<std::decay_t<Args>...>(std::forward<Args>(args)...);
+  }
 
-std::optional<std::unique_ptr<IKSolver>> makeEvolution1Solver(
-    const IKParams& params);
+ public:
+  Curried(Function function, CapturedArgs... args)
+      : m_function(function), m_captured(capture_by_copy(std::move(args)...)) {}
 
-const auto getEvolution1Modes = []() { return std::set<std::string>{"bio1"}; };
+  Curried(Function function, std::tuple<CapturedArgs...> args)
+      : m_function(function), m_captured(std::move(args)) {}
 
-}  // namespace bio_ik
+  template <typename... NewArgs>
+  auto operator()(NewArgs&&... args) const {
+    auto new_args = capture_by_copy(std::forward<NewArgs>(args)...);
+
+    auto all_args = std::tuple_cat(m_captured, std::move(new_args));
+
+    if constexpr (std::is_invocable_v<Function, CapturedArgs..., NewArgs...>) {
+      return std::apply(m_function, all_args);
+
+    } else {
+      return Curried<Function, CapturedArgs..., NewArgs...>(m_function,
+                                                            all_args);
+    }
+  }
+
+ private:
+  Function m_function;
+  std::tuple<CapturedArgs...> m_captured;
+};
