@@ -144,5 +144,4 @@ std::optional<std::unique_ptr<IKSolver>> makeTestSolver(
     return std::nullopt;
 }
 
-std::set<std::string> getTestModeSet() { return {"test"}; }
 }  // namespace bio_ik

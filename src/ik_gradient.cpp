@@ -254,12 +254,4 @@ std::optional<std::unique_ptr<IKSolver>> makeGradientDecentSolver(
     return std::nullopt;
 }
 
-std::set<std::string> getGradientDecentModeSet() {
-  return {
-      "gd",     "gd_2",   "gd_4",  "gd_8",   "gd_r",   "gd_r_2",
-      "gd_r_4", "gd_r_8", "gd_c",  "gd_c_2", "gd_c_4", "gd_c_8",
-      "jac",    "jac_2",  "jac_4", "jac_8",
-  };
-}
-
 }  // namespace bio_ik

@@ -31,12 +31,7 @@
 #include <fmt/format.h>
 #include <fmt/ranges.h>
 
-#include <bio_ik/status_or.hpp>
 #include <range/v3/all.hpp>
-#include <rcl_interfaces/msg/floating_point_range.hpp>
-#include <rcl_interfaces/msg/integer_range.hpp>
-#include <rcl_interfaces/msg/parameter_descriptor.hpp>
-#include <rcl_interfaces/msg/parameter_type.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <string>
 
@@ -44,137 +39,114 @@
 #include "bio_ik/ik_evolution_2.hpp"
 #include "bio_ik/ik_gradient.hpp"
 #include "bio_ik/ik_test.hpp"
+#include "bio_ik/util/parameter_loader.hpp"
+#include "bio_ik/util/result.hpp"
+#include "bio_ik/util/validate.hpp"
+
+namespace views = ::ranges::views;
 
 namespace bio_ik {
-
-using namespace ranges;
-using Descriptor = rcl_interfaces::msg::ParameterDescriptor;
-using rclcpp::ParameterValue;
-
 namespace {
 
-class DescriptorBuilder {
-  Descriptor msg_;
+[[nodiscard]] auto valid_modes() {
+  const auto evolution1_modes = getEvolution1Modes();
+  const auto evolution2_modes = getEvolution2Modes();
+  const auto gradient_decent_modes = getGradientDecentModes();
+  const auto test_modes = getTestModes();
 
- public:
-  DescriptorBuilder() = default;
-  DescriptorBuilder(const Descriptor& msg) : msg_{msg} {}
-  operator Descriptor() const { return move(msg_); }
-  DescriptorBuilder description(std::string description) const {
-    Descriptor msg = msg_;
-    msg.description = description;
-    return DescriptorBuilder{msg};
-  }
-  DescriptorBuilder additional_constraints(
-      std::string additional_constraints) const {
-    Descriptor msg = msg_;
-    msg.additional_constraints = additional_constraints;
-    return DescriptorBuilder{msg};
-  }
-  DescriptorBuilder read_only(bool read_only) const {
-    Descriptor msg = msg_;
-    msg.read_only = read_only;
-    return DescriptorBuilder{msg};
-  }
-  DescriptorBuilder dynamic_typing(bool dynamic_typing) const {
-    Descriptor msg = msg_;
-    msg.dynamic_typing = dynamic_typing;
-    return DescriptorBuilder{msg};
-  }
-  DescriptorBuilder floating_point_range(
-      double from_value = std::numeric_limits<double>::min(),
-      double to_value = std::numeric_limits<double>::max(),
-      double step = 0) const {
-    Descriptor msg = msg_;
-    msg.floating_point_range.push_back([&] {
-      rcl_interfaces::msg::FloatingPointRange range;
-      range.from_value = from_value;
-      range.to_value = to_value;
-      range.step = step;
-      return range;
-    }());
-    return DescriptorBuilder{msg};
-  }
-  DescriptorBuilder integer_range(
-      int64_t from_value = std::numeric_limits<int64_t>::min(),
-      int64_t to_value = std::numeric_limits<int64_t>::max(),
-      uint64_t step = 0) const {
-    Descriptor msg = msg_;
-    msg.integer_range.push_back([&] {
-      rcl_interfaces::msg::IntegerRange range;
-      range.from_value = from_value;
-      range.to_value = to_value;
-      range.step = step;
-      return range;
-    }());
-    return DescriptorBuilder{msg};
-  }
-};
-
-template <typename T>
-T declare(const rclcpp::Node::SharedPtr& node, const std::string& name,
-          const T& default_value, const Descriptor& descriptor = Descriptor()) {
-  return node
-      ->declare_parameter(name, ParameterValue(default_value), descriptor)
-      .get<T>();
-}
-
-std::set<std::string> valid_modes() {
-  const auto evolution_1 = getEvolution1ModeSet();
-  const auto evolution_2 = getEvolution2ModeSet();
-  const auto gradient_decent = getGradientDecentModeSet();
-  const auto test = getTestModeSet();
-
-  auto valid_modes = evolution_1;
-  valid_modes.insert(evolution_2.begin(), evolution_2.end());
-  valid_modes.insert(gradient_decent.begin(), gradient_decent.end());
-  valid_modes.insert(test.begin(), test.begin());
-  return valid_modes;
+  return views::concat(
+             views::all(evolution1_modes), views::all(evolution2_modes),
+             views::all(gradient_decent_modes), views::all(test_modes)) |
+         ranges::to<std::set<std::string>>();
 }
 
 }  // namespace
 
-Status validate(const RosParameters& ros_params) {
-  if (valid_modes().count(ros_params.mode) == 0)
-    return Status(fmt::format("Mode: \"{}\" is not in set: {}\n",
-                              ros_params.mode, valid_modes()));
-  return OKStatus();
+[[nodiscard]] Result<RosParameters> validate(const RosParameters& ros_params) {
+  if (const auto result = validate::in(valid_modes(), ros_params.mode);
+      !result) {
+    return validate::make_named_error<RosParameters>(result.error(), "mode");
+  }
+
+  if (const auto result =
+          validate::range<size_t>{.from = 2}(ros_params.population_size);
+      !result) {
+    return validate::make_named_error<RosParameters>(result.error(),
+                                                     "population_size");
+  }
+
+  if (const auto result =
+          validate::range<size_t>{.from = 2}(ros_params.elite_count);
+      !result) {
+    return validate::make_named_error<RosParameters>(result.error(),
+                                                     "elite_count");
+  }
+
+  return ros_params;
 }
 
-StatusOr<RosParameters> get_ros_parameters(
+[[nodiscard]] Result<RosParameters> get_ros_parameters(
     const rclcpp::Node::SharedPtr& node) {
   const auto default_values = RosParameters{};
-  const auto ros_params = RosParameters{
-      .enable_profiler =
-          declare(node, "enable_profiler", default_values.enable_profiler,
-                  DescriptorBuilder().additional_constraints(
-                      fmt::format("One of {}", valid_modes()))),
-      .mode = declare(node, "mode", default_values.mode),
-      .enable_counter =
-          declare(node, "enable_counter", default_values.enable_counter),
-      .random_seed = declare(node, "random_seed", default_values.random_seed),
-      .dpos = declare(node, "dpos", default_values.dpos),
-      .drot = declare(node, "drot", default_values.drot),
-      .dtwist = declare(node, "dtwist", default_values.dtwist),
-      .skip_wipeout =
-          declare(node, "skip_wipeout", default_values.skip_wipeout),
-      .population_size = static_cast<size_t>(
-          declare(node, "population_size",
-                  static_cast<int64_t>(default_values.population_size),
-                  DescriptorBuilder().integer_range(2))),
-      .elite_count = static_cast<size_t>(declare(
-          node, "elite_count", static_cast<int64_t>(default_values.elite_count),
-          DescriptorBuilder().integer_range(2))),
-      .enable_linear_fitness = declare(node, "enable_linear_fitness",
-                                       default_values.enable_linear_fitness),
-  };
+  const auto loader = ParameterLoader{node};
 
-  if (const auto status = validate(ros_params); !status) {
-    RCLCPP_ERROR_STREAM(rclcpp::get_logger("bio_ik"), status.what);
-    return unexpected(status);
-  } else {
-    return ros_params;
-  }
+  const auto enable_profiler =
+      loader("enable_profiler", default_values.enable_profiler);
+  if (!enable_profiler) return make_unexpected(enable_profiler.error());
+
+  const auto mode = loader("mode", default_values.mode, "solver mode",
+                           fmt::format("in the set: {}", valid_modes()));
+  if (!mode) return make_unexpected(mode.error());
+
+  const auto enable_counter =
+      loader("enable_counter", default_values.enable_counter);
+  if (!enable_counter) return make_unexpected(enable_counter.error());
+
+  const auto random_seed = loader("random_seed", default_values.random_seed,
+                                  "useful for deterministic testing");
+  if (!random_seed) return make_unexpected(random_seed.error());
+
+  const auto dpos = loader("dpos", default_values.dpos);
+  if (!dpos) return make_unexpected(dpos.error());
+
+  const auto drot = loader("drot", default_values.drot);
+  if (!drot) return make_unexpected(drot.error());
+
+  const auto dtwist = loader("dtwist", default_values.dtwist);
+  if (!dtwist) return make_unexpected(dtwist.error());
+
+  const auto skip_wipeout = loader("skip_wipeout", default_values.skip_wipeout,
+                                   "used by evolution1 solvers");
+  if (!skip_wipeout) return make_unexpected(skip_wipeout.error());
+
+  const auto population_size = loader(
+      "population_size", static_cast<int64_t>(default_values.population_size),
+      "used by evolution1 modes", "2 or larger");
+  if (!population_size) return make_unexpected(population_size.error());
+
+  const auto elite_count =
+      loader("elite_count", static_cast<int64_t>(default_values.elite_count),
+             "used by evolution1 modes", "2 or larger");
+  if (!elite_count) return make_unexpected(elite_count.error());
+
+  const auto enable_linear_fitness =
+      loader("enable_linear_fitness", default_values.enable_linear_fitness);
+  if (!enable_linear_fitness)
+    return make_unexpected(enable_linear_fitness.error());
+
+  return validate(RosParameters{
+      .enable_profiler = enable_profiler.value(),
+      .mode = mode.value(),
+      .enable_counter = enable_counter.value(),
+      .random_seed = random_seed.value(),
+      .dpos = dpos.value(),
+      .drot = drot.value(),
+      .dtwist = dtwist.value(),
+      .skip_wipeout = skip_wipeout.value(),
+      .population_size = static_cast<size_t>(population_size.value()),
+      .elite_count = static_cast<size_t>(elite_count.value()),
+      .enable_linear_fitness = enable_linear_fitness.value(),
+  });
 }
 
 }  // namespace bio_ik

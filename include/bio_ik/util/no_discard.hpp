@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2017, Philipp Sebastian Ruppel
+// Copyright (c) 2022, Tyler Weaver
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -28,18 +28,21 @@
 
 #pragma once
 
-#include <memory>
-#include <optional>
-#include <set>
-#include <string>
-
-#include "bio_ik/ik_base.hpp"  // for IKSolver
-
-namespace bio_ik {
-
-std::optional<std::unique_ptr<IKSolver>> makeEvolution1Solver(
-    const IKParams& params);
-
-const auto getEvolution1Modes = []() { return std::set<std::string>{"bio1"}; };
-
-}  // namespace bio_ik
+/**
+ * @brief      Template for creating lambdas with the nodiscard attribute
+ *
+ * @tparam     F     The lambda
+ *
+ * @example    auto f = NoDiscard([]{ return Error{ErrorCode::UNKNOWN,
+ * "yikes!"}; });
+ */
+template <typename F>
+struct NoDiscard {
+  F f_;
+  NoDiscard(F const& f) : f_(f) {}
+  template <typename... T>
+  [[nodiscard]] constexpr auto operator()(T&&... t) noexcept(
+      noexcept(f(std::forward<T>(t)...))) {
+    return f_(std::forward<T>(t)...);
+  }
+};

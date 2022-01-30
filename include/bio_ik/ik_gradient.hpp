@@ -26,6 +26,8 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
+#pragma once
+
 #include <Eigen/Core>          // For NumTraits
 #include <bio_ik/ik_base.hpp>  // for IKSolver
 #include <bio_ik/problem.hpp>  // for Problem, Problem::GoalInfo
@@ -106,6 +108,13 @@ struct IKJacobian : IKJacobianBase<IKSolver> {
 
 std::optional<std::unique_ptr<IKSolver>> makeGradientDecentSolver(
     const IKParams& params);
-std::set<std::string> getGradientDecentModeSet();
+
+const auto getGradientDecentModes = []() {
+  return std::set<std::string>{
+      "gd",     "gd_2",   "gd_4",  "gd_8",   "gd_r",   "gd_r_2",
+      "gd_r_4", "gd_r_8", "gd_c",  "gd_c_2", "gd_c_4", "gd_c_8",
+      "jac",    "jac_2",  "jac_4", "jac_8",
+  };
+};
 
 }  // namespace bio_ik
