@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['unknown_1230',['Unknown',['../classbio__ik_1_1Problem.html#a07b35b81c49e84a23f15cfbc155a79d7a88183b946cc5f0e8c96b2e66e1c74a7e',1,'bio_ik::Problem']]]
+  ['exception_1311',['EXCEPTION',['../result_8hpp.html#a5d0f3b4a99b1ebb74d2e4f2e9207bc18acccc265b14c17af799a1834f4fbbe7cf',1,'result.hpp']]]
 ];

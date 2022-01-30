@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['ok_1226',['OK',['../namespacebio__ik.html#a5978968a865e233e7583760dc430f303ae0aa021e21dddbd6d8cecec71e9cf564',1,'bio_ik']]],
-  ['orientation_1227',['Orientation',['../classbio__ik_1_1Problem.html#a07b35b81c49e84a23f15cfbc155a79d7aabbd64f40c34c537d3a571af068fce29',1,'bio_ik::Problem']]]
+  ['cancelled_1309',['CANCELLED',['../result_8hpp.html#a5d0f3b4a99b1ebb74d2e4f2e9207bc18a9f935beb31030ad0d4d26126c0f39bf2',1,'result.hpp']]]
 ];

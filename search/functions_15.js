@@ -1,4 +1,7 @@
 var searchData=
 [
-  ['what_999',['what',['../classtl_1_1bad__expected__access.html#a11e25b488cdfdd9fb39d8a71aabc1956',1,'tl::bad_expected_access']]]
+  ['validate_1053',['validate',['../namespacebio__ik.html#af13f168d869090985712fb0b8fab69dd',1,'bio_ik']]],
+  ['value_1054',['value',['../classtl_1_1unexpected.html#a28c31a318ddc9d17685e74b36fba8aff',1,'tl::unexpected::value() const &amp;'],['../classtl_1_1unexpected.html#ab3f8fe43b8df1b2038062a5c49cba099',1,'tl::unexpected::value() &amp;'],['../classtl_1_1unexpected.html#a10e6bbf7c7633f4c1494e45491028061',1,'tl::unexpected::value() &amp;&amp;'],['../classtl_1_1unexpected.html#a1a1da85a7cde55207063140e6d4b2e88',1,'tl::unexpected::value() const &amp;&amp;'],['../classtl_1_1expected.html#a0f173ccbdbb2df23a3a1e80320a335c3',1,'tl::expected::value() const &amp;'],['../classtl_1_1expected.html#a52955d4b15ec92334b510fc15196f5db',1,'tl::expected::value() &amp;'],['../classtl_1_1expected.html#adc86bc1c3d70343466809b383784d24f',1,'tl::expected::value() const &amp;&amp;'],['../classtl_1_1expected.html#aa653b79441cbd58cb7fd15150c4ef23f',1,'tl::expected::value() &amp;&amp;']]],
+  ['value_5for_1055',['value_or',['../classtl_1_1expected.html#a107e82c06ab4c2622bc9867e894cc0c8',1,'tl::expected::value_or(U &amp;&amp;v) const &amp;'],['../classtl_1_1expected.html#a5692322e4e9a935f3f148c234ecf527b',1,'tl::expected::value_or(U &amp;&amp;v) &amp;&amp;']]],
+  ['vprint_1056',['vprint',['../namespacebio__ik.html#a89e39affb992c04a358c7b13dce65d8e',1,'bio_ik::vprint(std::ostream &amp;s, const T &amp;a)'],['../namespacebio__ik.html#a5cde63914e9bc227702075a7702f5478',1,'bio_ik::vprint(std::ostream &amp;s, const T &amp;a, const AA &amp;... aa)']]]
 ];

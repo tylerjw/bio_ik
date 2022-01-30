@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['validate_995',['validate',['../namespacebio__ik.html#aa80846176570f4cbff7ef40dca34d300',1,'bio_ik']]],
-  ['value_996',['value',['../classtl_1_1unexpected.html#a28c31a318ddc9d17685e74b36fba8aff',1,'tl::unexpected::value() const &amp;'],['../classtl_1_1unexpected.html#ab3f8fe43b8df1b2038062a5c49cba099',1,'tl::unexpected::value() &amp;'],['../classtl_1_1unexpected.html#a10e6bbf7c7633f4c1494e45491028061',1,'tl::unexpected::value() &amp;&amp;'],['../classtl_1_1unexpected.html#a1a1da85a7cde55207063140e6d4b2e88',1,'tl::unexpected::value() const &amp;&amp;'],['../classtl_1_1expected.html#a0f173ccbdbb2df23a3a1e80320a335c3',1,'tl::expected::value() const &amp;'],['../classtl_1_1expected.html#a52955d4b15ec92334b510fc15196f5db',1,'tl::expected::value() &amp;'],['../classtl_1_1expected.html#adc86bc1c3d70343466809b383784d24f',1,'tl::expected::value() const &amp;&amp;'],['../classtl_1_1expected.html#aa653b79441cbd58cb7fd15150c4ef23f',1,'tl::expected::value() &amp;&amp;']]],
-  ['value_5for_997',['value_or',['../classtl_1_1expected.html#a107e82c06ab4c2622bc9867e894cc0c8',1,'tl::expected::value_or(U &amp;&amp;v) const &amp;'],['../classtl_1_1expected.html#a5692322e4e9a935f3f148c234ecf527b',1,'tl::expected::value_or(U &amp;&amp;v) &amp;&amp;']]],
-  ['vprint_998',['vprint',['../namespacebio__ik.html#a89e39affb992c04a358c7b13dce65d8e',1,'bio_ik::vprint(std::ostream &amp;s, const T &amp;a)'],['../namespacebio__ik.html#a5cde63914e9bc227702075a7702f5478',1,'bio_ik::vprint(std::ostream &amp;s, const T &amp;a, const AA &amp;... aa)']]]
+  ['unexpect_5ft_1048',['unexpect_t',['../structtl_1_1unexpect__t.html#ad94db1708740d2d3fd60aac010b95a69',1,'tl::unexpect_t']]],
+  ['unexpected_1049',['unexpected',['../classtl_1_1unexpected.html#ade43638e3b95ea0cf7ac70a7a71619cb',1,'tl::unexpected::unexpected()=delete'],['../classtl_1_1unexpected.html#a1550c67187a881cfdb309248894eeaf2',1,'tl::unexpected::unexpected(const E &amp;e)'],['../classtl_1_1unexpected.html#ac6a93c792d2212941647aab8961ae95f',1,'tl::unexpected::unexpected(E &amp;&amp;e)']]],
+  ['updateincremental_1050',['updateIncremental',['../classbio__ik_1_1RobotFK__Fast.html#ae40ae8ac1b9fa3cccc5b576e7d228e8c',1,'bio_ik::RobotFK_Fast']]],
+  ['updatemimic_1051',['updateMimic',['../classbio__ik_1_1RobotFK__Fast__Base.html#a84e5ef1217ab0875815e0893095bdcbc',1,'bio_ik::RobotFK_Fast_Base']]],
+  ['uses_5fstd_1052',['uses_std',['../namespacetl_1_1detail_1_1swap__adl__tests.html#a0fa5e6edd0bffbdd56c74eef0c1da04e',1,'tl::detail::swap_adl_tests']]]
 ];

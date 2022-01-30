@@ -64,7 +64,6 @@ $(function() {
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
-<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
@@ -169,8 +168,6 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classbio__ik_1_1SideGoal.html">SideGoal</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structbio__ik_1_1Status.html">Status</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structbio__ik_1_1XORShift64.html">XORShift64</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -182,18 +179,6 @@ Typedefs</h2></td></tr>
 <tr class="separator:abd6424a0edba8958cf6c209100e68df2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a17469bdeb7715c3925bdecfdc5f2ea22"><td class="memItemLeft" align="right" valign="top">typedef tf2::Vector3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebio__ik.html#a17469bdeb7715c3925bdecfdc5f2ea22">Vector3</a></td></tr>
 <tr class="separator:a17469bdeb7715c3925bdecfdc5f2ea22"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a34acae65e87e3c5c763065e21f21e52f"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a34acae65e87e3c5c763065e21f21e52f"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacebio__ik.html#a34acae65e87e3c5c763065e21f21e52f">StatusOr</a> = <a class="el" href="classtl_1_1expected.html">expected</a>&lt; T, <a class="el" href="structbio__ik_1_1Status.html">Status</a> &gt;</td></tr>
-<tr class="separator:a34acae65e87e3c5c763065e21f21e52f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e2a37f084f1286dd7082c6710a3f300"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebio__ik.html#a2e2a37f084f1286dd7082c6710a3f300">Descriptor</a> = rcl_interfaces::msg::ParameterDescriptor</td></tr>
-<tr class="separator:a2e2a37f084f1286dd7082c6710a3f300"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
-Enumerations</h2></td></tr>
-<tr class="memitem:a5978968a865e233e7583760dc430f303"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebio__ik.html#a5978968a865e233e7583760dc430f303">Error</a> { <a class="el" href="namespacebio__ik.html#a5978968a865e233e7583760dc430f303ae0aa021e21dddbd6d8cecec71e9cf564">Error::OK</a>, 
-<a class="el" href="namespacebio__ik.html#a5978968a865e233e7583760dc430f303abb1ca97ec761fc37101737ba0aa2e7c5">Error::ERROR</a>
- }</td></tr>
-<tr class="separator:a5978968a865e233e7583760dc430f303"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -223,26 +208,18 @@ Functions</h2></td></tr>
 <tr class="separator:a87c3818b2e799832c1bad57cd0cabe6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6968dc3cc461b1127c7be95d77ff6f90"><td class="memItemLeft" align="right" valign="top">std::optional&lt; std::unique_ptr&lt; <a class="el" href="structbio__ik_1_1IKSolver.html">IKSolver</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebio__ik.html#a6968dc3cc461b1127c7be95d77ff6f90">makeEvolution1Solver</a> (const <a class="el" href="structbio__ik_1_1IKParams.html">IKParams</a> &amp;params)</td></tr>
 <tr class="separator:a6968dc3cc461b1127c7be95d77ff6f90"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe0ea45c3762ea10be78f3cc68d6740b"><td class="memItemLeft" align="right" valign="top">std::set&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebio__ik.html#afe0ea45c3762ea10be78f3cc68d6740b">getEvolution1ModeSet</a> ()</td></tr>
-<tr class="separator:afe0ea45c3762ea10be78f3cc68d6740b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab8fa25d7e32e3cf95c7bd79a5fbfcc52"><td class="memItemLeft" align="right" valign="top">std::optional&lt; std::unique_ptr&lt; <a class="el" href="structbio__ik_1_1IKSolver.html">IKSolver</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebio__ik.html#ab8fa25d7e32e3cf95c7bd79a5fbfcc52">makeEvolution2Solver</a> (const <a class="el" href="structbio__ik_1_1IKParams.html">IKParams</a> &amp;params)</td></tr>
 <tr class="separator:ab8fa25d7e32e3cf95c7bd79a5fbfcc52"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a406afaf4ec0b82380eac955ce7ab60ac"><td class="memItemLeft" align="right" valign="top">std::set&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebio__ik.html#a406afaf4ec0b82380eac955ce7ab60ac">getEvolution2ModeSet</a> ()</td></tr>
-<tr class="separator:a406afaf4ec0b82380eac955ce7ab60ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:addcac821e28acdd0ccd69c1daf85259e"><td class="memItemLeft" align="right" valign="top">std::optional&lt; std::unique_ptr&lt; <a class="el" href="structbio__ik_1_1IKSolver.html">IKSolver</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebio__ik.html#addcac821e28acdd0ccd69c1daf85259e">makeGradientDecentSolver</a> (const <a class="el" href="structbio__ik_1_1IKParams.html">IKParams</a> &amp;params)</td></tr>
 <tr class="separator:addcac821e28acdd0ccd69c1daf85259e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a20859c236a82489e135ba6436057a6e6"><td class="memItemLeft" align="right" valign="top">std::set&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebio__ik.html#a20859c236a82489e135ba6436057a6e6">getGradientDecentModeSet</a> ()</td></tr>
-<tr class="separator:a20859c236a82489e135ba6436057a6e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84c68988829d2d64b380292908d14749"><td class="memItemLeft" align="right" valign="top">std::optional&lt; std::unique_ptr&lt; <a class="el" href="structbio__ik_1_1IKSolver.html">IKSolver</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebio__ik.html#a84c68988829d2d64b380292908d14749">makeTestSolver</a> (const <a class="el" href="structbio__ik_1_1IKParams.html">IKParams</a> &amp;params)</td></tr>
 <tr class="separator:a84c68988829d2d64b380292908d14749"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ec6bf59a1910a1c1cc5441533b99927"><td class="memItemLeft" align="right" valign="top">std::set&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebio__ik.html#a8ec6bf59a1910a1c1cc5441533b99927">getTestModeSet</a> ()</td></tr>
-<tr class="separator:a8ec6bf59a1910a1c1cc5441533b99927"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa80846176570f4cbff7ef40dca34d300"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structbio__ik_1_1Status.html">Status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebio__ik.html#aa80846176570f4cbff7ef40dca34d300">validate</a> (const <a class="el" href="structbio__ik_1_1RosParameters.html">RosParameters</a> &amp;ros_params)</td></tr>
-<tr class="memdesc:aa80846176570f4cbff7ef40dca34d300"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validates a ros_params struct.  <a href="namespacebio__ik.html#aa80846176570f4cbff7ef40dca34d300">More...</a><br /></td></tr>
-<tr class="separator:aa80846176570f4cbff7ef40dca34d300"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2cdcf91f1d45175f7003c5f9a2ebef70"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacebio__ik.html#a34acae65e87e3c5c763065e21f21e52f">StatusOr</a>&lt; <a class="el" href="structbio__ik_1_1RosParameters.html">RosParameters</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebio__ik.html#a2cdcf91f1d45175f7003c5f9a2ebef70">get_ros_parameters</a> (const rclcpp::Node::SharedPtr &amp;node)</td></tr>
-<tr class="memdesc:a2cdcf91f1d45175f7003c5f9a2ebef70"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the ros parameters.  <a href="namespacebio__ik.html#a2cdcf91f1d45175f7003c5f9a2ebef70">More...</a><br /></td></tr>
-<tr class="separator:a2cdcf91f1d45175f7003c5f9a2ebef70"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af13f168d869090985712fb0b8fab69dd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="result_8hpp.html#aa1312da5f43346f19ba013b5733bfd11">Result</a>&lt; <a class="el" href="structbio__ik_1_1RosParameters.html">RosParameters</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebio__ik.html#af13f168d869090985712fb0b8fab69dd">validate</a> (const <a class="el" href="structbio__ik_1_1RosParameters.html">RosParameters</a> &amp;ros_params)</td></tr>
+<tr class="memdesc:af13f168d869090985712fb0b8fab69dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validates a ros_params struct.  <a href="namespacebio__ik.html#af13f168d869090985712fb0b8fab69dd">More...</a><br /></td></tr>
+<tr class="separator:af13f168d869090985712fb0b8fab69dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af37c786e986d7c3ac507880f898cbe23"><td class="memItemLeft" align="right" valign="top"><a class="el" href="result_8hpp.html#aa1312da5f43346f19ba013b5733bfd11">Result</a>&lt; <a class="el" href="structbio__ik_1_1RosParameters.html">RosParameters</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebio__ik.html#af37c786e986d7c3ac507880f898cbe23">get_ros_parameters</a> (const rclcpp::Node::SharedPtr &amp;node)</td></tr>
+<tr class="memdesc:af37c786e986d7c3ac507880f898cbe23"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the ros parameters.  <a href="namespacebio__ik.html#af37c786e986d7c3ac507880f898cbe23">More...</a><br /></td></tr>
+<tr class="separator:af37c786e986d7c3ac507880f898cbe23"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89e39affb992c04a358c7b13dce65d8e"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:a89e39affb992c04a358c7b13dce65d8e"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacebio__ik.html#a89e39affb992c04a358c7b13dce65d8e">vprint</a> (std::ostream &amp;s, const T &amp;a)</td></tr>
 <tr class="separator:a89e39affb992c04a358c7b13dce65d8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -272,8 +249,14 @@ Variables</h2></td></tr>
 <tr class="separator:ae661f3b12a1baaff8faf2329c97d085b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae0ebd95c222c27a1e24d9b3b2f6012f3"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structbio__ik_1_1Frame.html">Frame</a> const <a class="el" href="structbio__ik_1_1Frame.html">Frame</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebio__ik.html#ae0ebd95c222c27a1e24d9b3b2f6012f3">c</a></td></tr>
 <tr class="separator:ae0ebd95c222c27a1e24d9b3b2f6012f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4096cb07fe48be65659f0125a0ac4148"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebio__ik.html#a4096cb07fe48be65659f0125a0ac4148">OKStatus</a> = [] { return <a class="el" href="structbio__ik_1_1Status.html">Status</a>(); }</td></tr>
-<tr class="separator:a4096cb07fe48be65659f0125a0ac4148"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52e82b365a90464e96608addac781c1e"><td class="memItemLeft" align="right" valign="top">const auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebio__ik.html#a52e82b365a90464e96608addac781c1e">getEvolution1Modes</a> = []() { return std::set&lt;std::string&gt;{&quot;bio1&quot;}; }</td></tr>
+<tr class="separator:a52e82b365a90464e96608addac781c1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f9b69e74f24518674e220670009c5ff"><td class="memItemLeft" align="right" valign="top">const auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebio__ik.html#a3f9b69e74f24518674e220670009c5ff">getEvolution2Modes</a></td></tr>
+<tr class="separator:a3f9b69e74f24518674e220670009c5ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c188a6a0e133210f22cf5789eb36a20"><td class="memItemLeft" align="right" valign="top">const auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebio__ik.html#a3c188a6a0e133210f22cf5789eb36a20">getGradientDecentModes</a></td></tr>
+<tr class="separator:a3c188a6a0e133210f22cf5789eb36a20"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a168610860e1a3477ca75d572aeb0c673"><td class="memItemLeft" align="right" valign="top">const auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebio__ik.html#a168610860e1a3477ca75d572aeb0c673">getTestModes</a> = []() { return std::set&lt;std::string&gt;{&quot;test&quot;}; }</td></tr>
+<tr class="separator:a168610860e1a3477ca75d572aeb0c673"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf65854b5ae88cf2846ed414f2deb317"><td class="memItemLeft" align="right" valign="top">T T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebio__ik.html#acf65854b5ae88cf2846ed414f2deb317">f</a></td></tr>
 <tr class="separator:acf65854b5ae88cf2846ed414f2deb317"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e40145ef2cb028a3f5599f7d67a732d"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacebio__ik.html#a4e40145ef2cb028a3f5599f7d67a732d">lo</a></td></tr>
@@ -288,20 +271,6 @@ Variables</h2></td></tr>
 <tr class="separator:adcec672ca932c7b68a4912461f529ad6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Typedef Documentation</h2>
-<a id="a2e2a37f084f1286dd7082c6710a3f300"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2e2a37f084f1286dd7082c6710a3f300">&#9670;&nbsp;</a></span>Descriptor</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="namespacebio__ik.html#a2e2a37f084f1286dd7082c6710a3f300">bio_ik::Descriptor</a> = typedef rcl_interfaces::msg::ParameterDescriptor</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="abd6424a0edba8958cf6c209100e68df2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abd6424a0edba8958cf6c209100e68df2">&#9670;&nbsp;</a></span>Quaternion</h2>
 
@@ -330,22 +299,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a34acae65e87e3c5c763065e21f21e52f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a34acae65e87e3c5c763065e21f21e52f">&#9670;&nbsp;</a></span>StatusOr</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="namespacebio__ik.html#a34acae65e87e3c5c763065e21f21e52f">bio_ik::StatusOr</a> = typedef <a class="el" href="classtl_1_1expected.html">expected</a>&lt;T, <a class="el" href="structbio__ik_1_1Status.html">Status</a>&gt;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a17469bdeb7715c3925bdecfdc5f2ea22"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a17469bdeb7715c3925bdecfdc5f2ea22">&#9670;&nbsp;</a></span>Vector3</h2>
 
@@ -357,33 +310,6 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="a5978968a865e233e7583760dc430f303"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5978968a865e233e7583760dc430f303">&#9670;&nbsp;</a></span>Error</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="namespacebio__ik.html#a5978968a865e233e7583760dc430f303">bio_ik::Error</a></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a5978968a865e233e7583760dc430f303ae0aa021e21dddbd6d8cecec71e9cf564"></a>OK&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a5978968a865e233e7583760dc430f303abb1ca97ec761fc37101737ba0aa2e7c5"></a>ERROR&#160;</td><td class="fielddoc"></td></tr>
-</table>
 
 </div>
 </div>
@@ -662,14 +588,14 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
-<a id="a2cdcf91f1d45175f7003c5f9a2ebef70"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2cdcf91f1d45175f7003c5f9a2ebef70">&#9670;&nbsp;</a></span>get_ros_parameters()</h2>
+<a id="af37c786e986d7c3ac507880f898cbe23"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af37c786e986d7c3ac507880f898cbe23">&#9670;&nbsp;</a></span>get_ros_parameters()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacebio__ik.html#a34acae65e87e3c5c763065e21f21e52f">StatusOr</a>&lt; <a class="el" href="structbio__ik_1_1RosParameters.html">RosParameters</a> &gt; bio_ik::get_ros_parameters </td>
+          <td class="memname"><a class="el" href="result_8hpp.html#aa1312da5f43346f19ba013b5733bfd11">Result</a>&lt; <a class="el" href="structbio__ik_1_1RosParameters.html">RosParameters</a> &gt; bio_ik::get_ros_parameters </td>
           <td>(</td>
           <td class="paramtype">const rclcpp::Node::SharedPtr &amp;&#160;</td>
           <td class="paramname"><em>node</em></td><td>)</td>
@@ -689,91 +615,25 @@ Here is the caller graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="namespacebio__ik_a2cdcf91f1d45175f7003c5f9a2ebef70_cgraph.png" border="0" usemap="#namespacebio__ik_a2cdcf91f1d45175f7003c5f9a2ebef70_cgraph" alt=""/></div>
-<map name="namespacebio__ik_a2cdcf91f1d45175f7003c5f9a2ebef70_cgraph" id="namespacebio__ik_a2cdcf91f1d45175f7003c5f9a2ebef70_cgraph">
-<area shape="rect" title="Gets the ros parameters." alt="" coords="5,5,204,32"/>
-<area shape="rect" href="namespacebio__ik.html#aa80846176570f4cbff7ef40dca34d300" title="Validates a ros_params struct." alt="" coords="252,5,375,32"/>
+<div class="center"><img src="namespacebio__ik_af37c786e986d7c3ac507880f898cbe23_cgraph.png" border="0" usemap="#namespacebio__ik_af37c786e986d7c3ac507880f898cbe23_cgraph" alt=""/></div>
+<map name="namespacebio__ik_af37c786e986d7c3ac507880f898cbe23_cgraph" id="namespacebio__ik_af37c786e986d7c3ac507880f898cbe23_cgraph">
+<area shape="rect" title="Gets the ros parameters." alt="" coords="5,31,204,57"/>
+<area shape="rect" href="namespacetl.html#a01de1a0282a693451af969f35e88bcf9" title=" " alt="" coords="252,5,411,32"/>
+<area shape="rect" href="namespacebio__ik.html#af13f168d869090985712fb0b8fab69dd" title="Validates a ros_params struct." alt="" coords="270,56,393,83"/>
+<area shape="rect" href="namespacevalidate.html#a511d9c9fd641680d48cab89a01294356" title=" " alt="" coords="459,56,553,83"/>
 </map>
 </div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="namespacebio__ik_a2cdcf91f1d45175f7003c5f9a2ebef70_icgraph.png" border="0" usemap="#namespacebio__ik_a2cdcf91f1d45175f7003c5f9a2ebef70_icgraph" alt=""/></div>
-<map name="namespacebio__ik_a2cdcf91f1d45175f7003c5f9a2ebef70_icgraph" id="namespacebio__ik_a2cdcf91f1d45175f7003c5f9a2ebef70_icgraph">
+<div class="center"><img src="namespacebio__ik_af37c786e986d7c3ac507880f898cbe23_icgraph.png" border="0" usemap="#namespacebio__ik_af37c786e986d7c3ac507880f898cbe23_icgraph" alt=""/></div>
+<map name="namespacebio__ik_af37c786e986d7c3ac507880f898cbe23_icgraph" id="namespacebio__ik_af37c786e986d7c3ac507880f898cbe23_icgraph">
 <area shape="rect" title="Gets the ros parameters." alt="" coords="501,49,700,76"/>
 <area shape="rect" href="structbio__ik__kinematics__plugin_1_1BioIKKinematicsPlugin.html#a84d7562ba8f7802f340c4a54a5d2c336" title=" " alt="" coords="240,13,453,54"/>
 <area shape="rect" href="parameter__tests_8cpp.html#a96f5f29f50a9033eb185d01dc7b1e068" title=" " alt="" coords="319,79,374,105"/>
 <area shape="rect" href="structbio__ik__kinematics__plugin_1_1BioIKKinematicsPlugin.html#a1ace967d5824904736b1dde4968d20f9" title=" " alt="" coords="5,5,192,61"/>
 </map>
 </div>
-
-</div>
-</div>
-<a id="afe0ea45c3762ea10be78f3cc68d6740b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afe0ea45c3762ea10be78f3cc68d6740b">&#9670;&nbsp;</a></span>getEvolution1ModeSet()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::set&lt; std::string &gt; bio_ik::getEvolution1ModeSet </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a406afaf4ec0b82380eac955ce7ab60ac"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a406afaf4ec0b82380eac955ce7ab60ac">&#9670;&nbsp;</a></span>getEvolution2ModeSet()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::set&lt; std::string &gt; bio_ik::getEvolution2ModeSet </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a20859c236a82489e135ba6436057a6e6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a20859c236a82489e135ba6436057a6e6">&#9670;&nbsp;</a></span>getGradientDecentModeSet()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::set&lt; std::string &gt; bio_ik::getGradientDecentModeSet </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a8ec6bf59a1910a1c1cc5441533b99927"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8ec6bf59a1910a1c1cc5441533b99927">&#9670;&nbsp;</a></span>getTestModeSet()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::set&lt; std::string &gt; bio_ik::getTestModeSet </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
 
 </div>
 </div>
@@ -1270,14 +1130,14 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
-<a id="aa80846176570f4cbff7ef40dca34d300"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa80846176570f4cbff7ef40dca34d300">&#9670;&nbsp;</a></span>validate()</h2>
+<a id="af13f168d869090985712fb0b8fab69dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af13f168d869090985712fb0b8fab69dd">&#9670;&nbsp;</a></span>validate()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structbio__ik_1_1Status.html">Status</a> bio_ik::validate </td>
+          <td class="memname"><a class="el" href="result_8hpp.html#aa1312da5f43346f19ba013b5733bfd11">Result</a>&lt; <a class="el" href="structbio__ik_1_1RosParameters.html">RosParameters</a> &gt; bio_ik::validate </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="structbio__ik_1_1RosParameters.html">RosParameters</a> &amp;&#160;</td>
           <td class="paramname"><em>ros_params</em></td><td>)</td>
@@ -1293,14 +1153,23 @@ Here is the caller graph for this function:</div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>error string if invalid, ok if valid </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The ros parameters on success, error status otherwise </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="namespacebio__ik_af13f168d869090985712fb0b8fab69dd_cgraph.png" border="0" usemap="#namespacebio__ik_af13f168d869090985712fb0b8fab69dd_cgraph" alt=""/></div>
+<map name="namespacebio__ik_af13f168d869090985712fb0b8fab69dd_cgraph" id="namespacebio__ik_af13f168d869090985712fb0b8fab69dd_cgraph">
+<area shape="rect" title="Validates a ros_params struct." alt="" coords="5,5,128,32"/>
+<area shape="rect" href="namespacevalidate.html#a511d9c9fd641680d48cab89a01294356" title=" " alt="" coords="176,5,271,32"/>
+</map>
+</div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="namespacebio__ik_aa80846176570f4cbff7ef40dca34d300_icgraph.png" border="0" usemap="#namespacebio__ik_aa80846176570f4cbff7ef40dca34d300_icgraph" alt=""/></div>
-<map name="namespacebio__ik_aa80846176570f4cbff7ef40dca34d300_icgraph" id="namespacebio__ik_aa80846176570f4cbff7ef40dca34d300_icgraph">
+<div class="center"><img src="namespacebio__ik_af13f168d869090985712fb0b8fab69dd_icgraph.png" border="0" usemap="#namespacebio__ik_af13f168d869090985712fb0b8fab69dd_icgraph" alt=""/></div>
+<map name="namespacebio__ik_af13f168d869090985712fb0b8fab69dd_icgraph" id="namespacebio__ik_af13f168d869090985712fb0b8fab69dd_icgraph">
 <area shape="rect" title="Validates a ros_params struct." alt="" coords="748,75,871,101"/>
-<area shape="rect" href="namespacebio__ik.html#a2cdcf91f1d45175f7003c5f9a2ebef70" title="Gets the ros parameters." alt="" coords="501,49,700,76"/>
+<area shape="rect" href="namespacebio__ik.html#af37c786e986d7c3ac507880f898cbe23" title="Gets the ros parameters." alt="" coords="501,49,700,76"/>
 <area shape="rect" href="parameter__tests_8cpp.html#afe82c8f6f0d4e024d65ba48ed0810662" title=" " alt="" coords="573,100,628,127"/>
 <area shape="rect" href="structbio__ik__kinematics__plugin_1_1BioIKKinematicsPlugin.html#a84d7562ba8f7802f340c4a54a5d2c336" title=" " alt="" coords="240,13,453,54"/>
 <area shape="rect" href="parameter__tests_8cpp.html#a96f5f29f50a9033eb185d01dc7b1e068" title=" " alt="" coords="319,79,374,105"/>
@@ -1485,6 +1354,72 @@ Here is the call graph for this function:</div>
 </div><!-- fragment -->
 </div>
 </div>
+<a id="a52e82b365a90464e96608addac781c1e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a52e82b365a90464e96608addac781c1e">&#9670;&nbsp;</a></span>getEvolution1Modes</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const auto bio_ik::getEvolution1Modes = []() { return std::set&lt;std::string&gt;{&quot;bio1&quot;}; }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3f9b69e74f24518674e220670009c5ff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f9b69e74f24518674e220670009c5ff">&#9670;&nbsp;</a></span>getEvolution2Modes</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const auto bio_ik::getEvolution2Modes</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= []() {</div>
+<div class="line">  <span class="keywordflow">return</span> std::set&lt;std::string&gt;{<span class="stringliteral">&quot;bio2&quot;</span>, <span class="stringliteral">&quot;bio2_memetic&quot;</span>, <span class="stringliteral">&quot;bio2_memetic_l&quot;</span>};</div>
+<div class="line">}</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a3c188a6a0e133210f22cf5789eb36a20"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c188a6a0e133210f22cf5789eb36a20">&#9670;&nbsp;</a></span>getGradientDecentModes</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const auto bio_ik::getGradientDecentModes</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= []() {</div>
+<div class="line">  <span class="keywordflow">return</span> std::set&lt;std::string&gt;{</div>
+<div class="line">      <span class="stringliteral">&quot;gd&quot;</span>,     <span class="stringliteral">&quot;gd_2&quot;</span>,   <span class="stringliteral">&quot;gd_4&quot;</span>,  <span class="stringliteral">&quot;gd_8&quot;</span>,   <span class="stringliteral">&quot;gd_r&quot;</span>,   <span class="stringliteral">&quot;gd_r_2&quot;</span>,</div>
+<div class="line">      <span class="stringliteral">&quot;gd_r_4&quot;</span>, <span class="stringliteral">&quot;gd_r_8&quot;</span>, <span class="stringliteral">&quot;gd_c&quot;</span>,  <span class="stringliteral">&quot;gd_c_2&quot;</span>, <span class="stringliteral">&quot;gd_c_4&quot;</span>, <span class="stringliteral">&quot;gd_c_8&quot;</span>,</div>
+<div class="line">      <span class="stringliteral">&quot;jac&quot;</span>,    <span class="stringliteral">&quot;jac_2&quot;</span>,  <span class="stringliteral">&quot;jac_4&quot;</span>, <span class="stringliteral">&quot;jac_8&quot;</span>,</div>
+<div class="line">  };</div>
+<div class="line">}</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a168610860e1a3477ca75d572aeb0c673"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a168610860e1a3477ca75d572aeb0c673">&#9670;&nbsp;</a></span>getTestModes</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const auto bio_ik::getTestModes = []() { return std::set&lt;std::string&gt;{&quot;test&quot;}; }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a368a19050dd0bacb216d58eec606fc9a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a368a19050dd0bacb216d58eec606fc9a">&#9670;&nbsp;</a></span>hi</h2>
 
@@ -1509,20 +1444,6 @@ Here is the call graph for this function:</div>
       <table class="memname">
         <tr>
           <td class="memname">T bio_ik::lo</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a4096cb07fe48be65659f0125a0ac4148"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4096cb07fe48be65659f0125a0ac4148">&#9670;&nbsp;</a></span>OKStatus</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">auto bio_ik::OKStatus = [] { return <a class="el" href="structbio__ik_1_1Status.html">Status</a>(); }</td>
         </tr>
       </table>
 </div><div class="memdoc">

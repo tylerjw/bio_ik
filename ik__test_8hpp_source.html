@@ -97,24 +97,27 @@ $(function() {
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="comment">// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE</span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="comment">// POSSIBILITY OF SUCH DAMAGE.</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &lt;optional&gt;</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &lt;set&gt;</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="ik__base_8hpp.html">bio_ik/ik_base.hpp</a>&quot;</span>  <span class="comment">// for IKSolver</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;optional&gt;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;set&gt;</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacebio__ik.html">bio_ik</a> {</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="ik__base_8hpp.html">bio_ik/ik_base.hpp</a>&quot;</span>  <span class="comment">// for IKSolver</span></div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;std::optional&lt;std::unique_ptr&lt;IKSolver&gt;&gt; <a class="code" href="namespacebio__ik.html#a84c68988829d2d64b380292908d14749">makeTestSolver</a>(<span class="keyword">const</span> IKParams&amp; params);</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;std::set&lt;std::string&gt; <a class="code" href="namespacebio__ik.html#a8ec6bf59a1910a1c1cc5441533b99927">getTestModeSet</a>();</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;}  <span class="comment">// namespace bio_ik</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacebio__ik.html">bio_ik</a> {</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;std::optional&lt;std::unique_ptr&lt;IKSolver&gt;&gt; <a class="code" href="namespacebio__ik.html#a84c68988829d2d64b380292908d14749">makeTestSolver</a>(<span class="keyword">const</span> IKParams&amp; params);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="namespacebio__ik.html#a168610860e1a3477ca75d572aeb0c673">   42</a></span>&#160;<span class="keyword">const</span> <span class="keyword">auto</span> <a class="code" href="namespacebio__ik.html#a168610860e1a3477ca75d572aeb0c673">getTestModes</a> = []() { <span class="keywordflow">return</span> std::set&lt;std::string&gt;{<span class="stringliteral">&quot;test&quot;</span>}; };</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;}  <span class="comment">// namespace bio_ik</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="anamespacebio__ik_html_a84c68988829d2d64b380292908d14749"><div class="ttname"><a href="namespacebio__ik.html#a84c68988829d2d64b380292908d14749">bio_ik::makeTestSolver</a></div><div class="ttdeci">std::optional&lt; std::unique_ptr&lt; IKSolver &gt; &gt; makeTestSolver(const IKParams &amp;params)</div><div class="ttdef"><b>Definition:</b> ik_test.cpp:138</div></div>
 <div class="ttc" id="aik__base_8hpp_html"><div class="ttname"><a href="ik__base_8hpp.html">ik_base.hpp</a></div></div>
+<div class="ttc" id="anamespacebio__ik_html_a168610860e1a3477ca75d572aeb0c673"><div class="ttname"><a href="namespacebio__ik.html#a168610860e1a3477ca75d572aeb0c673">bio_ik::getTestModes</a></div><div class="ttdeci">const auto getTestModes</div><div class="ttdef"><b>Definition:</b> ik_test.hpp:42</div></div>
 <div class="ttc" id="anamespacebio__ik_html"><div class="ttname"><a href="namespacebio__ik.html">bio_ik</a></div><div class="ttdef"><b>Definition:</b> bio_ik.hpp:39</div></div>
-<div class="ttc" id="anamespacebio__ik_html_a8ec6bf59a1910a1c1cc5441533b99927"><div class="ttname"><a href="namespacebio__ik.html#a8ec6bf59a1910a1c1cc5441533b99927">bio_ik::getTestModeSet</a></div><div class="ttdeci">std::set&lt; std::string &gt; getTestModeSet()</div><div class="ttdef"><b>Definition:</b> ik_test.cpp:147</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">
