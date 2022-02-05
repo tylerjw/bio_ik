@@ -64,7 +64,7 @@ jobs:
       AFTER_BUILD_TARGET_WORKSPACE: ccache --show-stats
       CCACHE_DIR: ${{ github.workspace }}/.ccache
       BASEDIR: ${{ github.workspace }}/.work
-      ADDITIONAL_DEBS: clang-10 clang-9 iwyu clang-tidy lld
+      ADDITIONAL_DEBS: clang-10 clang-9 clang-tidy iwyu lld llvm-10
 
     name: ${{ matrix.env.NAME }}
     runs-on: ubuntu-latest
