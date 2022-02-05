@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['data_5floss_1310',['DATA_LOSS',['../result_8hpp.html#a5d0f3b4a99b1ebb74d2e4f2e9207bc18afb1a9c3daaa0683c4ffac41183243e20',1,'result.hpp']]]
+  ['unknown_1218',['Unknown',['../classbio__ik_1_1Problem.html#a07b35b81c49e84a23f15cfbc155a79d7a88183b946cc5f0e8c96b2e66e1c74a7e',1,'bio_ik::Problem']]]
 ];

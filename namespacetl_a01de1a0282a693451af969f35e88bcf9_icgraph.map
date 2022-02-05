@@ -1,9 +1,10 @@
 <map id="tl::make_unexpected" name="tl::make_unexpected">
-<area shape="rect" id="node1" title=" " alt="" coords="756,108,915,135"/>
-<area shape="rect" id="node2" href="$namespacebio__ik.html#af37c786e986d7c3ac507880f898cbe23" title="Gets the ros parameters." alt="" coords="505,49,704,76"/>
-<area shape="rect" id="node6" href="$namespacevalidate.html#a6d46755ed031f76838fe0142b3cab145" title=" " alt="" coords="519,101,690,142"/>
-<area shape="rect" id="node7" href="$classParameterLoader.html#afb72bc4a5530e8bc397b8ba04b5506b1" title=" " alt="" coords="501,167,708,193"/>
+<area shape="rect" id="node1" title=" " alt="" coords="1003,75,1161,101"/>
+<area shape="rect" id="node2" href="$namespacebio__ik.html#a4b377283310c95dd6faa6dc6191a0030" title="Gets the ros parameters." alt="" coords="501,49,700,76"/>
+<area shape="rect" id="node6" href="$classParameterLoader.html#af9ce2ed8c8373cada9e78483145d36aa" title=" " alt="" coords="748,75,955,101"/>
+<area shape="rect" id="node7" href="$namespacebio__ik.html#a3ce7073c6ab1ae3bcc706c1f01921341" title="Validates a ros_params struct." alt="" coords="790,125,913,152"/>
 <area shape="rect" id="node3" href="$structbio__ik__kinematics__plugin_1_1BioIKKinematicsPlugin.html#a84d7562ba8f7802f340c4a54a5d2c336" title=" " alt="" coords="240,13,453,54"/>
 <area shape="rect" id="node5" href="$parameter__tests_8cpp.html#a96f5f29f50a9033eb185d01dc7b1e068" title=" " alt="" coords="319,79,374,105"/>
 <area shape="rect" id="node4" href="$structbio__ik__kinematics__plugin_1_1BioIKKinematicsPlugin.html#a1ace967d5824904736b1dde4968d20f9" title=" " alt="" coords="5,5,192,61"/>
+<area shape="rect" id="node8" href="$parameter__tests_8cpp.html#afe82c8f6f0d4e024d65ba48ed0810662" title=" " alt="" coords="573,125,628,152"/>
 </map>

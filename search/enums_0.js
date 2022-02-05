@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['errorcode_1305',['ErrorCode',['../result_8hpp.html#a5d0f3b4a99b1ebb74d2e4f2e9207bc18',1,'result.hpp']]]
+  ['goaltype_1214',['GoalType',['../classbio__ik_1_1Problem.html#a07b35b81c49e84a23f15cfbc155a79d7',1,'bio_ik::Problem']]]
 ];

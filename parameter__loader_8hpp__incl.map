@@ -1,7 +1,8 @@
-<map id="include/bio_ik/util/parameter_loader.hpp" name="include/bio_ik/util/parameter_loader.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="301,5,471,47"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,95,199,136"/>
-<area shape="rect" id="node3" title=" " alt="" coords="223,95,381,136"/>
-<area shape="rect" id="node4" title=" " alt="" coords="405,102,537,129"/>
-<area shape="rect" id="node5" title=" " alt="" coords="562,102,621,129"/>
+<map id="include/bio_ik/parameter_loader.hpp" name="include/bio_ik/parameter_loader.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="317,5,501,47"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,102,88,129"/>
+<area shape="rect" id="node3" title=" " alt="" coords="113,95,306,136"/>
+<area shape="rect" id="node4" title=" " alt="" coords="330,95,489,136"/>
+<area shape="rect" id="node5" title=" " alt="" coords="513,102,645,129"/>
+<area shape="rect" id="node6" title=" " alt="" coords="669,102,728,129"/>
 </map>

@@ -1,9 +1,8 @@
 <map id="bio_ik_kinematics_plugin::BioIKKinematicsPlugin::load" name="bio_ik_kinematics_plugin::BioIKKinematicsPlugin::load">
-<area shape="rect" id="node1" title=" " alt="" coords="5,82,219,123"/>
-<area shape="rect" id="node2" href="$namespacebio__ik.html#af37c786e986d7c3ac507880f898cbe23" title="Gets the ros parameters." alt="" coords="274,31,473,57"/>
-<area shape="rect" id="node6" href="$classbio__ik_1_1LinkGoalBase.html#aa27253406b9247331acfebbe3d8b545a" title=" " alt="" coords="294,82,453,123"/>
-<area shape="rect" id="node7" href="$classbio__ik_1_1PoseGoal.html#afc1215d310a095dc59002690b097d602" title=" " alt="" coords="267,147,480,189"/>
-<area shape="rect" id="node3" href="$namespacetl.html#a01de1a0282a693451af969f35e88bcf9" title=" " alt="" coords="528,5,687,32"/>
-<area shape="rect" id="node4" href="$namespacebio__ik.html#af13f168d869090985712fb0b8fab69dd" title="Validates a ros_params struct." alt="" coords="546,56,669,83"/>
-<area shape="rect" id="node5" href="$namespacevalidate.html#a511d9c9fd641680d48cab89a01294356" title=" " alt="" coords="735,56,829,83"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,57,219,98"/>
+<area shape="rect" id="node2" href="$namespacebio__ik.html#a4b377283310c95dd6faa6dc6191a0030" title="Gets the ros parameters." alt="" coords="274,5,473,32"/>
+<area shape="rect" id="node5" href="$classbio__ik_1_1LinkGoalBase.html#aa27253406b9247331acfebbe3d8b545a" title=" " alt="" coords="294,57,453,98"/>
+<area shape="rect" id="node6" href="$classbio__ik_1_1PoseGoal.html#afc1215d310a095dc59002690b097d602" title=" " alt="" coords="267,122,480,163"/>
+<area shape="rect" id="node3" href="$namespacetl.html#a01de1a0282a693451af969f35e88bcf9" title=" " alt="" coords="699,5,857,32"/>
+<area shape="rect" id="node4" href="$namespacebio__ik.html#a3ce7073c6ab1ae3bcc706c1f01921341" title="Validates a ros_params struct." alt="" coords="528,31,651,57"/>
 </map>

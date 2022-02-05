@@ -102,59 +102,57 @@ $(function() {
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &lt;fmt/core.h&gt;</span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;cfloat&gt;</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;limits&gt;</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &lt;random&gt;</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;rclcpp/rclcpp.hpp&gt;</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="result_8hpp.html">bio_ik/util/result.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacebio__ik.html">bio_ik</a> {</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html">   46</a></span>&#160;<span class="keyword">struct </span>[[nodiscard]] <a class="code" href="structbio__ik_1_1RosParameters.html">RosParameters</a> {</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  <span class="comment">// Plugin parameters</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html#a453cefe847548cfa548fc71686531d21">   48</a></span>&#160;  <span class="keywordtype">bool</span> enable_profiler = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;  <span class="comment">// IKParallel parameters</span></div>
-<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html#a0d8c00e4e4dd6aa556f47d3b72dc01e7">   51</a></span>&#160;  std::string mode = <span class="stringliteral">&quot;bio2_memetic&quot;</span>;</div>
-<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html#a48ea56e9eec2df1ce0ff69c7c73a9e43">   52</a></span>&#160;  <span class="keywordtype">bool</span> enable_counter = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html#a1b6b77e6b9610e73aa2ef6ff36a39dad">   53</a></span>&#160;  int64_t random_seed = <span class="keyword">static_cast&lt;</span>int64_t<span class="keyword">&gt;</span>(std::random_device()());</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  <span class="comment">// Problem parameters</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html#a69c45f1b1926d71d8400eb4e5574d30a">   56</a></span>&#160;  <span class="keywordtype">double</span> dpos = DBL_MAX;</div>
-<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html#a263ecdeec1a0092bc21f3d2df593de1b">   57</a></span>&#160;  <span class="keywordtype">double</span> drot = DBL_MAX;</div>
-<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html#a9f4adadb284d64051d6c45e9896ca1d1">   58</a></span>&#160;  <span class="keywordtype">double</span> dtwist = 1e-5;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  <span class="comment">// ik_evolution_1 parameters</span></div>
-<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html#ac24ca29d065b4e974121450497cc7601">   61</a></span>&#160;  <span class="keywordtype">bool</span> skip_wipeout = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html#a454b41f26f39c92f851ddd7396e532d9">   62</a></span>&#160;  <span class="keywordtype">size_t</span> population_size = 8;</div>
-<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html#a72ce6687de69f1ba49c856f17715087d">   63</a></span>&#160;  <span class="keywordtype">size_t</span> elite_count = 4;</div>
-<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html#ae631e55f780954a1e39c460464525671">   64</a></span>&#160;  <span class="keywordtype">bool</span> enable_linear_fitness = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
-<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html#aa81c0e48647f014e78d73d0c2b8356e5">   66</a></span>&#160;  <span class="keyword">inline</span> <span class="keyword">operator</span> std::string()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordflow">return</span> fmt::format(</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="stringliteral">&quot;[bio_ik::RosParameters:\n  enable_profiler={},\n  mode={},\n  &quot;</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="stringliteral">&quot;enable_counter={},\n  random_seed={},\n  dpos={},\n  drot={},\n  &quot;</span></div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="stringliteral">&quot;dtwist={},\n  skip_wipeout={},\n  population_size={},\n  &quot;</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="stringliteral">&quot;elite_count={},\n  enable_linear_fitness={},\n]&quot;</span>,</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        enable_profiler, mode, enable_counter, random_seed, dpos, drot, dtwist,</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        skip_wipeout, population_size, elite_count, enable_linear_fitness);</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  }</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;};</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;[[nodiscard]] <a class="code" href="classtl_1_1expected.html">Result&lt;RosParameters&gt;</a> <a class="code" href="namespacebio__ik.html#af13f168d869090985712fb0b8fab69dd">validate</a>(<span class="keyword">const</span> RosParameters&amp; ros_params);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;fp/all.hpp&gt;</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &lt;limits&gt;</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;random&gt;</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &lt;rclcpp/rclcpp.hpp&gt;</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacebio__ik.html">bio_ik</a> {</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html">   45</a></span>&#160;<span class="keyword">struct </span>[[nodiscard]] <a class="code" href="structbio__ik_1_1RosParameters.html">RosParameters</a> {</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  <span class="comment">// Plugin parameters</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html#a453cefe847548cfa548fc71686531d21">   47</a></span>&#160;  <span class="keywordtype">bool</span> enable_profiler = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;  <span class="comment">// IKParallel parameters</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html#a0d8c00e4e4dd6aa556f47d3b72dc01e7">   50</a></span>&#160;  std::string mode = <span class="stringliteral">&quot;bio2_memetic&quot;</span>;</div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html#a48ea56e9eec2df1ce0ff69c7c73a9e43">   51</a></span>&#160;  <span class="keywordtype">bool</span> enable_counter = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html#a1b6b77e6b9610e73aa2ef6ff36a39dad">   52</a></span>&#160;  int64_t random_seed = <span class="keyword">static_cast&lt;</span>int64_t<span class="keyword">&gt;</span>(std::random_device()());</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  <span class="comment">// Problem parameters</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html#a69c45f1b1926d71d8400eb4e5574d30a">   55</a></span>&#160;  <span class="keywordtype">double</span> dpos = DBL_MAX;</div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html#a263ecdeec1a0092bc21f3d2df593de1b">   56</a></span>&#160;  <span class="keywordtype">double</span> drot = DBL_MAX;</div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html#a9f4adadb284d64051d6c45e9896ca1d1">   57</a></span>&#160;  <span class="keywordtype">double</span> dtwist = 1e-5;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  <span class="comment">// ik_evolution_1 parameters</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html#ac24ca29d065b4e974121450497cc7601">   60</a></span>&#160;  <span class="keywordtype">bool</span> skip_wipeout = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html#a454b41f26f39c92f851ddd7396e532d9">   61</a></span>&#160;  <span class="keywordtype">size_t</span> population_size = 8;</div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html#a72ce6687de69f1ba49c856f17715087d">   62</a></span>&#160;  <span class="keywordtype">size_t</span> elite_count = 4;</div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html#ae631e55f780954a1e39c460464525671">   63</a></span>&#160;  <span class="keywordtype">bool</span> enable_linear_fitness = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="structbio__ik_1_1RosParameters.html#aa81c0e48647f014e78d73d0c2b8356e5">   65</a></span>&#160;  <span class="keyword">inline</span> <span class="keyword">operator</span> std::string()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordflow">return</span> fmt::format(</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="stringliteral">&quot;[bio_ik::RosParameters:\n  enable_profiler={},\n  mode={},\n  &quot;</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="stringliteral">&quot;enable_counter={},\n  random_seed={},\n  dpos={},\n  drot={},\n  &quot;</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="stringliteral">&quot;dtwist={},\n  skip_wipeout={},\n  population_size={},\n  &quot;</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="stringliteral">&quot;elite_count={},\n  enable_linear_fitness={},\n]&quot;</span>,</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        enable_profiler, mode, enable_counter, random_seed, dpos, drot, dtwist,</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        skip_wipeout, population_size, elite_count, enable_linear_fitness);</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  }</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;};</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;[[nodiscard]] fp::Result&lt;RosParameters&gt; <a class="code" href="namespacebio__ik.html#a3ce7073c6ab1ae3bcc706c1f01921341">validate</a>(</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    RosParameters <span class="keyword">const</span>&amp; ros_params);</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;[[nodiscard]] <a class="code" href="classtl_1_1expected.html">Result&lt;RosParameters&gt;</a> <a class="code" href="namespacebio__ik.html#af37c786e986d7c3ac507880f898cbe23">get_ros_parameters</a>(</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <span class="keyword">const</span> rclcpp::Node::SharedPtr&amp; node);</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;[[nodiscard]] fp::Result&lt;RosParameters&gt; <a class="code" href="namespacebio__ik.html#a4b377283310c95dd6faa6dc6191a0030">get_ros_parameters</a>(</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    rclcpp::Node::SharedPtr <span class="keyword">const</span>&amp; node);</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;}  <span class="comment">// namespace bio_ik</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="anamespacebio__ik_html_af13f168d869090985712fb0b8fab69dd"><div class="ttname"><a href="namespacebio__ik.html#af13f168d869090985712fb0b8fab69dd">bio_ik::validate</a></div><div class="ttdeci">Result&lt; RosParameters &gt; validate(const RosParameters &amp;ros_params)</div><div class="ttdoc">Validates a ros_params struct.</div><div class="ttdef"><b>Definition:</b> parameters.cpp:65</div></div>
-<div class="ttc" id="astructbio__ik_1_1RosParameters_html"><div class="ttname"><a href="structbio__ik_1_1RosParameters.html">bio_ik::RosParameters</a></div><div class="ttdoc">Parameters settable via ros.</div><div class="ttdef"><b>Definition:</b> parameters.hpp:46</div></div>
+<div class="ttc" id="anamespacebio__ik_html_a3ce7073c6ab1ae3bcc706c1f01921341"><div class="ttname"><a href="namespacebio__ik.html#a3ce7073c6ab1ae3bcc706c1f01921341">bio_ik::validate</a></div><div class="ttdeci">fp::Result&lt; RosParameters &gt; validate(RosParameters const &amp;ros_params)</div><div class="ttdoc">Validates a ros_params struct.</div><div class="ttdef"><b>Definition:</b> parameters.cpp:64</div></div>
+<div class="ttc" id="astructbio__ik_1_1RosParameters_html"><div class="ttname"><a href="structbio__ik_1_1RosParameters.html">bio_ik::RosParameters</a></div><div class="ttdoc">Parameters settable via ros.</div><div class="ttdef"><b>Definition:</b> parameters.hpp:45</div></div>
 <div class="ttc" id="anamespacebio__ik_html"><div class="ttname"><a href="namespacebio__ik.html">bio_ik</a></div><div class="ttdef"><b>Definition:</b> bio_ik.hpp:39</div></div>
-<div class="ttc" id="aclasstl_1_1expected_html"><div class="ttname"><a href="classtl_1_1expected.html">tl::expected</a></div><div class="ttdef"><b>Definition:</b> expected.hpp:120</div></div>
-<div class="ttc" id="aresult_8hpp_html"><div class="ttname"><a href="result_8hpp.html">result.hpp</a></div></div>
-<div class="ttc" id="anamespacebio__ik_html_af37c786e986d7c3ac507880f898cbe23"><div class="ttname"><a href="namespacebio__ik.html#af37c786e986d7c3ac507880f898cbe23">bio_ik::get_ros_parameters</a></div><div class="ttdeci">Result&lt; RosParameters &gt; get_ros_parameters(const rclcpp::Node::SharedPtr &amp;node)</div><div class="ttdoc">Gets the ros parameters.</div><div class="ttdef"><b>Definition:</b> parameters.cpp:88</div></div>
+<div class="ttc" id="anamespacebio__ik_html_a4b377283310c95dd6faa6dc6191a0030"><div class="ttname"><a href="namespacebio__ik.html#a4b377283310c95dd6faa6dc6191a0030">bio_ik::get_ros_parameters</a></div><div class="ttdeci">fp::Result&lt; RosParameters &gt; get_ros_parameters(rclcpp::Node::SharedPtr const &amp;node)</div><div class="ttdoc">Gets the ros parameters.</div><div class="ttdef"><b>Definition:</b> parameters.cpp:78</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

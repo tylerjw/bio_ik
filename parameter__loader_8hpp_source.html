@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>bio_ik: include/bio_ik/util/parameter_loader.hpp Source File</title>
+<title>bio_ik: include/bio_ik/parameter_loader.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_3caa8a797c423c038bae091addaf1fb6.html">bio_ik</a></li><li class="navelem"><a class="el" href="dir_e0168febe4a03f698fabe5cacf982c54.html">util</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_3caa8a797c423c038bae091addaf1fb6.html">bio_ik</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -99,72 +99,66 @@ $(function() {
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &lt;rcl_interfaces/msg/parameter_descriptor.hpp&gt;</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;rcl_interfaces/msg/parameter_type.hpp&gt;</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;rclcpp/rclcpp.hpp&gt;</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classParameterLoader.html">   39</a></span>&#160;<span class="keyword">class </span><a class="code" href="classParameterLoader.html">ParameterLoader</a> {</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  rclcpp::Node::SharedPtr node_;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  [[nodiscard]] rcl_interfaces::msg::ParameterDescriptor make_descriptor(</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;      <span class="keyword">const</span> std::string&amp; description, <span class="keyword">const</span> std::string&amp; constraints)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    rcl_interfaces::msg::ParameterDescriptor msg;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    msg.description = description;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    msg.additional_constraints = constraints;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keywordflow">return</span> msg;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;  }</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;  [[nodiscard]] <a class="code" href="classtl_1_1expected.html">Result&lt;T&gt;</a> declare_parameter(</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;      <span class="keyword">const</span> std::string&amp; name, <span class="keyword">const</span> T&amp; default_value,</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;      <span class="keyword">const</span> std::string&amp; description = <span class="stringliteral">&quot;&quot;</span>,</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;      <span class="keyword">const</span> std::string&amp; constraints = <span class="stringliteral">&quot;&quot;</span>)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordflow">try</span> {</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;      <span class="keywordflow">return</span> node_</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;          -&gt;declare_parameter(name, rclcpp::ParameterValue{default_value},</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                              make_descriptor(description, constraints))</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;          .get&lt;T&gt;();</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    } <span class="keywordflow">catch</span> (<span class="keyword">const</span> std::exception&amp; ex) {</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;      <span class="keywordflow">return</span> <a class="code" href="result_8hpp.html#a285373a4f17b546f020d6d7b8542613a">Exception</a>(ex.what());</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    }</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;  }</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  [[nodiscard]] <a class="code" href="classtl_1_1expected.html">Result&lt;T&gt;</a> get_parameter(<span class="keyword">const</span> std::string&amp; name)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordflow">try</span> {</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;      <span class="keywordflow">return</span> node_-&gt;get_parameter(name).get_value&lt;T&gt;();</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    } <span class="keywordflow">catch</span> (<span class="keyword">const</span> std::exception&amp; ex) {</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;      <span class="keywordflow">return</span> <a class="code" href="result_8hpp.html#a285373a4f17b546f020d6d7b8542613a">Exception</a>(ex.what());</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    }</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  }</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="classParameterLoader.html#a934aaddec1c6e68ea9b4cc6a5034a7a4">   75</a></span>&#160;  <a class="code" href="classParameterLoader.html#a934aaddec1c6e68ea9b4cc6a5034a7a4">ParameterLoader</a>(<span class="keyword">const</span> rclcpp::Node::SharedPtr&amp; node) : node_{node} {}</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="classParameterLoader.html#afb72bc4a5530e8bc397b8ba04b5506b1">   78</a></span>&#160;  [[nodiscard]] <a class="code" href="classtl_1_1expected.html">Result&lt;T&gt;</a> <a class="code" href="classParameterLoader.html#afb72bc4a5530e8bc397b8ba04b5506b1">operator()</a>(</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;      <span class="keyword">const</span> std::string&amp; name, <span class="keyword">const</span> T&amp; default_value,</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;      <span class="keyword">const</span> std::string&amp; description = <span class="stringliteral">&quot;&quot;</span>,</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;      <span class="keyword">const</span> std::string&amp; constraints = <span class="stringliteral">&quot;&quot;</span>)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keywordflow">if</span> (!node_-&gt;has_parameter(name)) {</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;      <span class="keywordflow">if</span> (<span class="keyword">const</span> <span class="keyword">auto</span> result = declare_parameter&lt;T&gt;(name, default_value,</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                                                   description, constraints);</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;          !result) {</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacetl.html#a01de1a0282a693451af969f35e88bcf9">make_unexpected</a>(result.error());</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;      }</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    }</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordflow">return</span> get_parameter&lt;T&gt;(name);</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  }</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;};</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &lt;fp/all.hpp&gt;</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;rcl_interfaces/msg/parameter_descriptor.hpp&gt;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;rcl_interfaces/msg/parameter_type.hpp&gt;</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;rclcpp/rclcpp.hpp&gt;</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classParameterLoader.html">   40</a></span>&#160;<span class="keyword">class </span><a class="code" href="classParameterLoader.html">ParameterLoader</a> {</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  rclcpp::Node::SharedPtr node_;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  [[nodiscard]] rcl_interfaces::msg::ParameterDescriptor make_descriptor(</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;      std::string <span class="keyword">const</span>&amp; description, std::string <span class="keyword">const</span>&amp; constraints)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    rcl_interfaces::msg::ParameterDescriptor msg;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    msg.description = description;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    msg.additional_constraints = constraints;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keywordflow">return</span> msg;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;  }</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  [[nodiscard]] fp::Result&lt;T&gt; declare_parameter(</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;      std::string <span class="keyword">const</span>&amp; name, T <span class="keyword">const</span>&amp; default_value,</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;      std::string <span class="keyword">const</span>&amp; description = <span class="stringliteral">&quot;&quot;</span>,</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;      std::string <span class="keyword">const</span>&amp; constraints = <span class="stringliteral">&quot;&quot;</span>)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keywordflow">return</span> fp::try_to_result([&amp;] {</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;      <span class="keywordflow">return</span> node_</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;          -&gt;declare_parameter(name, rclcpp::ParameterValue{default_value},</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                              make_descriptor(description, constraints))</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;          .get&lt;T&gt;();</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    });</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;  }</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  [[nodiscard]] fp::Result&lt;T&gt; get_parameter(std::string <span class="keyword">const</span>&amp; name)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordflow">return</span> fp::try_to_result(</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        [&amp;] { <span class="keywordflow">return</span> node_-&gt;get_parameter(name).get_value&lt;T&gt;(); });</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;  }</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="classParameterLoader.html#a934aaddec1c6e68ea9b4cc6a5034a7a4">   71</a></span>&#160;  <a class="code" href="classParameterLoader.html#a934aaddec1c6e68ea9b4cc6a5034a7a4">ParameterLoader</a>(<span class="keyword">const</span> rclcpp::Node::SharedPtr&amp; node) : node_{node} {}</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="classParameterLoader.html#af9ce2ed8c8373cada9e78483145d36aa">   74</a></span>&#160;  [[nodiscard]] fp::Result&lt;T&gt; <a class="code" href="classParameterLoader.html#af9ce2ed8c8373cada9e78483145d36aa">operator()</a>(</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;      std::string <span class="keyword">const</span>&amp; name, T <span class="keyword">const</span>&amp; default_value,</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;      std::string <span class="keyword">const</span>&amp; description = <span class="stringliteral">&quot;&quot;</span>,</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;      std::string <span class="keyword">const</span>&amp; constraints = <span class="stringliteral">&quot;&quot;</span>)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="keywordflow">if</span> (!node_-&gt;has_parameter(name)) {</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;      <span class="keywordflow">if</span> (<span class="keyword">auto</span> <span class="keyword">const</span> result = declare_parameter&lt;T&gt;(name, default_value,</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                                                   description, constraints);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;          !result) {</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="namespacetl.html#a01de1a0282a693451af969f35e88bcf9">tl::make_unexpected</a>(result.error());</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;      }</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    }</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordflow">return</span> get_parameter&lt;T&gt;(name);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  }</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;};</div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclassParameterLoader_html_afb72bc4a5530e8bc397b8ba04b5506b1"><div class="ttname"><a href="classParameterLoader.html#afb72bc4a5530e8bc397b8ba04b5506b1">ParameterLoader::operator()</a></div><div class="ttdeci">Result&lt; T &gt; operator()(const std::string &amp;name, const T &amp;default_value, const std::string &amp;description=&quot;&quot;, const std::string &amp;constraints=&quot;&quot;) const</div><div class="ttdef"><b>Definition:</b> parameter_loader.hpp:78</div></div>
 <div class="ttc" id="anamespacetl_html_a01de1a0282a693451af969f35e88bcf9"><div class="ttname"><a href="namespacetl.html#a01de1a0282a693451af969f35e88bcf9">tl::make_unexpected</a></div><div class="ttdeci">unexpected&lt; typename std::decay&lt; E &gt;::type &gt; make_unexpected(E &amp;&amp;e)</div><div class="ttdef"><b>Definition:</b> expected.hpp:176</div></div>
-<div class="ttc" id="aclassParameterLoader_html_a934aaddec1c6e68ea9b4cc6a5034a7a4"><div class="ttname"><a href="classParameterLoader.html#a934aaddec1c6e68ea9b4cc6a5034a7a4">ParameterLoader::ParameterLoader</a></div><div class="ttdeci">ParameterLoader(const rclcpp::Node::SharedPtr &amp;node)</div><div class="ttdef"><b>Definition:</b> parameter_loader.hpp:75</div></div>
-<div class="ttc" id="aresult_8hpp_html_a285373a4f17b546f020d6d7b8542613a"><div class="ttname"><a href="result_8hpp.html#a285373a4f17b546f020d6d7b8542613a">Exception</a></div><div class="ttdeci">constexpr auto Exception</div><div class="ttdef"><b>Definition:</b> result.hpp:131</div></div>
-<div class="ttc" id="aclassParameterLoader_html"><div class="ttname"><a href="classParameterLoader.html">ParameterLoader</a></div><div class="ttdoc">Callable that declares and gets parameters using rclcpp.</div><div class="ttdef"><b>Definition:</b> parameter_loader.hpp:39</div></div>
-<div class="ttc" id="aclasstl_1_1expected_html"><div class="ttname"><a href="classtl_1_1expected.html">tl::expected</a></div><div class="ttdef"><b>Definition:</b> expected.hpp:120</div></div>
+<div class="ttc" id="aclassParameterLoader_html_a934aaddec1c6e68ea9b4cc6a5034a7a4"><div class="ttname"><a href="classParameterLoader.html#a934aaddec1c6e68ea9b4cc6a5034a7a4">ParameterLoader::ParameterLoader</a></div><div class="ttdeci">ParameterLoader(const rclcpp::Node::SharedPtr &amp;node)</div><div class="ttdef"><b>Definition:</b> parameter_loader.hpp:71</div></div>
+<div class="ttc" id="aclassParameterLoader_html"><div class="ttname"><a href="classParameterLoader.html">ParameterLoader</a></div><div class="ttdoc">Callable that declares and gets parameters using rclcpp.</div><div class="ttdef"><b>Definition:</b> parameter_loader.hpp:40</div></div>
+<div class="ttc" id="aclassParameterLoader_html_af9ce2ed8c8373cada9e78483145d36aa"><div class="ttname"><a href="classParameterLoader.html#af9ce2ed8c8373cada9e78483145d36aa">ParameterLoader::operator()</a></div><div class="ttdeci">fp::Result&lt; T &gt; operator()(std::string const &amp;name, T const &amp;default_value, std::string const &amp;description=&quot;&quot;, std::string const &amp;constraints=&quot;&quot;) const</div><div class="ttdef"><b>Definition:</b> parameter_loader.hpp:74</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">
