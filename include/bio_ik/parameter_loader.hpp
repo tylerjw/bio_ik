@@ -28,6 +28,7 @@
 
 #pragma once
 
+#include <fp/all.hpp>
 #include <rcl_interfaces/msg/parameter_descriptor.hpp>
 #include <rcl_interfaces/msg/parameter_type.hpp>
 #include <rclcpp/rclcpp.hpp>
@@ -40,7 +41,7 @@ class ParameterLoader {
   rclcpp::Node::SharedPtr node_;
 
   [[nodiscard]] rcl_interfaces::msg::ParameterDescriptor make_descriptor(
-      const std::string& description, const std::string& constraints) const {
+      std::string const& description, std::string const& constraints) const {
     rcl_interfaces::msg::ParameterDescriptor msg;
     msg.description = description;
     msg.additional_constraints = constraints;
@@ -48,42 +49,37 @@ class ParameterLoader {
   }
 
   template <typename T>
-  [[nodiscard]] Result<T> declare_parameter(
-      const std::string& name, const T& default_value,
-      const std::string& description = "",
-      const std::string& constraints = "") const {
-    try {
+  [[nodiscard]] fp::Result<T> declare_parameter(
+      std::string const& name, T const& default_value,
+      std::string const& description = "",
+      std::string const& constraints = "") const {
+    return fp::try_to_result([&] {
       return node_
           ->declare_parameter(name, rclcpp::ParameterValue{default_value},
                               make_descriptor(description, constraints))
           .get<T>();
-    } catch (const std::exception& ex) {
-      return Exception(ex.what());
-    }
+    });
   }
 
   template <typename T>
-  [[nodiscard]] Result<T> get_parameter(const std::string& name) const {
-    try {
-      return node_->get_parameter(name).get_value<T>();
-    } catch (const std::exception& ex) {
-      return Exception(ex.what());
-    }
+  [[nodiscard]] fp::Result<T> get_parameter(std::string const& name) const {
+    return fp::try_to_result(
+        [&] { return node_->get_parameter(name).get_value<T>(); });
   }
 
  public:
   ParameterLoader(const rclcpp::Node::SharedPtr& node) : node_{node} {}
 
   template <typename T>
-  [[nodiscard]] Result<T> operator()(
-      const std::string& name, const T& default_value,
-      const std::string& description = "",
-      const std::string& constraints = "") const {
+  [[nodiscard]] fp::Result<T> operator()(
+      std::string const& name, T const& default_value,
+      std::string const& description = "",
+      std::string const& constraints = "") const {
     if (!node_->has_parameter(name)) {
-      if (const auto result = declare_parameter<T>(name, default_value,
+      if (auto const result = declare_parameter<T>(name, default_value,
                                                    description, constraints);
           !result) {
-        return make_unexpected(result.error());
+        return tl::make_unexpected(result.error());
       }
     }
 

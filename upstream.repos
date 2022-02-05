@@ -15,3 +15,7 @@ repositories:
     type: git
     url: https://github.com/PickNikRobotics/launch_param_builder
     version: 0.1.0
+  fp:
+    type: git
+    url: https://github.com/tylerjw/fp
+    version: main

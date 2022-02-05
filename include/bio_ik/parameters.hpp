@@ -31,12 +31,11 @@
 #include <fmt/core.h>
 
 #include <cfloat>
+#include <fp/all.hpp>
 #include <limits>
 #include <random>
 #include <rclcpp/rclcpp.hpp>
 #include <string>
-
-#include "bio_ik/util/result.hpp"
 
 namespace bio_ik {
 
@@ -81,7 +80,8 @@ struct [[nodiscard]] RosParameters {
  *
  * @return     The ros parameters on success, error status otherwise
  */
-[[nodiscard]] Result<RosParameters> validate(const RosParameters& ros_params);
+[[nodiscard]] fp::Result<RosParameters> validate(
+    RosParameters const& ros_params);
 
 /**
  * @brief      Gets the ros parameters
@@ -90,7 +90,7 @@ struct [[nodiscard]] RosParameters {
  *
  * @return     The ros parameters on success, error status otherwise
  */
-[[nodiscard]] Result<RosParameters> get_ros_parameters(
-    const rclcpp::Node::SharedPtr& node);
+[[nodiscard]] fp::Result<RosParameters> get_ros_parameters(
+    rclcpp::Node::SharedPtr const& node);
 
 }  // namespace bio_ik
