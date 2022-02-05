@@ -36,7 +36,9 @@ jobs:
               -DENABLE_SANITIZER_THREAD=ON
             CC: clang-10
             CXX: clang++-10
-            BEFORE_RUN_TARGET_TEST_EMBED: export ASAN_SYMBOLIZER_PATH=$(which llvm-symbolizer-10)
+            BEFORE_RUN_TARGET_TEST_EMBED: >
+              export ASAN_SYMBOLIZER_PATH=$(which llvm-symbolizer-10);
+              echo $ASAN_SYMBOLIZER_PATH
           - NAME: "memory-sanitizer"
             TARGET_CMAKE_ARGS: >
               -DCMAKE_BUILD_TYPE=Debug
