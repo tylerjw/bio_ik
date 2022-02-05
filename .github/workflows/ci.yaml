@@ -37,6 +37,7 @@ jobs:
               -DCMAKE_C_COMPILER=clang
               -DCMAKE_CXX_COMPILER=clang++
             BEFORE_RUN_TARGET_TEST_EMBED: >
+              which llvm-symbolizer-10;
               export ASAN_SYMBOLIZER_PATH=$(which llvm-symbolizer-10);
               echo $ASAN_SYMBOLIZER_PATH
           - NAME: "memory-sanitizer"
