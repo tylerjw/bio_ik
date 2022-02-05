@@ -61,27 +61,18 @@ namespace {
 
 }  // namespace
 
-[[nodiscard]] fp::Result<RosParameters> validate(
-    RosParameters const& ros_params) {
-  if (auto const result = fp::validate_in(valid_modes(), ros_params.mode);
-      !result) {
-    return tl::make_unexpected(fp::make_named(result.error(), "mode"));
+[[nodiscard]] fp::Result<RosParameters> validate(RosParameters const& params) {
+  if (auto const error =
+          fp::maybe_error(fp::validate_in(valid_modes(), params.mode, "mode"),
+                          fp::validate_range<size_t>{.from = 2}(
+                              params.population_size, "population_size"),
+                          fp::validate_range<size_t>{.from = 2}(
+                              params.elite_count, "elite_count"));
+      error) {
+    return tl::make_unexpected(error.value());
   }
 
-  if (auto const result =
-          fp::validate_range<size_t>{.from = 2}(ros_params.population_size);
-      !result) {
-    return tl::make_unexpected(
-        fp::make_named(result.error(), "population_size"));
-  }
-
-  if (auto const result =
-          fp::validate_range<size_t>{.from = 2}(ros_params.elite_count);
-      !result) {
-    return tl::make_unexpected(fp::make_named(result.error(), "elite_count"));
-  }
-
-  return ros_params;
+  return params;
 }
 
 [[nodiscard]] fp::Result<RosParameters> get_ros_parameters(
@@ -116,7 +107,7 @@ namespace {
                           dpos, drot, dtwist, skip_wipeout, population_size,
                           elite_count, enable_linear_fitness);
       error) {
-    return tl::make_unexpected(*error);
+    return tl::make_unexpected(error.value());
   }
 
   return validate(RosParameters{
