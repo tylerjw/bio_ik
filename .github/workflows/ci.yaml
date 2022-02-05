@@ -34,8 +34,8 @@ jobs:
             TARGET_CMAKE_ARGS: >
               -DCMAKE_BUILD_TYPE=Debug
               -DENABLE_SANITIZER_THREAD=ON
-              -DCMAKE_C_COMPILER=clang
-              -DCMAKE_CXX_COMPILER=clang++
+              -DCMAKE_C_COMPILER=clang-10
+              -DCMAKE_CXX_COMPILER=clang++-10
             BEFORE_RUN_TARGET_TEST_EMBED: >
               which llvm-symbolizer-10;
               export ASAN_SYMBOLIZER_PATH=$(which llvm-symbolizer-10);
