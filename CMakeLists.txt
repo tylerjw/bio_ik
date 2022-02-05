@@ -45,6 +45,7 @@ find_package(ament_cmake_ros REQUIRED)
 find_package(backward_ros REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(fmt REQUIRED)
+find_package(fp REQUIRED)
 find_package(moveit_core REQUIRED)
 find_package(moveit_ros_planning REQUIRED)
 find_package(pluginlib REQUIRED)
@@ -112,6 +113,7 @@ target_link_libraries(
   PUBLIC
     Eigen3::Eigen
     fmt::fmt
+    fp::fp
     moveit_core::moveit_collision_detection_fcl
     moveit_core::moveit_kinematics_base
     moveit_core::moveit_robot_model

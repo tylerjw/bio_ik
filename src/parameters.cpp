@@ -31,6 +31,7 @@
 #include <fmt/format.h>
 #include <fmt/ranges.h>
 
+#include <fp/all.hpp>
 #include <range/v3/all.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <string>
@@ -39,9 +40,7 @@
 #include "bio_ik/ik_evolution_2.hpp"
 #include "bio_ik/ik_gradient.hpp"
 #include "bio_ik/ik_test.hpp"
-#include "bio_ik/util/parameter_loader.hpp"
-#include "bio_ik/util/result.hpp"
-#include "bio_ik/util/validate.hpp"
+#include "bio_ik/parameter_loader.hpp"
 
 namespace views = ::ranges::views;
 
@@ -49,10 +48,10 @@ namespace bio_ik {
 namespace {
 
 [[nodiscard]] auto valid_modes() {
-  const auto evolution1_modes = getEvolution1Modes();
-  const auto evolution2_modes = getEvolution2Modes();
-  const auto gradient_decent_modes = getGradientDecentModes();
-  const auto test_modes = getTestModes();
+  auto const evolution1_modes = getEvolution1Modes();
+  auto const evolution2_modes = getEvolution2Modes();
+  auto const gradient_decent_modes = getGradientDecentModes();
+  auto const test_modes = getTestModes();
 
   return views::concat(
              views::all(evolution1_modes), views::all(evolution2_modes),
@@ -62,77 +61,63 @@ namespace {
 
 }  // namespace
 
-[[nodiscard]] Result<RosParameters> validate(const RosParameters& ros_params) {
-  if (const auto result = validate::in(valid_modes(), ros_params.mode);
+[[nodiscard]] fp::Result<RosParameters> validate(
+    RosParameters const& ros_params) {
+  if (auto const result = fp::validate_in(valid_modes(), ros_params.mode);
       !result) {
-    return validate::make_named_error<RosParameters>(result.error(), "mode");
+    return tl::make_unexpected(fp::make_named(result.error(), "mode"));
   }
 
-  if (const auto result =
-          validate::range<size_t>{.from = 2}(ros_params.population_size);
+  if (auto const result =
+          fp::validate_range<size_t>{.from = 2}(ros_params.population_size);
       !result) {
-    return validate::make_named_error<RosParameters>(result.error(),
-                                                     "population_size");
+    return tl::make_unexpected(
+        fp::make_named(result.error(), "population_size"));
   }
 
-  if (const auto result =
-          validate::range<size_t>{.from = 2}(ros_params.elite_count);
+  if (auto const result =
+          fp::validate_range<size_t>{.from = 2}(ros_params.elite_count);
       !result) {
-    return validate::make_named_error<RosParameters>(result.error(),
-                                                     "elite_count");
+    return tl::make_unexpected(fp::make_named(result.error(), "elite_count"));
   }
 
   return ros_params;
 }
 
-[[nodiscard]] Result<RosParameters> get_ros_parameters(
-    const rclcpp::Node::SharedPtr& node) {
-  const auto default_values = RosParameters{};
-  const auto loader = ParameterLoader{node};
+[[nodiscard]] fp::Result<RosParameters> get_ros_parameters(
+    rclcpp::Node::SharedPtr const& node) {
+  auto const default_values = RosParameters{};
+  auto const loader = ParameterLoader{node};
 
-  const auto enable_profiler =
+  auto const enable_profiler =
       loader("enable_profiler", default_values.enable_profiler);
-  if (!enable_profiler) return make_unexpected(enable_profiler.error());
-
-  const auto mode = loader("mode", default_values.mode, "solver mode",
+  auto const mode = loader("mode", default_values.mode, "solver mode",
                            fmt::format("in the set: {}", valid_modes()));
-  if (!mode) return make_unexpected(mode.error());
-
-  const auto enable_counter =
+  auto const enable_counter =
       loader("enable_counter", default_values.enable_counter);
-  if (!enable_counter) return make_unexpected(enable_counter.error());
-
-  const auto random_seed = loader("random_seed", default_values.random_seed,
+  auto const random_seed = loader("random_seed", default_values.random_seed,
                                   "useful for deterministic testing");
-  if (!random_seed) return make_unexpected(random_seed.error());
-
-  const auto dpos = loader("dpos", default_values.dpos);
-  if (!dpos) return make_unexpected(dpos.error());
-
-  const auto drot = loader("drot", default_values.drot);
-  if (!drot) return make_unexpected(drot.error());
-
-  const auto dtwist = loader("dtwist", default_values.dtwist);
-  if (!dtwist) return make_unexpected(dtwist.error());
-
-  const auto skip_wipeout = loader("skip_wipeout", default_values.skip_wipeout,
+  auto const dpos = loader("dpos", default_values.dpos);
+  auto const drot = loader("drot", default_values.drot);
+  auto const dtwist = loader("dtwist", default_values.dtwist);
+  auto const skip_wipeout = loader("skip_wipeout", default_values.skip_wipeout,
                                    "used by evolution1 solvers");
-  if (!skip_wipeout) return make_unexpected(skip_wipeout.error());
-
-  const auto population_size = loader(
+  auto const population_size = loader(
       "population_size", static_cast<int64_t>(default_values.population_size),
       "used by evolution1 modes", "2 or larger");
-  if (!population_size) return make_unexpected(population_size.error());
-
-  const auto elite_count =
+  auto const elite_count =
       loader("elite_count", static_cast<int64_t>(default_values.elite_count),
              "used by evolution1 modes", "2 or larger");
-  if (!elite_count) return make_unexpected(elite_count.error());
-
-  const auto enable_linear_fitness =
+  auto const enable_linear_fitness =
       loader("enable_linear_fitness", default_values.enable_linear_fitness);
-  if (!enable_linear_fitness)
-    return make_unexpected(enable_linear_fitness.error());
+
+  if (auto const error =
+          fp::maybe_error(enable_profiler, mode, enable_counter, random_seed,
+                          dpos, drot, dtwist, skip_wipeout, population_size,
+                          elite_count, enable_linear_fitness);
+      error) {
+    return tl::make_unexpected(*error);
+  }
 
   return validate(RosParameters{
       .enable_profiler = enable_profiler.value(),
