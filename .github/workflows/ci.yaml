@@ -25,33 +25,34 @@ jobs:
           # - NAME: "rolling-main"
           #   ROS_REPO: main
           - NAME: "address-leak-ub-sanitizers"
-            TARGET_CMAKE_ARGS: >
+            TARGET_CMAKE_ARGS: |
               -DCMAKE_BUILD_TYPE=Debug
               -DENABLE_SANITIZER_ADDRESS=ON
               -DENABLE_SANITIZER_LEAK=ON
               -DENABLE_SANITIZER_UNDEFINED_BEHAVIOR=ON
           - NAME: "thread-sanitizer-clang"
-            TARGET_CMAKE_ARGS: >
+            TARGET_CMAKE_ARGS: |
               -DCMAKE_BUILD_TYPE=Debug
               -DENABLE_SANITIZER_THREAD=ON
-            CC: clang-10
-            CXX: clang++-10
-            BEFORE_RUN_TARGET_TEST_EMBED: export ASAN_SYMBOLIZER_PATH=$(which llvm-symbolizer-10)
+              -DCMAKE_C_COMPILER=clang-10
+              -DCMAKE_CXX_COMPILER=clang++-10
+            BEFORE_RUN_TARGET_TEST_EMBED: |
+              export ASAN_SYMBOLIZER_PATH=$(which llvm-symbolizer-10)
           - NAME: "memory-sanitizer"
-            TARGET_CMAKE_ARGS: >
+            TARGET_CMAKE_ARGS: |
               -DCMAKE_BUILD_TYPE=Debug
               -DENABLE_SANITIZER_MEMORY=ON
             # TODO(tylerjw): fail on iwyu warnings
             # TODO(tylerjw): fix clang-tidy errors
           # - NAME: "static-analyzers"
-          #   TARGET_CMAKE_ARGS: >
+          #   TARGET_CMAKE_ARGS: |
           #     -DENABLE_CLANG_TIDY=ON
           #     -DENABLE_INCLUDE_WHAT_YOU_USE=ON
 
     env:
       ROS_DISTRO: rolling
       UPSTREAM_WORKSPACE: upstream.repos
-      UPSTREAM_CMAKE_ARGS: >
+      UPSTREAM_CMAKE_ARGS: |
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=lld
         -DCMAKE_SHARED_LINKER_FLAGS=-fuse-ld=lld
@@ -61,7 +62,7 @@ jobs:
       AFTER_BUILD_TARGET_WORKSPACE: ccache --show-stats
       CCACHE_DIR: ${{ github.workspace }}/.ccache
       BASEDIR: ${{ github.workspace }}/.work
-      ADDITIONAL_DEBS: clang-10 clang-9 iwyu clang-tidy lld
+      ADDITIONAL_DEBS: clang-10 clang-9 clang-tidy iwyu lld llvm-10
 
     name: ${{ matrix.env.NAME }}
     runs-on: ubuntu-latest
@@ -70,24 +71,6 @@ jobs:
       - uses: testspace-com/setup-testspace@v1
         with:
           domain: tylerjw
-      - name: Cache upstream workspace
-        uses: pat-s/always-upload-cache@v2.1.5
-        with:
-          path: ${{ env.BASEDIR }}/upstream_ws
-          key: ${{ env.CACHE_PREFIX }}-${{ github.run_id }}
-          restore-keys: ${{ env.CACHE_PREFIX }}
-        env:
-          CACHE_PREFIX: upstream_ws-${{ matrix.env.NAME }}-${{ hashFiles('upatream.repos', '.github/workflows/ci.yaml') }}
-      # The target directory cache doesn't include the source directory because
-      # that comes from the checkout.  See "prepare target_ws for cache" task below
-      - name: Cache target workspace
-        uses: pat-s/always-upload-cache@v2.1.5
-        with:
-          path: ${{ env.BASEDIR }}/target_ws
-          key: ${{ env.CACHE_PREFIX }}-${{ github.run_id }}
-          restore-keys: ${{ env.CACHE_PREFIX }}
-        env:
-          CACHE_PREFIX: target_ws-${{ matrix.env.NAME }}-${{ hashFiles('**/CMakeLists.txt', '**/package.xml', '.github/workflows/ci.yaml') }}
       - name: Cache ccache
         uses: pat-s/always-upload-cache@v2.1.5
         with:
@@ -128,10 +111,3 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: ${{ env.BASEDIR }}/target_ws/coverage.info
-      - name: Prepare target_ws for cache
-        if: always()
-        run: |
-          du -sh ${{ env.BASEDIR }}/target_ws
-          sudo find ${{ env.BASEDIR }}/target_ws -wholename '*/test_results/*' -delete
-          sudo rm -rf ${{ env.BASEDIR }}/target_ws/src
-          du -sh ${{ env.BASEDIR }}/target_ws
