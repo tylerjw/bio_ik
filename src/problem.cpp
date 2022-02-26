@@ -26,7 +26,6 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#include <moveit/collision_detection_fcl/fcl_compat.h>  // for FCL_VERSION_C...
 #include <moveit/robot_model/joint_model.h>             // for JointModel
 #include <moveit/robot_model/joint_model_group.h>       // for JointModelGroup
 #include <moveit/robot_model/link_model.h>              // for LinkModel
