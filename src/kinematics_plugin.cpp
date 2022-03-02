@@ -388,7 +388,7 @@ struct BioIKKinematicsPlugin : kinematics::KinematicsBase {
       const kinematics::KinematicsQueryOptions &options =
           kinematics::KinematicsQueryOptions(),
       const moveit::core::RobotState *context_state = NULL) const override {
-    double t0 = node_->now().seconds();
+    double t0 = rclcpp::Clock().now().seconds();
 
     // timeout = 0.1;
 
