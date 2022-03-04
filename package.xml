@@ -22,6 +22,8 @@
   <depend>rclcpp</depend>
   <depend>tf2_kdl</depend>
   <depend>backward_ros</depend>
+  <depend>fp</depend>
+
 
   <!-- <depend>tf2</depend> -->
   <!-- <depend>tf2_eigen</depend> -->
