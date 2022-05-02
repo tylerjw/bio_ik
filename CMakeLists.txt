@@ -48,6 +48,9 @@ find_package(moveit_ros_planning REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(backward_ros REQUIRED)
+find_package(fcl REQUIRED)
+find_package(tf2_kdl REQUIRED)
+
 
 # TODO(tylerjw): re-enable these
 # find_package(OpenMP)
@@ -146,6 +149,8 @@ target_link_libraries(
     moveit_core::moveit_collision_detection_fcl
     moveit_ros_planning::moveit_rdf_loader
     Eigen3::Eigen
+    fcl
+    tf2_kdl::tf2_kdl
     # TODO(tylerjw): what does this change?
     -static-libgcc
     -static-libstdc++
@@ -164,6 +169,8 @@ target_link_libraries(
     project_options
     project_warnings
     bio_ik
+    fcl
+    tf2_kdl
     # TODO(tylerjw): what does this change?
     -static-libgcc
     -static-libstdc++
