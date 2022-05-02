@@ -5,7 +5,7 @@ include(cmake/StandardProjectSettings.cmake)
 
 # Link this 'library' to set the c++ standard / compile-time options requested
 add_library(project_options INTERFACE)
-target_compile_features(project_options INTERFACE cxx_std_20)
+target_compile_features(project_options INTERFACE cxx_std_17)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
   option(ENABLE_BUILD_WITH_TIME_TRACE "Enable -ftime-trace to generate time tracing .json files on clang" OFF)
@@ -170,7 +170,7 @@ target_link_libraries(
     project_warnings
     bio_ik
     fcl
-    tf2_kdl
+    tf2_kdl::tf2_kdl
     # TODO(tylerjw): what does this change?
     -static-libgcc
     -static-libstdc++
